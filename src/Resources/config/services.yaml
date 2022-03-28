@@ -1,0 +1,13 @@
+services:
+
+    syndesi_neo4j_sync.test:
+        class: Syndesi\Neo4jSyncBundle\Service\TestService
+        public: true
+
+    Syndesi\Neo4jSyncBundle\Service\TestService: '@syndesi_neo4j_sync.test'
+
+    syndesi_neo4j_sync.neo4j_client_service:
+        class: Syndesi\Neo4jSyncBundle\Service\Neo4jClientService
+        public: true
+
+    Syndesi\Neo4jSyncBundle\Service\Neo4jClientService: '@syndesi_neo4j_sync.neo4j_client_service'
