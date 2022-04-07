@@ -1,7 +1,10 @@
 <?php
 
 $finder = (new PhpCsFixer\Finder())
-    ->in(__DIR__)
+    ->in([
+        __DIR__.'/src/',
+        __DIR__.'/tests/'
+    ])
     ->exclude('var')
 ;
 

@@ -13,6 +13,7 @@ namespace Syndesi\Neo4jSyncBundle\Serializer;
 
 use DateInterval;
 use DateTimeInterface;
+use Laudis\Neo4j\Types as Neo4j;
 use Symfony\Component\Serializer\Encoder\ChainDecoder;
 use Symfony\Component\Serializer\Encoder\ChainEncoder;
 use Symfony\Component\Serializer\Encoder\ContextAwareDecoderInterface;
@@ -34,7 +35,6 @@ use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use Laudis\Neo4j\Types as Neo4j;
 
 /**
  * Serializer serializes and deserializes data.
@@ -51,7 +51,7 @@ use Laudis\Neo4j\Types as Neo4j;
  * @author Lukas Kahwe Smith <smith@pooteeweet.org>
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class Serializer implements SerializerInterface, ContextAwareNormalizerInterface, ContextAwareDenormalizerInterface, ContextAwareEncoderInterface, ContextAwareDecoderInterface
+class Neo4jSerializer implements SerializerInterface, ContextAwareNormalizerInterface, ContextAwareDenormalizerInterface, ContextAwareEncoderInterface, ContextAwareDecoderInterface
 {
     /**
      * Flag to control whether an empty array should be transformed to an
@@ -160,17 +160,17 @@ class Serializer implements SerializerInterface, ContextAwareNormalizerInterface
      * {@inheritdoc}
      */
     public function normalize(mixed $data, string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null|
-    DateTimeInterface |
-    DateInterval |
-    Neo4j\Date |
-    Neo4j\Time |
-    Neo4j\LocalTime |
-    Neo4j\DateTime |
-    Neo4j\DateTimeZoneId |
-    Neo4j\LocalDateTime |
-    Neo4j\Duration |
-    Neo4j\Node |
-    Neo4j\Relationship |
+    DateTimeInterface|
+    DateInterval|
+    Neo4j\Date|
+    Neo4j\Time|
+    Neo4j\LocalTime|
+    Neo4j\DateTime|
+    Neo4j\DateTimeZoneId|
+    Neo4j\LocalDateTime|
+    Neo4j\Duration|
+    Neo4j\Node|
+    Neo4j\Relationship|
     Neo4j\Path
     {
         // If a normalizer supports the given data, use it

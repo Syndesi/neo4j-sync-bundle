@@ -1,98 +1,37 @@
 <?php
+
 namespace Syndesi\Neo4jSyncBundle\Service;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\ORM\Mapping\Entity;
-use Exception;
 use Laudis\Neo4j\Databags\Statement;
-use ReflectionClass;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Syndesi\Neo4jSyncBundle\Attribute\Node;
-use Syndesi\Neo4jSyncBundle\Attribute\Relation;
-use Syndesi\Neo4jSyncBundle\Normalizer\Neo4jObjectNormalizer;
+use Syndesi\Neo4jSyncBundle\Exception\MissingIdPropertyException;
 use Syndesi\Neo4jSyncBundle\Object\EntityDataObject;
-use Syndesi\Neo4jSyncBundle\Serializer\Serializer;
 
-class CreateStatementService {
+class Neo4jStatementService
+{
+    private EntityDataObjectService $entityDataObjectService;
 
-    private Serializer $serializer;
-
-    public function __construct(){
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-        $normalizer = new ObjectNormalizer($classMetadataFactory);
-        $neo4jObjectNormalizer = new Neo4jObjectNormalizer();
-        $this->serializer = new Serializer([$neo4jObjectNormalizer, $normalizer]);
-    }
-
-
-    /**
-     * @throws
-     */
-    public function getEntityDataObject(object $entity): EntityDataObject
+    public function __construct(EntityDataObjectService $entityDataObjectService)
     {
-        $entityDataObject = new EntityDataObject();
-
-        $class = get_class($entity);
-        $reflectionClass = new ReflectionClass($class);
-
-        $isDoctrineEntity = false;
-        $isNeo4jSyncEntity = false;
-
-        foreach ($reflectionClass->getAttributes() as $attribute) {
-            //echo($attribute->getName()."\n");
-            if ($attribute->newInstance() instanceof Entity) {
-                $isDoctrineEntity = true;
-            }
-            if ($attribute->newInstance() instanceof Node) {
-                /** @var Node $nodeAttribute */
-                $nodeAttribute = $attribute->newInstance();
-                $entityDataObject->setNodeAttribute($nodeAttribute);
-                $isNeo4jSyncEntity = true;
-            }
-            if ($attribute->newInstance() instanceof Relation) {
-                /** @var Relation $relationAttribute */
-                $relationAttribute = $attribute->newInstance();
-                $entityDataObject->setRelationAttribute($relationAttribute);
-            }
-        }
-
-        if (!$isDoctrineEntity) {
-            throw new Exception(sprintf("Entity of class %s is not supported because it does not have Attribute %s", get_class($entity), get_class(Entity::class)));
-        }
-
-        if (!$isNeo4jSyncEntity) {
-            throw new Exception(sprintf("Entity of class %s is not supported because it does not have Attribute %s", get_class($entity), get_class(Node::class)));
-        }
-
-
-        $entityDataObject->setData(
-            $this->serializer->normalize(
-                $entity,
-                null,
-                [
-                    'groups' => $entityDataObject->getNodeAttribute()->getSerializationGroup()
-                ]
-            )
-        );
-        //print_r($entityDataObject->getData());
-        //exit;
-
-        return $entityDataObject;
+        $this->entityDataObjectService = $entityDataObjectService;
     }
 
     /**
+     * @return Statement[]
+     *
      * @throws
      */
-    public function getCreateStatementForEntity(object $entity){
-        $entityDataObject = $this->getEntityDataObject($entity);
+    public function getCreateStatement(object $entity): array
+    {
+        $entityDataObject = $this->entityDataObjectService->getEntityDataObject($entity);
+
+        // create entity node itself
         $propertyString = [];
-        foreach ($entityDataObject->getData() as $key => $value) {
+        foreach ($entityDataObject->getProperties() as $key => $value) {
             $propertyString[] = sprintf('%s: $%s', $key, $key);
         }
         $propertyString = implode(', ', $propertyString);
-        return new Statement(
+        $statements = [];
+        $statements[] = new Statement(
             sprintf(
                 'CREATE (n:%s {%s})',
                 $entityDataObject->getNodeAttribute()->getLabel(),
@@ -100,7 +39,103 @@ class CreateStatementService {
             ),
             $entityDataObject->getData()
         );
+
+        // create relations
+        foreach ($entityDataObject->getNodeAttribute()->getRelations() as $relation) {
+            $statements[] = new Statement(
+                sprintf(
+                    "MATCH\n".
+                    "  (child:%s),\n".
+                    "  (parent:%s)\n".
+                    "WHERE child.%s = \$childId AND parent.%s = \$parentId\n".
+                    "CREATE (child)-[r:%s]->(parent)\n".
+                    'RETURN type(r)',
+                    $entityDataObject->getNodeAttribute()->getLabel(),
+                    $relation->getTargetLabel(),
+                    $entityDataObject->getNodeAttribute()->getId(),
+                    $relation->getTargetProperty(),
+                    $relation->getLabel()
+                ),
+                [
+                    'childId' => $entityDataObject->getData()[$entityDataObject->getNodeAttribute()->getId()],
+                    'parentId' => $entityDataObject->getData()[$relation->getTargetValue()],
+                ]
+            );
+        }
+
+        return $statements;
     }
 
+    /**
+     * @return Statement[]
+     */
+    public function getUpdateStatement(object $entity): array
+    {
+        $entityDataObject = $this->entityDataObjectService->getEntityDataObject($entity);
 
+        $updatePropertyStrings = [];
+        foreach ($entityDataObject->getProperties() as $key => $value) {
+            $updatePropertyStrings[] = sprintf("SET n.%s = \$%s\n", $key, $key);
+        }
+
+        $statements = [];
+        $statements[] = new Statement(
+            sprintf(
+                "MATCH (n:%s {%s: \$%s})\n".
+                '%s',
+                $entityDataObject->getNodeAttribute()->getLabel(),
+                $entityDataObject->getNodeAttribute()->getId(),
+                $entityDataObject->getNodeAttribute()->getId(),
+                implode($updatePropertyStrings)
+            ),
+            $entityDataObject->getData()
+        );
+
+        // todo update relations
+        return $statements;
+    }
+
+    /**
+     * @throws MissingIdPropertyException
+     */
+    public function getDeleteStatement(object $entity): Statement
+    {
+        $entityDataObject = $this->entityDataObjectService->getEntityDataObject($entity);
+        $idPropertyName = $this->getIdPropertyName($entityDataObject);
+        $idPropertyValue = $this->getIdPropertyValue($entityDataObject);
+
+        return new Statement(
+            sprintf(
+                'MATCH (n:%s {%s: $%s}) DETACH DELETE n',
+                $entityDataObject->getNodeAttribute()->getLabel(),
+                $idPropertyName,
+                $idPropertyName
+            ),
+            [
+                $idPropertyName => $idPropertyValue,
+            ]
+        );
+    }
+
+    private function getIdPropertyName(EntityDataObject $object): string
+    {
+        return $object->getNodeAttribute()->getId();
+    }
+
+    /**
+     * @throws MissingIdPropertyException
+     */
+    private function getIdPropertyValue(EntityDataObject $object)
+    {
+        $idPropertyName = $this->getIdPropertyName($object);
+        if (!key_exists($idPropertyName, $object->getData())) {
+            throw new MissingIdPropertyException(sprintf("The normalized data of object '%s' does not contain the id attribute with name '%s'", $object->getEntityClass(), $idPropertyName));
+        }
+        $idPropertyValue = $object->getData()[$idPropertyName];
+        if (!$idPropertyValue) {
+            throw new MissingIdPropertyException(sprintf("The normalized data of object '%s' must contain a non-null value for the id field with name '%s'", $object->getEntityClass(), $idPropertyName));
+        }
+
+        return $idPropertyValue;
+    }
 }

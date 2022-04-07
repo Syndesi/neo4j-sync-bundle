@@ -1,9 +1,14 @@
 <?php
+
 namespace Syndesi\Neo4jSyncBundle\Enum;
 
-enum Index: string
+enum IndexType: string
 {
-    case DRAFT = 'draft';
-    case PUBLISHED = 'published';
-    case ARCHIVED = 'archived';
+    case ALL = 'ALL';
+    case BTREE = 'BTREE';
+    case FULLTEXT = 'FULLTEXT';
+    case LOOKUP = 'LOOKUP';
+    case POINT = 'POINT';
+    case RANGE = 'RANGE';
+    case TEXT = 'TEXT';
 }

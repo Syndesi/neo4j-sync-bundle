@@ -1,13 +1,93 @@
 services:
 
-    syndesi_neo4j_sync.test:
-        class: Syndesi\Neo4jSyncBundle\Service\TestService
+
+# ----------------------------------------------------------------------------------------------------------------------
+#  Services
+# ----------------------------------------------------------------------------------------------------------------------
+
+    syndesi_neo4j_sync.neo4j_client:
+        class: Syndesi\Neo4jSyncBundle\Service\Neo4jClient
         public: true
+        arguments:
+#            - '@syndesi_neo4j_sync.entity_data_object_service' # todo
 
-    Syndesi\Neo4jSyncBundle\Service\TestService: '@syndesi_neo4j_sync.test'
+    Syndesi\Neo4jSyncBundle\Service\Neo4jClient: '@syndesi_neo4j_sync.neo4j_client'
 
-    syndesi_neo4j_sync.neo4j_client_service:
-        class: Syndesi\Neo4jSyncBundle\Service\Neo4jClientService
-        public: true
 
-    Syndesi\Neo4jSyncBundle\Service\Neo4jClientService: '@syndesi_neo4j_sync.neo4j_client_service'
+    syndesi_neo4j_sync.neo4j_normalizer:
+        class: Syndesi\Neo4jSyncBundle\Service\Neo4jNormalizer
+        public: false
+
+    Syndesi\Neo4jSyncBundle\Service\Neo4jNormalizer: '@syndesi_neo4j_sync.neo4j_normalizer'
+
+
+    syndesi_neo4j_sync.entity_reader:
+        class: Syndesi\Neo4jSyncBundle\Service\EntityReader
+        public: false
+        arguments:
+            - '@syndesi_neo4j_sync.neo4j_normalizer'
+    
+    Syndesi\Neo4jSyncBundle\Service\EntityReader: '@syndesi_neo4j_sync.entity_reader'
+
+
+    syndesi_neo4j_sync.neo4j_statement_helper:
+        class: Syndesi\Neo4jSyncBundle\Service\Neo4jStatementHelper
+        public: false
+        arguments:
+            - '@syndesi_neo4j_sync.entity_reader'
+    
+    Syndesi\Neo4jSyncBundle\Service\Neo4jStatementHelper: '@syndesi_neo4j_sync.neo4j_statement_helper'
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#  Event subscribers
+# ----------------------------------------------------------------------------------------------------------------------
+
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostFlushSubscriber:
+        class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostFlushSubscriber
+        public: false
+        tags: [ 'doctrine.event_subscriber' ]
+        arguments:
+            - '@syndesi_neo4j_sync.neo4j_client'
+
+
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistSubscriber:
+        class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistSubscriber
+        public: false
+        tags: [ 'doctrine.event_subscriber' ]
+        arguments:
+            - '@syndesi_neo4j_sync.neo4j_client'
+            - '@syndesi_neo4j_sync.entity_reader'
+            - '@syndesi_neo4j_sync.neo4j_statement_helper'
+
+
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateSubscriber:
+        class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateSubscriber
+        public: false
+        tags: [ 'doctrine.event_subscriber' ]
+        arguments:
+            - '@syndesi_neo4j_sync.neo4j_client'
+            - '@syndesi_neo4j_sync.entity_reader'
+            - '@syndesi_neo4j_sync.neo4j_statement_helper'
+
+
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinepreRemoveSubscriber:
+        class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinepreRemoveSubscriber
+        public: false
+        tags: [ 'doctrine.event_subscriber' ]
+        arguments:
+            - '@syndesi_neo4j_sync.neo4j_client'
+            - '@syndesi_neo4j_sync.entity_reader'
+            - '@syndesi_neo4j_sync.neo4j_statement_helper'
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#  Commands
+# ----------------------------------------------------------------------------------------------------------------------
+
+#    syndesi_neo4j_sync.test_command:
+#        class: Syndesi\Neo4jSyncBundle\Command\TestCommand
+#        public: true
+#        tags: [ 'console.command' ]
+#
+#    Syndesi\Neo4jSyncBundle\Command\TestCommand: '@syndesi_neo4j_sync.test_command'

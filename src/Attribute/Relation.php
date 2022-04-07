@@ -1,35 +1,70 @@
 <?php
+
 namespace Syndesi\Neo4jSyncBundle\Attribute;
 
 use Attribute;
-use Syndesi\Neo4jSyncBundle\Object\RelationObject;
 
-#[Attribute(Attribute::TARGET_CLASS)]
+#[Attribute]
 class Relation
 {
-    /** @var array RelationObject[] */
-    private array $relations = [];
+    private ?string $label;
+    private ?string $targetLabel;
+    private ?string $targetProperty;
+    private ?string $targetValue;
 
-    public function __construct(array $relations)
+    public function __construct($label = null, $targetLabel = null, $targetProperty = null, $targetValue = null)
     {
-        $this->relations = $relations;
+        $this->label = $label;
+        $this->targetLabel = $targetLabel;
+        $this->targetProperty = $targetProperty;
+        $this->targetValue = $targetValue;
     }
 
-    /**
-     * @return RelationObject[]
-     */
-    public function getRelations(): array
+    public function getLabel(): ?string
     {
-        return $this->relations;
+        return $this->label;
     }
 
-    /**
-     * @param RelationObject[] $relations
-     */
-    public function setRelations(array $relations): Relation
+    public function setLabel(?string $label): Relation
     {
-        $this->relations = $relations;
+        $this->label = $label;
+
         return $this;
     }
 
+    public function getTargetLabel(): ?string
+    {
+        return $this->targetLabel;
+    }
+
+    public function setTargetLabel(?string $targetLabel): Relation
+    {
+        $this->targetLabel = $targetLabel;
+
+        return $this;
+    }
+
+    public function getTargetProperty(): ?string
+    {
+        return $this->targetProperty;
+    }
+
+    public function setTargetProperty(?string $targetProperty): Relation
+    {
+        $this->targetProperty = $targetProperty;
+
+        return $this;
+    }
+
+    public function getTargetValue(): ?string
+    {
+        return $this->targetValue;
+    }
+
+    public function setTargetValue(?string $targetValue): Relation
+    {
+        $this->targetValue = $targetValue;
+
+        return $this;
+    }
 }

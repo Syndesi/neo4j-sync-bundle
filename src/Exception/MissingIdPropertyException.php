@@ -1,12 +1,7 @@
 <?php
+
 namespace Syndesi\Neo4jSyncBundle\Exception;
 
-use Exception;
-use Throwable;
-
-class Neo4jSyncException extends Exception
+class MissingIdPropertyException extends Neo4jSyncException
 {
-    public function __construct($message, $code = 0, Throwable $previous = null) {
-        parent::__construct($message, $code, $previous);
-    }
 }
