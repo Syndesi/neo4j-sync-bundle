@@ -18,7 +18,8 @@
         "symfony/yaml": "6.0.*",
         "symfony/serializer": "6.0.*",
         "symfony/console": "6.0.*",
-        "symfony/property-access": "^6.0"
+        "symfony/property-access": "^6.0",
+        "symfony/monolog-bundle": "^3.7"
     },
     "autoload": {
         "psr-4": {

@@ -4,15 +4,114 @@ namespace Syndesi\Neo4jSyncBundle\Service;
 
 use Laudis\Neo4j\Databags\Statement;
 use Syndesi\Neo4jSyncBundle\Exception\MissingIdPropertyException;
+use Syndesi\Neo4jSyncBundle\Exception\UnsupportedEntityException;
 use Syndesi\Neo4jSyncBundle\Object\EntityObject;
 
 class Neo4jStatementHelper
 {
     private EntityReader $entityReader;
+    public const PAGE_SIZE = 100;
 
     public function __construct(EntityReader $entityReader)
     {
         $this->entityReader = $entityReader;
+    }
+
+    /**
+     * Important: All passed entities must be of the same type!
+     *
+     * @param object[] $entities
+     *
+     * @return Statement[]
+     *
+     * @throws UnsupportedEntityException
+     */
+    public function getNodeCreateStatementsForEntityList(array $entities): array
+    {
+        if (0 === count($entities)) {
+            return [];
+        }
+        $firstEntityObject = $this->entityReader->getEntityObject(array_values($entities)[0]);
+        $statements = [];
+        for ($i = 0; $i < count($entities) / self::PAGE_SIZE; ++$i) {
+            $batchData = [];
+            for ($j = $i * self::PAGE_SIZE; $j < min(($i + 1) * self::PAGE_SIZE, count($entities)); ++$j) {
+                $entityObject = $this->entityReader->getEntityObject($entities[$j]);
+                if ($firstEntityObject->getNodeAttribute()->getLabel() !== $entityObject->getNodeAttribute()->getLabel()) {
+                    throw new UnsupportedEntityException('todo');
+                }
+                $batchData[] = [
+                    $this->getIdPropertyName($entityObject) => $this->getIdPropertyValue($entityObject),
+                    'properties' => $entityObject->getProperties(),
+                ];
+            }
+            // see https://medium.com/neo4j/5-tips-tricks-for-fast-batched-updates-of-graph-structures-with-neo4j-and-cypher-73c7f693c8cc#9be3
+            $statements[] = new Statement(
+                'UNWIND $batch as row'."\n".
+                sprintf(
+//                    "MERGE (n:%s {%s: row.%s})\n",
+                    "CREATE (n:%s {%s: row.%s})\n",
+                    $firstEntityObject->getNodeAttribute()->getLabel(),
+                    $this->getIdPropertyName($firstEntityObject),
+                    $this->getIdPropertyName($firstEntityObject)
+                ).
+//                "ON CREATE SET n += row.properties",
+                'SET n += row.properties',
+                [
+                    'batch' => $batchData,
+                ]
+            );
+        }
+
+        return $statements;
+    }
+
+    /**
+     * Important: All passed entities must be of the same type!
+     *
+     * @param object[] $entities
+     *
+     * @return Statement[]
+     *
+     * @throws UnsupportedEntityException
+     */
+    public function getRelationCreateStatementsForEntityList(array $entities): array
+    {
+        if (0 === count($entities)) {
+            return [];
+        }
+        $firstEntityObject = $this->entityReader->getEntityObject(array_values($entities)[0]);
+        $statements = [];
+        for ($i = 0; $i < count($entities) / self::PAGE_SIZE; ++$i) {
+            $batchData = [];
+            for ($j = $i * self::PAGE_SIZE; $j < min(($i + 1) * self::PAGE_SIZE, count($entities)); ++$j) {
+                $entityObject = $this->entityReader->getEntityObject($entities[$j]);
+                if ($firstEntityObject->getNodeAttribute()->getLabel() !== $entityObject->getNodeAttribute()->getLabel()) {
+                    throw new UnsupportedEntityException('todo');
+                }
+                $batchData[] = [
+                    $this->getIdPropertyName($entityObject) => $this->getIdPropertyValue($entityObject),
+                    'properties' => $entityObject->getProperties(),
+                ];
+            }
+            $statements[] = new Statement(
+                'UNWIND $batch as row'."\n".
+                sprintf(
+//                    "MERGE (n:%s {%s: row.%s})\n",
+                    "CREATE (n:%s {%s: row.%s})\n",
+                    $firstEntityObject->getNodeAttribute()->getLabel(),
+                    $this->getIdPropertyName($firstEntityObject),
+                    $this->getIdPropertyName($firstEntityObject)
+                ).
+//                "ON CREATE SET n += row.properties",
+                'SET n += row.properties',
+                [
+                    'batch' => $batchData,
+                ]
+            );
+        }
+
+        return $statements;
     }
 
     /**

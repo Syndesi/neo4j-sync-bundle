@@ -8,7 +8,6 @@ use ReflectionClass;
 use ReflectionException;
 use Syndesi\Neo4jSyncBundle\Attribute\Node;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedEntityException;
-use Syndesi\Neo4jSyncBundle\Object\EntityDataObject;
 use Syndesi\Neo4jSyncBundle\Object\EntityObject;
 
 class EntityReader
@@ -25,10 +24,14 @@ class EntityReader
      */
     public function isEntitySupported(object $entity): bool
     {
-        $entityDataObject = new EntityDataObject();
-        $entityDataObject->setEntityClass(get_class($entity));
+        return $this->isEntityClassSupported(get_class($entity));
+    }
 
-        $class = get_class($entity);
+    /**
+     * @throws ReflectionException
+     */
+    public function isEntityClassSupported(string $class): bool
+    {
         $reflectionClass = new ReflectionClass($class);
 
         $isDoctrineEntity = false;

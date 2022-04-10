@@ -4,31 +4,43 @@ namespace Syndesi\Neo4jSyncBundle\Service;
 
 use Laudis\Neo4j\Contracts\ClientInterface;
 use Laudis\Neo4j\Databags\Statement;
+use Psr\Log\LoggerInterface;
 
 class Neo4jClient
 {
     private ClientInterface $client;
+    private LoggerInterface $logger;
     /**
      * @var Statement[]
      */
     private array $statements = [];
 
-    public function __construct(ClientInterface $client)
+    public function __construct(ClientInterface $client, LoggerInterface $logger)
     {
         $this->client = $client;
+        $this->logger = $logger;
     }
 
-    public function flush(): self
+    public function flush(bool $concurrently = false): self
     {
-        while ($statement = array_shift($this->statements)) {
-            $this->client->runStatement($statement);
+        $this->logger->debug('START FLUSHING');
+        if ($concurrently) {
+            $this->client->runStatements($this->statements);
+            $this->statements = [];
+        } else {
+            while ($statement = array_shift($this->statements)) {
+                $this->logger->debug($statement->getText(), $statement->getParameters());
+                $this->client->runStatement($statement);
+            }
         }
+        $this->logger->debug('FINISHED FLUSHING');
 
         return $this;
     }
 
     public function clear(): self
     {
+        $this->logger->debug('CLEARED STATEMENTS');
         $this->statements = [];
 
         return $this;

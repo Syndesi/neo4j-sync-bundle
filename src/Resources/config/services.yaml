@@ -5,38 +5,52 @@ services:
 #  Services
 # ----------------------------------------------------------------------------------------------------------------------
 
-    syndesi_neo4j_sync.neo4j_client:
+    neo4j_sync.neo4j_client:
         class: Syndesi\Neo4jSyncBundle\Service\Neo4jClient
         public: true
+        tags: [
+            {
+                name: 'monolog.logger',
+                channel: 'neo4j_sync'
+            }
+        ]
         arguments:
-#            - '@syndesi_neo4j_sync.entity_data_object_service' # todo
+            - '@logger'
 
-    Syndesi\Neo4jSyncBundle\Service\Neo4jClient: '@syndesi_neo4j_sync.neo4j_client'
+    Syndesi\Neo4jSyncBundle\Service\Neo4jClient: '@neo4j_sync.neo4j_client'
+
+    neo4j_sync.neo4j_client_factory:
+        class: Syndesi\Neo4jSyncBundle\Service\Neo4jClientFactory
+        public: true
+        arguments:
+#            - '@neo4j_sync.entity_data_object_service' # todo
+
+    Syndesi\Neo4jSyncBundle\Service\Neo4jClientFactory: '@neo4j_sync.neo4j_client_factory'
 
 
-    syndesi_neo4j_sync.neo4j_normalizer:
+    neo4j_sync.neo4j_normalizer:
         class: Syndesi\Neo4jSyncBundle\Service\Neo4jNormalizer
         public: false
 
-    Syndesi\Neo4jSyncBundle\Service\Neo4jNormalizer: '@syndesi_neo4j_sync.neo4j_normalizer'
+    Syndesi\Neo4jSyncBundle\Service\Neo4jNormalizer: '@neo4j_sync.neo4j_normalizer'
 
 
-    syndesi_neo4j_sync.entity_reader:
+    neo4j_sync.entity_reader:
         class: Syndesi\Neo4jSyncBundle\Service\EntityReader
         public: false
         arguments:
-            - '@syndesi_neo4j_sync.neo4j_normalizer'
+            - '@neo4j_sync.neo4j_normalizer'
     
-    Syndesi\Neo4jSyncBundle\Service\EntityReader: '@syndesi_neo4j_sync.entity_reader'
+    Syndesi\Neo4jSyncBundle\Service\EntityReader: '@neo4j_sync.entity_reader'
 
 
-    syndesi_neo4j_sync.neo4j_statement_helper:
+    neo4j_sync.neo4j_statement_helper:
         class: Syndesi\Neo4jSyncBundle\Service\Neo4jStatementHelper
         public: false
         arguments:
-            - '@syndesi_neo4j_sync.entity_reader'
+            - '@neo4j_sync.entity_reader'
     
-    Syndesi\Neo4jSyncBundle\Service\Neo4jStatementHelper: '@syndesi_neo4j_sync.neo4j_statement_helper'
+    Syndesi\Neo4jSyncBundle\Service\Neo4jStatementHelper: '@neo4j_sync.neo4j_statement_helper'
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -46,19 +60,25 @@ services:
     Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostFlushSubscriber:
         class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostFlushSubscriber
         public: false
-        tags: [ 'doctrine.event_subscriber' ]
+        tags: [
+            'doctrine.event_subscriber',
+#            {
+#                name: 'monolog.logger',
+#                channel: 'neo4j_sync'
+#            }
+        ]
         arguments:
-            - '@syndesi_neo4j_sync.neo4j_client'
-
+            - '@neo4j_sync.neo4j_client'
+#            - '@logger'
 
     Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistSubscriber:
         class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistSubscriber
         public: false
         tags: [ 'doctrine.event_subscriber' ]
         arguments:
-            - '@syndesi_neo4j_sync.neo4j_client'
-            - '@syndesi_neo4j_sync.entity_reader'
-            - '@syndesi_neo4j_sync.neo4j_statement_helper'
+            - '@neo4j_sync.neo4j_client'
+            - '@neo4j_sync.entity_reader'
+            - '@neo4j_sync.neo4j_statement_helper'
 
 
     Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateSubscriber:
@@ -66,28 +86,51 @@ services:
         public: false
         tags: [ 'doctrine.event_subscriber' ]
         arguments:
-            - '@syndesi_neo4j_sync.neo4j_client'
-            - '@syndesi_neo4j_sync.entity_reader'
-            - '@syndesi_neo4j_sync.neo4j_statement_helper'
+            - '@neo4j_sync.neo4j_client'
+            - '@neo4j_sync.entity_reader'
+            - '@neo4j_sync.neo4j_statement_helper'
 
 
-    Syndesi\Neo4jSyncBundle\EventListener\DoctrinepreRemoveSubscriber:
-        class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinepreRemoveSubscriber
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePreRemoveSubscriber:
+        class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePreRemoveSubscriber
         public: false
         tags: [ 'doctrine.event_subscriber' ]
         arguments:
-            - '@syndesi_neo4j_sync.neo4j_client'
-            - '@syndesi_neo4j_sync.entity_reader'
-            - '@syndesi_neo4j_sync.neo4j_statement_helper'
+            - '@neo4j_sync.neo4j_client'
+            - '@neo4j_sync.entity_reader'
+            - '@neo4j_sync.neo4j_statement_helper'
 
 
 # ----------------------------------------------------------------------------------------------------------------------
 #  Commands
 # ----------------------------------------------------------------------------------------------------------------------
 
-#    syndesi_neo4j_sync.test_command:
-#        class: Syndesi\Neo4jSyncBundle\Command\TestCommand
-#        public: true
-#        tags: [ 'console.command' ]
-#
-#    Syndesi\Neo4jSyncBundle\Command\TestCommand: '@syndesi_neo4j_sync.test_command'
+    neo4j_sync.command.test:
+        class: Syndesi\Neo4jSyncBundle\Command\TestCommand
+        public: true
+        tags: [ 'console.command' ]
+        arguments:
+            - '@neo4j_sync.neo4j_client'
+
+    Syndesi\Neo4jSyncBundle\Command\TestCommand: '@neo4j_sync.command.test'
+
+    neo4j_sync.command.db.delete:
+        class: Syndesi\Neo4jSyncBundle\Command\DatabaseDeleteCommand
+        public: true
+        tags: [ 'console.command' ]
+        arguments:
+            - '@neo4j_sync.neo4j_client'
+
+    Syndesi\Neo4jSyncBundle\Command\DatabaseDeleteCommand: '@neo4j_sync.command.db.delete'
+
+    neo4j_sync.command.db.sync:
+        class: Syndesi\Neo4jSyncBundle\Command\DatabaseSyncCommand
+        public: true
+        tags: [ 'console.command' ]
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@neo4j_sync.neo4j_client'
+            - '@neo4j_sync.neo4j_statement_helper'
+            - '@neo4j_sync.entity_reader'
+
+    Syndesi\Neo4jSyncBundle\Command\DatabaseSyncCommand: '@neo4j_sync.command.db.sync'

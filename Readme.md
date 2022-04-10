@@ -96,4 +96,7 @@ php bin/console neo4j-sync:load             # loads all Doctrine entities into t
 php bin/console neo4j-sync:list:connections # lists all available Neo4j database connections
 php bin/console neo4j-sync:list:entities    # lists all tracked entities
 php bin/console neo4j-sync:stats            # lists some statistics
+
+php bin/console config:dump-reference neo4j_sync
+php bin/console debug:config neo4j_sync
 ```
