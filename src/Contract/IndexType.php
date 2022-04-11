@@ -1,6 +1,6 @@
 <?php
 
-namespace Syndesi\Neo4jSyncBundle\Enum;
+namespace Syndesi\Neo4jSyncBundle\Contract;
 
 enum IndexType: string
 {

@@ -5,8 +5,9 @@ namespace Syndesi\Neo4jSyncBundle\Service;
 use Laudis\Neo4j\Contracts\ClientInterface;
 use Laudis\Neo4j\Databags\Statement;
 use Psr\Log\LoggerInterface;
+use Syndesi\Neo4jSyncBundle\Contract\Neo4jClientInterface;
 
-class Neo4jClient
+class Neo4jClient implements Neo4jClientInterface
 {
     private ClientInterface $client;
     private LoggerInterface $logger;

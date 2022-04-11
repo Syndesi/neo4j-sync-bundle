@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Syndesi\Neo4jSyncBundle\Enum\CreateType;
+use Syndesi\Neo4jSyncBundle\Contract\CreateType;
 use Syndesi\Neo4jSyncBundle\Service\EntityReader;
 use Syndesi\Neo4jSyncBundle\Service\Neo4jClient;
 use Syndesi\Neo4jSyncBundle\Service\Neo4jStatementHelper;

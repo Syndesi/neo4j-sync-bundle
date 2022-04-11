@@ -3,7 +3,7 @@
 namespace Syndesi\Neo4jSyncBundle\Service;
 
 use Laudis\Neo4j\Databags\Statement;
-use Syndesi\Neo4jSyncBundle\Enum\CreateType;
+use Syndesi\Neo4jSyncBundle\Contract\CreateType;
 use Syndesi\Neo4jSyncBundle\Exception\MissingIdPropertyException;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedEntityException;
 use Syndesi\Neo4jSyncBundle\Object\EntityObject;

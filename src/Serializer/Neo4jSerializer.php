@@ -35,6 +35,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Syndesi\Neo4jSyncBundle\Contract\Neo4jSerializerInterface;
 
 /**
  * Serializer serializes and deserializes data.
@@ -51,7 +52,7 @@ use Symfony\Component\Serializer\SerializerInterface;
  * @author Lukas Kahwe Smith <smith@pooteeweet.org>
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class Neo4jSerializer implements SerializerInterface, ContextAwareNormalizerInterface, ContextAwareDenormalizerInterface, ContextAwareEncoderInterface, ContextAwareDecoderInterface
+class Neo4jSerializer implements SerializerInterface, ContextAwareNormalizerInterface, ContextAwareDenormalizerInterface, ContextAwareEncoderInterface, ContextAwareDecoderInterface, Neo4jSerializerInterface
 {
     /**
      * Flag to control whether an empty array should be transformed to an

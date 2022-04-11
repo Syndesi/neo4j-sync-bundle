@@ -6,7 +6,7 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
 use ReflectionException;
-use Syndesi\Neo4jSyncBundle\Enum\CreateType;
+use Syndesi\Neo4jSyncBundle\Contract\CreateType;
 use Syndesi\Neo4jSyncBundle\Service\EntityReader;
 use Syndesi\Neo4jSyncBundle\Service\Neo4jClient;
 use Syndesi\Neo4jSyncBundle\Service\Neo4jStatementHelper;
