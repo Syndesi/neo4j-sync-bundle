@@ -12,8 +12,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Syndesi\Neo4jSyncBundle\Attribute\Node;
+use Syndesi\Neo4jSyncBundle\Contract\Neo4jClientInterface;
 use Syndesi\Neo4jSyncBundle\Service\EntityReader;
-use Syndesi\Neo4jSyncBundle\Service\Neo4jClient;
 use Syndesi\Neo4jSyncBundle\Service\Neo4jStatementHelper;
 
 class IndexListCommand extends Command
@@ -21,13 +21,13 @@ class IndexListCommand extends Command
     protected static $defaultName = 'neo4j-sync:index:list';
 
     private EntityManagerInterface $em;
-    private Neo4jClient $client;
+    private Neo4jClientInterface $client;
     private Neo4jStatementHelper $neo4jStatementHelper;
     private EntityReader $entityReader;
 
     public function __construct(
         EntityManagerInterface $em,
-        Neo4jClient $client,
+        Neo4jClientInterface $client,
         Neo4jStatementHelper $neo4jStatementHelper,
         EntityReader $entityReader
     ) {

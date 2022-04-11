@@ -6,13 +6,14 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Syndesi\Neo4jSyncBundle\Contract\Neo4jSerializerInterface;
 use Syndesi\Neo4jSyncBundle\Normalizer\Neo4jObjectNormalizer;
 use Syndesi\Neo4jSyncBundle\Normalizer\RamseyUuidNormalizer;
 use Syndesi\Neo4jSyncBundle\Serializer\Neo4jSerializer;
 
 class Neo4jNormalizer
 {
-    private Neo4jSerializer $serializer;
+    private Neo4jSerializerInterface $serializer;
 
     public function __construct()
     {

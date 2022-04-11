@@ -9,8 +9,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Syndesi\Neo4jSyncBundle\Contract\CreateType;
+use Syndesi\Neo4jSyncBundle\Contract\Neo4jClientInterface;
 use Syndesi\Neo4jSyncBundle\Service\EntityReader;
-use Syndesi\Neo4jSyncBundle\Service\Neo4jClient;
 use Syndesi\Neo4jSyncBundle\Service\Neo4jStatementHelper;
 
 class DatabaseSyncCommand extends Command
@@ -18,14 +18,14 @@ class DatabaseSyncCommand extends Command
     protected static $defaultName = 'neo4j-sync:db:sync';
 
     private EntityManagerInterface $em;
-    private Neo4jClient $client;
+    private Neo4jClientInterface $client;
     private Neo4jStatementHelper $neo4jStatementHelper;
     private EntityReader $entityReader;
     private int $pageSize;
 
     public function __construct(
         EntityManagerInterface $em,
-        Neo4jClient $client,
+        Neo4jClientInterface $client,
         Neo4jStatementHelper $neo4jStatementHelper,
         EntityReader $entityReader,
         int $pageSize

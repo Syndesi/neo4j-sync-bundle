@@ -10,15 +10,15 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Syndesi\Neo4jSyncBundle\Service\Neo4jClient;
+use Syndesi\Neo4jSyncBundle\Contract\Neo4jClientInterface;
 
 class DatabaseDeleteCommand extends Command
 {
     protected static $defaultName = 'neo4j-sync:db:delete';
 
-    private Neo4jClient $client;
+    private Neo4jClientInterface $client;
 
-    public function __construct(Neo4jClient $client)
+    public function __construct(Neo4jClientInterface $client)
     {
         $this->client = $client;
         parent::__construct();
