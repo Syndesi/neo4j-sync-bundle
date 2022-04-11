@@ -16,6 +16,7 @@ services:
 
     Syndesi\Neo4jSyncBundle\Service\Neo4jClient: '@neo4j_sync.neo4j_client'
 
+
     neo4j_sync.neo4j_client_factory:
         class: Syndesi\Neo4jSyncBundle\Service\Neo4jClientFactory
         public: true
@@ -80,6 +81,7 @@ services:
         arguments:
             - '@neo4j_sync.neo4j_client'
 
+
     Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistSubscriber:
         class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistSubscriber
         public: false
@@ -127,6 +129,7 @@ services:
 
     Syndesi\Neo4jSyncBundle\Command\DatabaseDeleteCommand: '@neo4j_sync.command.db.delete'
 
+
     neo4j_sync.command.db.sync:
         class: Syndesi\Neo4jSyncBundle\Command\DatabaseSyncCommand
         public: true
@@ -140,6 +143,7 @@ services:
 
     Syndesi\Neo4jSyncBundle\Command\DatabaseSyncCommand: '@neo4j_sync.command.db.sync'
 
+
     neo4j_sync.command.index.list:
         class: Syndesi\Neo4jSyncBundle\Command\IndexListCommand
         public: true
@@ -152,6 +156,7 @@ services:
             - '@neo4j_sync.entity_reader'
 
     Syndesi\Neo4jSyncBundle\Command\IndexListCommand: '@neo4j_sync.command.index.list'
+
 
     neo4j_sync.command.index.sync:
         class: Syndesi\Neo4jSyncBundle\Command\IndexSyncCommand
