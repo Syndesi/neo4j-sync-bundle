@@ -19,8 +19,9 @@ class Neo4jNormalizer
         $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
         $normalizer = new ObjectNormalizer($classMetadataFactory);
         $neo4jObjectNormalizer = new Neo4jObjectNormalizer();
-        $ramseyUuidNormalizer = new RamseyUuidNormalizer();
-        $this->serializer = new Neo4jSerializer([$neo4jObjectNormalizer, $ramseyUuidNormalizer, $normalizer]);
+//        $ramseyUuidNormalizer = new RamseyUuidNormalizer();
+//        $this->serializer = new Neo4jSerializer([$neo4jObjectNormalizer, $ramseyUuidNormalizer, $normalizer]);
+        $this->serializer = new Neo4jSerializer([$neo4jObjectNormalizer, $normalizer]);
     }
 
     /**

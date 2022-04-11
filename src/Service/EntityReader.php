@@ -68,6 +68,21 @@ class EntityReader
         return false;
     }
 
+    public function hasEntityClassIndices(string $class): bool
+    {
+        if (!$this->isEntityClassSupported($class)) {
+            throw new UnsupportedEntityException(sprintf('Entity of class %s is not supported.', $class));
+        }
+        foreach ((new ReflectionClass($class))->getAttributes() as $attribute) {
+            $nodeAttribute = $attribute->newInstance();
+            if ($nodeAttribute instanceof Node) {
+                return count($nodeAttribute->getIndices()) > 0;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @throws
      */

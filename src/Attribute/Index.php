@@ -3,34 +3,23 @@
 namespace Syndesi\Neo4jSyncBundle\Attribute;
 
 use Attribute;
+use Syndesi\Neo4jSyncBundle\Contract\IndexType;
 
 #[Attribute]
 class Index
 {
-    private ?string $type;
     private ?string $name;
+    private ?IndexType $type;
     /**
      * @var string[]
      */
     private array $fields;
 
-    public function __construct(string $type, string $name, array $fields)
+    public function __construct(string $name, IndexType $type, array $fields)
     {
-        $this->type = $type;
         $this->name = $name;
-        $this->fields = $fields;
-    }
-
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(?string $type): self
-    {
         $this->type = $type;
-
-        return $this;
+        $this->fields = $fields;
     }
 
     public function getName(): ?string
@@ -41,6 +30,18 @@ class Index
     public function setName(?string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getType(): ?IndexType
+    {
+        return $this->type;
+    }
+
+    public function setType(?IndexType $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }

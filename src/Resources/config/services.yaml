@@ -125,3 +125,27 @@ services:
             - '@neo4j_sync.entity_reader'
 
     Syndesi\Neo4jSyncBundle\Command\DatabaseSyncCommand: '@neo4j_sync.command.db.sync'
+
+    neo4j_sync.command.index.list:
+        class: Syndesi\Neo4jSyncBundle\Command\IndexListCommand
+        public: true
+        tags: [ 'console.command' ]
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@neo4j_sync.neo4j_client'
+            - '@neo4j_sync.neo4j_statement_helper'
+            - '@neo4j_sync.entity_reader'
+
+    Syndesi\Neo4jSyncBundle\Command\IndexListCommand: '@neo4j_sync.command.index.list'
+
+    neo4j_sync.command.index.sync:
+        class: Syndesi\Neo4jSyncBundle\Command\IndexSyncCommand
+        public: true
+        tags: [ 'console.command' ]
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@neo4j_sync.neo4j_client'
+            - '@neo4j_sync.neo4j_statement_helper'
+            - '@neo4j_sync.entity_reader'
+
+    Syndesi\Neo4jSyncBundle\Command\IndexSyncCommand: '@neo4j_sync.command.index.sync'
