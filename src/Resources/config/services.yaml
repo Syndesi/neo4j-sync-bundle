@@ -8,12 +8,9 @@ services:
     neo4j_sync.neo4j_client:
         class: Syndesi\Neo4jSyncBundle\Service\Neo4jClient
         public: true
-        tags: [
-            {
-                name: 'monolog.logger',
-                channel: 'neo4j_sync'
-            }
-        ]
+        tags:
+            - name: 'monolog.logger'
+              channel: 'neo4j_sync'
         arguments:
             - '@logger'
 
@@ -22,8 +19,6 @@ services:
     neo4j_sync.neo4j_client_factory:
         class: Syndesi\Neo4jSyncBundle\Service\Neo4jClientFactory
         public: true
-        arguments:
-#            - '@neo4j_sync.entity_data_object_service' # todo
 
     Syndesi\Neo4jSyncBundle\Service\Neo4jClientFactory: '@neo4j_sync.neo4j_client_factory'
 
@@ -53,6 +48,26 @@ services:
     Syndesi\Neo4jSyncBundle\Service\Neo4jStatementHelper: '@neo4j_sync.neo4j_statement_helper'
 
 
+    neo4j_sync.object_normalizer_provider:
+        class: Syndesi\Neo4jSyncBundle\Service\ObjectNormalizerProvider
+        public: false
+        tags:
+            - name: 'neo4j_sync_normalizer_provider'
+              priority: 64
+    
+    Syndesi\Neo4jSyncBundle\Service\ObjectNormalizerProvider: '@neo4j_sync.object_normalizer_provider'
+
+
+    neo4j_sync.neo4j_object_normalizer_provider:
+        class: Syndesi\Neo4jSyncBundle\Service\Neo4jObjectNormalizerProvider
+        public: false
+        tags:
+            - name: 'neo4j_sync_normalizer_provider'
+              priority: 256
+    
+    Syndesi\Neo4jSyncBundle\Service\Neo4jObjectNormalizerProvider: '@neo4j_sync.neo4j_object_normalizer_provider'
+
+
 # ----------------------------------------------------------------------------------------------------------------------
 #  Event subscribers
 # ----------------------------------------------------------------------------------------------------------------------
@@ -60,21 +75,16 @@ services:
     Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostFlushSubscriber:
         class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostFlushSubscriber
         public: false
-        tags: [
-            'doctrine.event_subscriber',
-#            {
-#                name: 'monolog.logger',
-#                channel: 'neo4j_sync'
-#            }
-        ]
+        tags:
+            - 'doctrine.event_subscriber'
         arguments:
             - '@neo4j_sync.neo4j_client'
-#            - '@logger'
 
     Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistSubscriber:
         class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistSubscriber
         public: false
-        tags: [ 'doctrine.event_subscriber' ]
+        tags:
+            - 'doctrine.event_subscriber'
         arguments:
             - '@neo4j_sync.neo4j_client'
             - '@neo4j_sync.entity_reader'
@@ -84,7 +94,8 @@ services:
     Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateSubscriber:
         class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateSubscriber
         public: false
-        tags: [ 'doctrine.event_subscriber' ]
+        tags:
+            - 'doctrine.event_subscriber'
         arguments:
             - '@neo4j_sync.neo4j_client'
             - '@neo4j_sync.entity_reader'
@@ -94,7 +105,8 @@ services:
     Syndesi\Neo4jSyncBundle\EventListener\DoctrinePreRemoveSubscriber:
         class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePreRemoveSubscriber
         public: false
-        tags: [ 'doctrine.event_subscriber' ]
+        tags:
+            - 'doctrine.event_subscriber'
         arguments:
             - '@neo4j_sync.neo4j_client'
             - '@neo4j_sync.entity_reader'
@@ -108,7 +120,8 @@ services:
     neo4j_sync.command.db.delete:
         class: Syndesi\Neo4jSyncBundle\Command\DatabaseDeleteCommand
         public: true
-        tags: [ 'console.command' ]
+        tags:
+            - 'console.command'
         arguments:
             - '@neo4j_sync.neo4j_client'
 
@@ -117,7 +130,8 @@ services:
     neo4j_sync.command.db.sync:
         class: Syndesi\Neo4jSyncBundle\Command\DatabaseSyncCommand
         public: true
-        tags: [ 'console.command' ]
+        tags:
+            - 'console.command'
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@neo4j_sync.neo4j_client'
@@ -129,7 +143,8 @@ services:
     neo4j_sync.command.index.list:
         class: Syndesi\Neo4jSyncBundle\Command\IndexListCommand
         public: true
-        tags: [ 'console.command' ]
+        tags:
+            - 'console.command'
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@neo4j_sync.neo4j_client'
@@ -141,7 +156,8 @@ services:
     neo4j_sync.command.index.sync:
         class: Syndesi\Neo4jSyncBundle\Command\IndexSyncCommand
         public: true
-        tags: [ 'console.command' ]
+        tags:
+            - 'console.command'
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@neo4j_sync.neo4j_client'

@@ -2,8 +2,10 @@
 
 namespace Syndesi\Neo4jSyncBundle;
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Syndesi\Neo4jSyncBundle\DependencyInjection\Compiler\NormalizerProviderCompilerPass;
 use Syndesi\Neo4jSyncBundle\DependencyInjection\SyndesiNeo4jSyncExtension;
 
 class SyndesiNeo4jSyncBundle extends Bundle
@@ -13,5 +15,10 @@ class SyndesiNeo4jSyncBundle extends Bundle
         $this->extension ??= new SyndesiNeo4jSyncExtension();
 
         return $this->extension;
+    }
+
+    public function build(ContainerBuilder $container)
+    {
+        $container->addCompilerPass(new NormalizerProviderCompilerPass());
     }
 }

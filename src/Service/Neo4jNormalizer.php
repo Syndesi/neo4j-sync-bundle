@@ -2,27 +2,24 @@
 
 namespace Syndesi\Neo4jSyncBundle\Service;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Syndesi\Neo4jSyncBundle\Contract\Neo4jSerializerInterface;
-use Syndesi\Neo4jSyncBundle\Normalizer\Neo4jObjectNormalizer;
-use Syndesi\Neo4jSyncBundle\Normalizer\RamseyUuidNormalizer;
+use Syndesi\Neo4jSyncBundle\Contract\NormalizerProviderInterface;
 use Syndesi\Neo4jSyncBundle\Serializer\Neo4jSerializer;
 
 class Neo4jNormalizer
 {
     private Neo4jSerializerInterface $serializer;
 
-    public function __construct()
+    /**
+     * @param NormalizerProviderInterface[] $normalizerProviders
+     */
+    public function __construct(array $normalizerProviders)
     {
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-        $normalizer = new ObjectNormalizer($classMetadataFactory);
-        $neo4jObjectNormalizer = new Neo4jObjectNormalizer();
-//        $ramseyUuidNormalizer = new RamseyUuidNormalizer();
-//        $this->serializer = new Neo4jSerializer([$neo4jObjectNormalizer, $ramseyUuidNormalizer, $normalizer]);
-        $this->serializer = new Neo4jSerializer([$neo4jObjectNormalizer, $normalizer]);
+        $normalizers = [];
+        foreach ($normalizerProviders as $provider) {
+            $normalizers[] = $provider->getNormalizer();
+        }
+        $this->serializer = new Neo4jSerializer($normalizers);
     }
 
     /**
