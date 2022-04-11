@@ -3,6 +3,7 @@
 namespace Syndesi\Neo4jSyncBundle\Service;
 
 use Laudis\Neo4j\Databags\Statement;
+use Syndesi\Neo4jSyncBundle\Enum\CreateType;
 use Syndesi\Neo4jSyncBundle\Exception\MissingIdPropertyException;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedEntityException;
 use Syndesi\Neo4jSyncBundle\Object\EntityObject;
@@ -10,15 +11,18 @@ use Syndesi\Neo4jSyncBundle\Object\EntityObject;
 class Neo4jStatementHelper
 {
     private EntityReader $entityReader;
-    public const PAGE_SIZE = 100;
+    private int $pageSize;
+    private CreateType $defaultCreateType;
 
-    public function __construct(EntityReader $entityReader)
+    public function __construct(EntityReader $entityReader, int $pageSize, CreateType $defaultCreateType)
     {
         $this->entityReader = $entityReader;
+        $this->pageSize = $pageSize;
+        $this->defaultCreateType = $defaultCreateType;
     }
 
     /**
-     * Important: All passed entities must be of the same type!
+     * Notice: All passed entities must be of the same type.
      *
      * @param object[] $entities
      *
@@ -26,16 +30,17 @@ class Neo4jStatementHelper
      *
      * @throws UnsupportedEntityException
      */
-    public function getNodeCreateStatementsForEntityList(array $entities): array
+    public function getNodeStatementsForEntityList(array $entities, ?CreateType $createType = null): array
     {
         if (0 === count($entities)) {
             return [];
         }
+        $createType ??= $this->defaultCreateType;
         $firstEntityObject = $this->entityReader->getEntityObject(array_values($entities)[0]);
         $statements = [];
-        for ($i = 0; $i < count($entities) / self::PAGE_SIZE; ++$i) {
+        for ($i = 0; $i < count($entities) / $this->pageSize; ++$i) {
             $batchData = [];
-            for ($j = $i * self::PAGE_SIZE; $j < min(($i + 1) * self::PAGE_SIZE, count($entities)); ++$j) {
+            for ($j = $i * $this->pageSize; $j < min(($i + 1) * $this->pageSize, count($entities)); ++$j) {
                 $entityObject = $this->entityReader->getEntityObject($entities[$j]);
                 if ($firstEntityObject->getNodeAttribute()->getLabel() !== $entityObject->getNodeAttribute()->getLabel()) {
                     throw new UnsupportedEntityException('todo');
@@ -49,13 +54,12 @@ class Neo4jStatementHelper
             $statements[] = new Statement(
                 'UNWIND $batch as row'."\n".
                 sprintf(
-//                    "MERGE (n:%s {%s: row.%s})\n",
-                    "CREATE (n:%s {%s: row.%s})\n",
+                    "%s (n:%s {%s: row.%s})\n",
+                    $createType->value,
                     $firstEntityObject->getNodeAttribute()->getLabel(),
                     $this->getIdPropertyName($firstEntityObject),
                     $this->getIdPropertyName($firstEntityObject)
                 ).
-//                "ON CREATE SET n += row.properties",
                 'SET n += row.properties',
                 [
                     'batch' => $batchData,
@@ -67,48 +71,57 @@ class Neo4jStatementHelper
     }
 
     /**
-     * Important: All passed entities must be of the same type!
+     * Notice: All passed entities must be of the same type.
      *
      * @param object[] $entities
      *
      * @return Statement[]
      *
-     * @throws UnsupportedEntityException
+     * @throws UnsupportedEntityException|MissingIdPropertyException
      */
-    public function getRelationCreateStatementsForEntityList(array $entities): array
+    public function getRelationStatementsForEntityList(array $entities, ?CreateType $createType = null): array
     {
         if (0 === count($entities)) {
             return [];
         }
+        $createType ??= $this->defaultCreateType;
         $firstEntityObject = $this->entityReader->getEntityObject(array_values($entities)[0]);
         $statements = [];
-        for ($i = 0; $i < count($entities) / self::PAGE_SIZE; ++$i) {
+        for ($i = 0; $i < count($entities) / $this->pageSize; ++$i) {
             $batchData = [];
-            for ($j = $i * self::PAGE_SIZE; $j < min(($i + 1) * self::PAGE_SIZE, count($entities)); ++$j) {
+            for ($j = $i * $this->pageSize; $j < min(($i + 1) * $this->pageSize, count($entities)); ++$j) {
                 $entityObject = $this->entityReader->getEntityObject($entities[$j]);
                 if ($firstEntityObject->getNodeAttribute()->getLabel() !== $entityObject->getNodeAttribute()->getLabel()) {
                     throw new UnsupportedEntityException('todo');
                 }
-                $batchData[] = [
-                    $this->getIdPropertyName($entityObject) => $this->getIdPropertyValue($entityObject),
-                    'properties' => $entityObject->getProperties(),
-                ];
+                foreach ($entityObject->getNodeAttribute()->getRelations() as $relation) {
+                    if (!array_key_exists($relation->getLabel(), $batchData)) {
+                        $batchData[$relation->getLabel()] = [];
+                    }
+                    $batchData[$relation->getLabel()][] = [
+                        'childId' => $this->getIdPropertyValue($entityObject),
+                        'parentId' => $entityObject->getData()[$relation->getTargetValue()],
+                    ];
+                }
             }
-            $statements[] = new Statement(
-                'UNWIND $batch as row'."\n".
-                sprintf(
-//                    "MERGE (n:%s {%s: row.%s})\n",
-                    "CREATE (n:%s {%s: row.%s})\n",
+
+            foreach ($firstEntityObject->getNodeAttribute()->getRelations() as $relation) {
+                $statements[] = new Statement(sprintf(
+                    "UNWIND \$batch as row\n".
+                    "MATCH (child:%s {%s: row.childId})\n".
+                    "MATCH (parent:%s {%s: row.parentId})\n".
+                    '%s (child)-[relation:%s]->(parent)',
                     $firstEntityObject->getNodeAttribute()->getLabel(),
-                    $this->getIdPropertyName($firstEntityObject),
-                    $this->getIdPropertyName($firstEntityObject)
-                ).
-//                "ON CREATE SET n += row.properties",
-                'SET n += row.properties',
+                    $this->getIdPropertyName($entityObject),
+                    $relation->getTargetLabel(),
+                    $relation->getTargetProperty(),
+                    $createType->value,
+                    $relation->getLabel()
+                ),
                 [
-                    'batch' => $batchData,
-                ]
-            );
+                    'batch' => $batchData[$relation->getLabel()],
+                ]);
+            }
         }
 
         return $statements;
@@ -119,78 +132,84 @@ class Neo4jStatementHelper
      *
      * @throws
      */
-    public function getCreateStatements(object $entity): array
+    public function getNodeStatements(object $entity, ?CreateType $createType = null): array
     {
+        $createType ??= $this->defaultCreateType;
         $entityObject = $this->entityReader->getEntityObject($entity);
-
-        // create entity node itself
         $propertyString = [];
         foreach ($entityObject->getProperties() as $key => $value) {
             $propertyString[] = sprintf('%s: $%s', $key, $key);
         }
         $propertyString = implode(', ', $propertyString);
-        $statements = [];
-        $statements[] = new Statement(
-            sprintf(
-                'CREATE (n:%s {%s})',
-                $entityObject->getNodeAttribute()->getLabel(),
-                $propertyString
-            ),
-            $entityObject->getData()
-        );
 
-        // create relations
+        return [
+            new Statement(
+                sprintf(
+                    '%s (n:%s {%s})',
+                    $createType->value,
+                    $entityObject->getNodeAttribute()->getLabel(),
+                    $propertyString
+                ),
+                $entityObject->getData()
+            ),
+        ];
+    }
+
+    /**
+     * @return Statement[]
+     *
+     * @throws
+     */
+    public function getRelationStatements(object $entity, ?CreateType $createType = null): array
+    {
+        $createType ??= $this->defaultCreateType;
+        $entityObject = $this->entityReader->getEntityObject($entity);
+        $statements = [];
         foreach ($entityObject->getNodeAttribute()->getRelations() as $relation) {
+            if (CreateType::CREATE != $createType->value) {
+                // identify and remove existing relation statements
+                $statements[] = new Statement(
+                    sprintf(
+                        "MATCH\n".
+                        "  (child:%s {%s: \$childId})\n".
+                        "  -[relation:%s]->\n".
+                        "  (parent:%s)\n".
+                        "WHERE parent.%s <> \$parentId\n".
+                        'DELETE relation',
+                        $entityObject->getNodeAttribute()->getLabel(),
+                        $this->getIdPropertyName($entityObject),
+                        $relation->getLabel(),
+                        $relation->getTargetLabel(),
+                        $relation->getTargetProperty()
+                    ),
+                    [
+                        'childId' => $this->getIdPropertyValue($entityObject),
+                        'parentId' => $entityObject->getData()[$relation->getTargetValue()],
+                    ]
+                );
+            }
+
+            // create/merge relation statement
             $statements[] = new Statement(
                 sprintf(
                     "MATCH\n".
-                    "  (child:%s),\n".
-                    "  (parent:%s)\n".
-                    "WHERE child.%s = \$childId AND parent.%s = \$parentId\n".
-                    "CREATE (child)-[r:%s]->(parent)\n".
-                    'RETURN type(r)',
+                    "  (child:%s {%s: \$childId}),\n".
+                    "  (parent:%s {%s: \$parentId})\n".
+                    '%s (child)-[r:%s]->(parent)',
                     $entityObject->getNodeAttribute()->getLabel(),
+                    $this->getIdPropertyName($entityObject),
                     $relation->getTargetLabel(),
-                    $entityObject->getNodeAttribute()->getId(),
                     $relation->getTargetProperty(),
+                    $createType->value,
                     $relation->getLabel()
                 ),
                 [
-                    'childId' => $entityObject->getData()[$entityObject->getNodeAttribute()->getId()],
+                    'childId' => $this->getIdPropertyValue($entityObject),
                     'parentId' => $entityObject->getData()[$relation->getTargetValue()],
                 ]
             );
         }
 
-        return $statements;
-    }
-
-    /**
-     * @return Statement[]
-     */
-    public function getUpdateStatements(object $entity): array
-    {
-        $entityObject = $this->entityReader->getEntityObject($entity);
-
-        $updatePropertyStrings = [];
-        foreach ($entityObject->getProperties() as $key => $value) {
-            $updatePropertyStrings[] = sprintf("SET n.%s = \$%s\n", $key, $key);
-        }
-
-        $statements = [];
-        $statements[] = new Statement(
-            sprintf(
-                "MATCH (n:%s {%s: \$%s})\n".
-                '%s',
-                $entityObject->getNodeAttribute()->getLabel(),
-                $entityObject->getNodeAttribute()->getId(),
-                $entityObject->getNodeAttribute()->getId(),
-                implode($updatePropertyStrings)
-            ),
-            $entityObject->getData()
-        );
-
-        // todo update relations
         return $statements;
     }
 
@@ -207,7 +226,9 @@ class Neo4jStatementHelper
 
         return [new Statement(
             sprintf(
-                'MATCH (n:%s {%s: $%s}) DETACH DELETE n',
+                "MATCH\n".
+                "  (n:%s {%s: $%s})\n".
+                'DETACH DELETE n',
                 $entityObject->getNodeAttribute()->getLabel(),
                 $idPropertyName,
                 $idPropertyName

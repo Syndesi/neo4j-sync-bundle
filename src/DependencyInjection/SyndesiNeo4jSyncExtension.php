@@ -7,6 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Syndesi\Neo4jSyncBundle\Enum\CreateType;
 use Syndesi\Neo4jSyncBundle\Exception\InvalidConfigurationException;
 use Syndesi\Neo4jSyncBundle\Service\Neo4jClient;
 use Syndesi\Neo4jSyncBundle\Service\Neo4jClientFactory;
@@ -18,11 +19,28 @@ class SyndesiNeo4jSyncExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $config = $this->parseConfig($configs, $container);
+
+        $this->createClientServices($config, $container);
+
+        $container->getDefinition('neo4j_sync.neo4j_statement_helper')->addArgument($config['page_size']);
+        $container->getDefinition('neo4j_sync.command.db.sync')->addArgument($config['page_size']);
+
+        $defaultCreateType = $config['use_merge_for_create_statements'] ? CreateType::MERGE : CreateType::CREATE;
+        $container->getDefinition('neo4j_sync.neo4j_statement_helper')->addArgument($defaultCreateType);
+    }
+
+    private function parseConfig(array $configs, ContainerBuilder $container): array
+    {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yaml');
         $configuration = $this->getConfiguration($configs, $container);
-        $config = $this->processConfiguration($configuration, $configs);
 
+        return $this->processConfiguration($configuration, $configs);
+    }
+
+    private function createClientServices(array $config, ContainerBuilder $container)
+    {
         // create client services
         foreach ($config['clients'] as $name => $clientConfig) {
             $serviceName = sprintf('neo4j_sync.neo4j_client.%s', $name);

@@ -9,11 +9,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Syndesi\Neo4jSyncBundle\Service\Neo4jClient;
 
 class DatabaseDeleteCommand extends Command
 {
     protected static $defaultName = 'neo4j-sync:db:delete';
+
     private Neo4jClient $client;
 
     public function __construct(Neo4jClient $client)
@@ -45,13 +47,14 @@ class DatabaseDeleteCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $io = new SymfonyStyle($input, $output);
+
         // sanity check
         if (!$input->getOption('force')) {
             $question = new ConfirmationQuestion('Are you sure to delete the database (data & indices)? (y/N) ', false);
             $answer = $this->getHelper('question')->ask($input, $output, $question);
-            $output->writeln('');
             if (!$answer) {
-                $output->writeln('Stopped command');
+                $io->success('Stopped command');
 
                 return Command::SUCCESS;
             }
@@ -66,21 +69,29 @@ class DatabaseDeleteCommand extends Command
              */
             foreach ($res->toArray() as $element) {
                 $this->client->addStatement(
-                    new Statement(sprintf('DROP INDEX %s', $element->get('name')), [])
+                    new Statement(sprintf(
+                        'DROP INDEX %s',
+                        $element->get('name')
+                    ), [])
                 );
             }
-            $output->writeln(sprintf('Added delete statements for %d indices', count($res->toArray())));
+            $output->writeln(sprintf(
+                'Added delete statements for %d indices',
+                count($res->toArray())
+            ));
         }
 
         // generate delete statement for data
         $statement = new Statement('MATCH (n) DETACH DELETE n', []);
         $this->client->addStatement($statement);
-        $output->writeln('Added delete statement for data');
+        $io->writeln('Added delete statement for data');
 
         // running all statements
-        $output->write('Running delete statements... ');
+        $io->write('Running delete statements... ');
         $this->client->flush();
-        $output->writeln('done');
+        $io->writeln('done');
+
+        $io->success('Finished');
 
         return Command::SUCCESS;
     }

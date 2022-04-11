@@ -105,15 +105,6 @@ services:
 #  Commands
 # ----------------------------------------------------------------------------------------------------------------------
 
-    neo4j_sync.command.test:
-        class: Syndesi\Neo4jSyncBundle\Command\TestCommand
-        public: true
-        tags: [ 'console.command' ]
-        arguments:
-            - '@neo4j_sync.neo4j_client'
-
-    Syndesi\Neo4jSyncBundle\Command\TestCommand: '@neo4j_sync.command.test'
-
     neo4j_sync.command.db.delete:
         class: Syndesi\Neo4jSyncBundle\Command\DatabaseDeleteCommand
         public: true

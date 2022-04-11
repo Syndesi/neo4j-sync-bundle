@@ -10,9 +10,13 @@ class Node
     private ?string $label;
     private ?string $id;
     private ?string $serializationGroup;
-    /** @var Relation[] */
+    /**
+     * @var Relation[]
+     */
     private array $relations;
-    /** @var Index[] */
+    /**
+     * @var Index[]
+     */
     private array $indices;
 
     /**

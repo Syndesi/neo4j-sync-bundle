@@ -39,8 +39,9 @@ class DoctrinePostPersistSubscriber implements EventSubscriber
         if (!$this->entityReader->isEntitySupported($entity)) {
             return;
         }
-        $this->client->addStatements(
-            $this->statementHelper->getCreateStatements($entity)
-        );
+        $this->client->addStatements([
+            ...$this->statementHelper->getNodeStatements($entity),
+            ...$this->statementHelper->getRelationStatements($entity),
+        ]);
     }
 }

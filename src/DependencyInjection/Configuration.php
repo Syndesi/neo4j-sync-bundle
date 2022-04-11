@@ -69,9 +69,21 @@ class Configuration implements ConfigurationInterface
                     "Name of client which is used by default.\n".
                     'If not set or null, then the first client is used as default client.'
                 )
-                ->end()
             ->end()
-            ->end();
+            ->scalarNode('page_size')
+                ->defaultValue(250)
+                ->info(
+                    'Determines how many elements are used within every Neo4j batch request.'
+                )
+            ->end()
+            ->scalarNode('use_merge_for_create_statements')
+                ->defaultTrue()
+                ->info(
+                    'If true, new nodes are created with MERGE statements. If not, CREATE is used.'
+                )
+            ->end()
+        ->end()
+        ->end();
 
         return $treeBuilder;
     }

@@ -6,6 +6,7 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
 use ReflectionException;
+use Syndesi\Neo4jSyncBundle\Exception\MissingIdPropertyException;
 use Syndesi\Neo4jSyncBundle\Service\EntityReader;
 use Syndesi\Neo4jSyncBundle\Service\Neo4jClient;
 use Syndesi\Neo4jSyncBundle\Service\Neo4jStatementHelper;
@@ -32,6 +33,7 @@ class DoctrinePreRemoveSubscriber implements EventSubscriber
 
     /**
      * @throws ReflectionException
+     * @throws MissingIdPropertyException
      */
     public function preRemove(LifecycleEventArgs $args)
     {

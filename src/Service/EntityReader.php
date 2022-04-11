@@ -53,6 +53,21 @@ class EntityReader
         return true;
     }
 
+    public function hasEntityClassRelations(string $class): bool
+    {
+        if (!$this->isEntityClassSupported($class)) {
+            throw new UnsupportedEntityException(sprintf('Entity of class %s is not supported.', $class));
+        }
+        foreach ((new ReflectionClass($class))->getAttributes() as $attribute) {
+            $noteAttribute = $attribute->newInstance();
+            if ($noteAttribute instanceof Node) {
+                return count($noteAttribute->getRelations()) > 0;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @throws
      */

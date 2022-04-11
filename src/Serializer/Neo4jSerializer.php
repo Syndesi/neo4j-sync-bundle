@@ -160,18 +160,18 @@ class Neo4jSerializer implements SerializerInterface, ContextAwareNormalizerInte
      * {@inheritdoc}
      */
     public function normalize(mixed $data, string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null|
-    DateTimeInterface|
-    DateInterval|
-    Neo4j\Date|
-    Neo4j\Time|
-    Neo4j\LocalTime|
-    Neo4j\DateTime|
-    Neo4j\DateTimeZoneId|
-    Neo4j\LocalDateTime|
-    Neo4j\Duration|
-    Neo4j\Node|
-    Neo4j\Relationship|
-    Neo4j\Path
+        DateTimeInterface|
+        DateInterval|
+        Neo4j\Date|
+        Neo4j\Time|
+        Neo4j\LocalTime|
+        Neo4j\DateTime|
+        Neo4j\DateTimeZoneId|
+        Neo4j\LocalDateTime|
+        Neo4j\Duration|
+        Neo4j\Node|
+        Neo4j\Relationship|
+        Neo4j\Path
     {
         // If a normalizer supports the given data, use it
         if ($normalizer = $this->getNormalizer($data, $format, $context)) {

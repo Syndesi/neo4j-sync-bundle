@@ -29,17 +29,17 @@ class Neo4jObjectNormalizer implements NormalizerInterface
      * @throws InvalidArgumentException
      */
     public function normalize(mixed $object, string $format = null, array $context = []): DateTimeInterface|
-    DateInterval|
-    Neo4j\Date|
-    Neo4j\Time|
-    Neo4j\LocalTime|
-    Neo4j\DateTime|
-    Neo4j\DateTimeZoneId|
-    Neo4j\LocalDateTime|
-    Neo4j\Duration|
-    Neo4j\Node|
-    Neo4j\Relationship|
-    Neo4j\Path
+        DateInterval|
+        Neo4j\Date|
+        Neo4j\Time|
+        Neo4j\LocalTime|
+        Neo4j\DateTime|
+        Neo4j\DateTimeZoneId|
+        Neo4j\LocalDateTime|
+        Neo4j\Duration|
+        Neo4j\Node|
+        Neo4j\Relationship|
+        Neo4j\Path
     {
         foreach (self::SUPPORTED_CLASSES as $allowedClass) {
             if ($object instanceof $allowedClass) {

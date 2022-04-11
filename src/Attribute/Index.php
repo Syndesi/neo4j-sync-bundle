@@ -9,7 +9,9 @@ class Index
 {
     private ?string $type;
     private ?string $name;
-    /** @var string[] */
+    /**
+     * @var string[]
+     */
     private array $fields;
 
     public function __construct(string $type, string $name, array $fields)

@@ -10,9 +10,7 @@ class SyndesiNeo4jSyncBundle extends Bundle
 {
     public function getContainerExtension(): ?ExtensionInterface
     {
-        if (null === $this->extension) {
-            $this->extension = new SyndesiNeo4jSyncExtension();
-        }
+        $this->extension ??= new SyndesiNeo4jSyncExtension();
 
         return $this->extension;
     }
