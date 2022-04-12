@@ -17,10 +17,31 @@ use Syndesi\Neo4jSyncBundle\Service\Neo4jClientFactory;
 class SyndesiNeo4jSyncExtension extends Extension
 {
     /**
-     * @throws
+     * @throws InvalidConfigurationException
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        /**
+         * @psalm-var array{
+         *  clients: array{
+         *    drivers: array{
+         *      neo4j: array{
+         *        url: ?string,
+         *      },
+         *      bolt: array{
+         *        url: ?string,
+         *      },
+         *      http: array{
+         *        url: ?string,
+         *      },
+         *    },
+         *    default_driver: ?string,
+         *  },
+         *  default_client: ?string,
+         *  page_size: int,
+         *  use_merge_for_create_statements: bool,
+         * }
+         */
         $config = $this->parseConfig($configs, $container);
 
         $this->createClientServices($config, $container);
@@ -49,8 +70,7 @@ class SyndesiNeo4jSyncExtension extends Extension
             $definition = (new Definition(Neo4jClient::class, []))
                 ->setFactory([Neo4jClientFactory::class, 'createClient'])
                 ->addTag('monolog.logger', ['channel' => 'neo4j_sync'])
-                ->addArgument($clientConfig)
-            ;
+                ->addArgument($clientConfig);
             $container->setDefinition($serviceName, $definition);
         }
 
