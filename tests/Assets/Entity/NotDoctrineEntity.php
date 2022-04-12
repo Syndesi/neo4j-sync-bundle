@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Syndesi\Neo4jSyncBundle\Tests\Assets\Entity;
 
 class NotDoctrineEntity {
