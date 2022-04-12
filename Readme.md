@@ -1,101 +1,201 @@
 # Neo4jSyncBundle
 
-Symfony-bundle for syncing [Doctrine](https://github.com/doctrine/orm) entities to a [Neo4j database](https://neo4j.com/).
+Symfony-bundle for syncing [Doctrine](https://github.com/doctrine/orm) entities to a [Neo4j](https://neo4j.com/) database.
 
 It uses the [laudis/neo4j-php-client](https://github.com/neo4j-php/neo4j-php-client) package.
 
-## Features
+## Installation
 
-* Synchronization of normalized Doctrine entities to Neo4j.
+install the package via composer:
 
-## Limitations
+```bash
+composer require syndesi/neo4j-sync-bundle
+```
 
-* Relations are only supported on the owning side.
-* Only one relation per property is permitted.
-* Doctrine's `onClear()`-function is not supported.
-* Indices aren't automatically created.
+Then add a config file in your Symfony project:
 
-## How to use it
+```yml
+# config/packages/neo4j_sync.yaml
+neo4j_sync:
+    clients:
+        default:
+            drivers:
+                bolt:
+                    url: 'bolt://<neo4j-username>:<neo4j-password>@localhost'
+```
 
-First use attributes to mark which entities and properties should be automatically synced:
+## Usage Guide
+
+First [create a doctrine entity class](https://symfony.com/doc/current/doctrine.html#creating-an-entity-class).
+
+After that add the node-attribute at the top of the entity class:
 
 ```php
-<?php
-namespace App\Entity
+// src/Entity/Greeting.php
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Syndesi\Neo4jSyncBundle\Contract\IndexType;
+use Syndesi\Neo4jSyncBundle\Attribute as Neo4jSync;
 
-#[Neo4jSync\Node(label:"Greeting", id:"id")]    // mark this entity as a Node with the label "Greeting"
-                                                // use the property "id" as the identifier
+#[Neo4jSync\Node(
+    label: "Greeting",
+    id: "id",
+    serializationGroup:"neo4j",
+    indices: [
+        new Neo4jSync\Index('greeting_id_index', IndexType::BTREE, ['id']),
+        new Neo4jSync\Index('greeting_name_index', IndexType::TEXT, ['name'])
+    ]
+)]
 #[ORM\Entity]
 class Greeting
 {
-    #[Neo4jSync\Property]        // mark this variable as a property
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue]
+    #[Groups('neo4j')]
     private ?int $id = null;
 
-    #[Neo4jSync\Property]        // mark this variable as a property
     #[ORM\Column]
-    #[Assert\NotBlank]
-    private string $name = '';
+    #[Groups('neo4j')]
+    public string $name = '';
 
     public function getId(): ?int
     {
         return $this->id;
     }
-    
-    public function getName(): string
+}
+```
+
+Then sync the indices with the following command:
+
+```bash
+php bin/console neo4j-sync:index:sync
+```
+
+Now the bundle detects new/updated/deleted entities automatically and syncs them to the Neo4j database autonomously:
+
+```php
+$greeting = new Greeting();
+$greeting->name = 'Demo';
+
+$em->persist($greeting);
+$em->flush();
+```
+
+```cypher
+MATCH (n:Greeting) RETURN n # should return one Greeting node
+```
+
+### Getting a Neo4j Client
+
+```php
+// src/Service/SomeService.php
+namespace App\Service;
+
+use Laudis\Neo4j\Databags\Statement;use Syndesi\Neo4jSyncBundle\Contract\Neo4jClientInterface;
+
+class SomeService
+{
+    private Neo4jClientInterface $client;
+
+    public function __construct(Neo4jClientInterface $client)
     {
-        return $this->name;
+        $this->client = $client;
     }
-    
-    public function setName(string $name): self
+
+    public function useClient(): void
     {
-        $this->name = $name;
-        return $self;
+        // manually add Neo4j statements to the client's pipeline
+        $this->client->addStatement(new Statement('MATCH (n:Greeting) RETURN n', []));
+        
+        // manually flush the client's pipeline
+        $this->client->clear();
+        
+        // return the internal client (laudis/neo4j-php-client)
+        $this->client->getClient();
     }
 }
 ```
 
-Then create new instances and persist them:
+Note: The default client used by autowiring is the first configured client. This can be changed by explicitly changing
+the configuration `neo4j_sync.default_client`.
+
+Also every configured client gets the service alias `neo4j_sync.neo4j_client.<name>`.
+
+### Normalizing Custom Types
+
+You can provide additional normalization providers via tagging:
 
 ```php
+// src/Normalizer/RamseyUuidNormalizer.php
 <?php
 
-$greeting = new Greeting();
-$greeting->setName('Demo name');
+namespace App\Normalizer;
 
-$em->persist($greeting);
-$em->flush($greeting);
+use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+
+/**
+ * @see https://github.com/jeromegamez/ramsey-uuid-normalizer/blob/master/src/Normalizer/UuidNormalizer.php
+ */
+class RamseyUuidNormalizer implements NormalizerInterface
+{
+    public function normalize($object, $format = null, array $context = [])
+    {
+        return $object->toString();
+    }
+
+    public function supportsNormalization($data, $format = null)
+    {
+        return $data instanceof UuidInterface;
+    }
+}
 ```
 
-The bundle automatically detects the new entity and syncs it to Neo4j. It should now be queryable:
+```php
+// src/Service/RamesUuidNormalizerProvider.php
+<?php
+namespace App\Service;
 
-```cypher
-MATCH (n) RETURN n
+use App\Normalizer\RamseyUuidNormalizer;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Syndesi\Neo4jSyncBundle\Contract\NormalizerProviderInterface;
+
+class RamseyUuidNormalizerProvider implements NormalizerProviderInterface {
+
+    public function getNormalizer(): NormalizerInterface
+    {
+        return new RamseyUuidNormalizer();
+    }
+}
 ```
 
-Result:
+```yml
+# config/services.yaml
 
-![](./doc/assets/Readme%20Screenshot%20Greeting%20Node.png)
+services:
+    App\Service\RamseyUuidNormalizerProvider:
+        tags:
+            - name: 'neo4j_sync_normalizer_provider'
+              priority: 128
+```
 
-For more advanced configuration check out the following docs:
+The priority defines the order when the normalizer is used. Higher priorities are used first, lower last.
 
-- Database connections
-- Entity serialization
-- Relationships
+The default normalizers are:
+
+- Neo4jObjectNormalizer, 256
+- ObjectNormalizer, 64
 
 ## Commands
 
 This bundle provides several maintenance commands:
 
 ```bash
-php bin/console neo4j-sync:prune            # clears the Neo4j database
-php bin/console neo4j-sync:load             # loads all Doctrine entities into the Neo4j database
-                                            # useful if Neo4j database must be reset
-php bin/console neo4j-sync:list:connections # lists all available Neo4j database connections
-php bin/console neo4j-sync:list:entities    # lists all tracked entities
-php bin/console neo4j-sync:stats            # lists some statistics
+php bin/console neo4j-sync:db:delete  # deletes the content of the Neo4j database, optionally including indices
+php bin/console neo4j-sync:db:sync    # syncs all entities to the Neo4j database. use --create for faster **initial** sync
+php bin/console neo4j-sync:index:list # lists all configured indices and additional indices from the N4oej database itself
+php bin/console neo4j-sync:index:sync # syncs all configured indices by first deleting and then creating them
 
 php bin/console config:dump-reference neo4j_sync
 php bin/console debug:config neo4j_sync
