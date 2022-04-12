@@ -1,13 +1,6 @@
 <?php
 
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+declare(strict_types=1);
 
 namespace Syndesi\Neo4jSyncBundle\Serializer;
 
@@ -37,21 +30,6 @@ use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Syndesi\Neo4jSyncBundle\Contract\Neo4jSerializerInterface;
 
-/**
- * Serializer serializes and deserializes data.
- *
- * objects are turned into arrays by normalizers.
- * arrays are turned into various output formats by encoders.
- *
- *     $serializer->serialize($obj, 'xml')
- *     $serializer->decode($data, 'xml')
- *     $serializer->denormalize($data, 'Class', 'xml')
- *
- * @author Jordi Boggiano <j.boggiano@seld.be>
- * @author Johannes M. Schmitt <schmittjoh@gmail.com>
- * @author Lukas Kahwe Smith <smith@pooteeweet.org>
- * @author Kévin Dunglas <dunglas@gmail.com>
- */
 class Neo4jSerializer implements SerializerInterface, ContextAwareNormalizerInterface, ContextAwareDenormalizerInterface, ContextAwareEncoderInterface, ContextAwareDecoderInterface, Neo4jSerializerInterface
 {
     /**
