@@ -41,8 +41,8 @@ class Neo4jObjectNormalizer implements NormalizerInterface
         Neo4j\Relationship|
         Neo4j\Path
     {
-        foreach (self::SUPPORTED_CLASSES as $allowedClass) {
-            if ($object instanceof $allowedClass) {
+        foreach (self::SUPPORTED_CLASSES as $supportedClass) {
+            if ($object instanceof $supportedClass) {
                 return $object;
             }
         }
