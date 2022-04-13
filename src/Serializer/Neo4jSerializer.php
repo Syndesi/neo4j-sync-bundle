@@ -30,7 +30,7 @@ use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Syndesi\Neo4jSyncBundle\Contract\Neo4jSerializerInterface;
 
-class Neo4jSerializer implements SerializerInterface, ContextAwareNormalizerInterface, ContextAwareDenormalizerInterface, ContextAwareEncoderInterface, ContextAwareDecoderInterface, Neo4jSerializerInterface
+final class Neo4jSerializer implements SerializerInterface, ContextAwareNormalizerInterface, ContextAwareDenormalizerInterface, ContextAwareEncoderInterface, ContextAwareDecoderInterface, Neo4jSerializerInterface
 {
     /**
      * Flag to control whether an empty array should be transformed to an

@@ -16,22 +16,15 @@ use Syndesi\Neo4jSyncBundle\Contract\Neo4jClientInterface;
 use Syndesi\Neo4jSyncBundle\Service\EntityReader;
 use Syndesi\Neo4jSyncBundle\Service\Neo4jStatementHelper;
 
-class IndexSyncCommand extends Command
+final class IndexSyncCommand extends Command
 {
     protected static $defaultName = 'neo4j-sync:index:sync';
 
-    private EntityManagerInterface $em;
-    private Neo4jClientInterface $client;
-    private EntityReader $entityReader;
-
     public function __construct(
-        EntityManagerInterface $em,
-        Neo4jClientInterface $client,
-        EntityReader $entityReader
+        private EntityManagerInterface $em,
+        private Neo4jClientInterface $client,
+        private EntityReader $entityReader
     ) {
-        $this->em = $em;
-        $this->client = $client;
-        $this->entityReader = $entityReader;
         parent::__construct();
     }
 
