@@ -24,7 +24,7 @@ class DoctrinePostFlushSubscriber implements EventSubscriber
         ];
     }
 
-    public function postFlush()
+    public function postFlush(): void
     {
         $this->client->flush();
     }

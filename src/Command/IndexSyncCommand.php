@@ -22,18 +22,15 @@ class IndexSyncCommand extends Command
 
     private EntityManagerInterface $em;
     private Neo4jClientInterface $client;
-    private Neo4jStatementHelper $neo4jStatementHelper;
     private EntityReader $entityReader;
 
     public function __construct(
         EntityManagerInterface $em,
         Neo4jClientInterface $client,
-        Neo4jStatementHelper $neo4jStatementHelper,
         EntityReader $entityReader
     ) {
         $this->em = $em;
         $this->client = $client;
-        $this->neo4jStatementHelper = $neo4jStatementHelper;
         $this->entityReader = $entityReader;
         parent::__construct();
     }

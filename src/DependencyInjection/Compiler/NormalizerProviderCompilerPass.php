@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class NormalizerProviderCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         // todo are the references already sorted, due to priority?
         $definition = $container->getDefinition('neo4j_sync.neo4j_normalizer');

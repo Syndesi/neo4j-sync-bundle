@@ -19,7 +19,7 @@ class SyndesiNeo4jSyncBundle extends Bundle
         return $this->extension;
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new NormalizerProviderCompilerPass());
     }

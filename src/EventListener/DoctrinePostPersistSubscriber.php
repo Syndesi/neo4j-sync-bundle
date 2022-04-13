@@ -38,7 +38,7 @@ class DoctrinePostPersistSubscriber implements EventSubscriber
     /**
      * @throws ReflectionException
      */
-    public function postPersist(LifecycleEventArgs $args)
+    public function postPersist(LifecycleEventArgs $args): void
     {
         $entity = $args->getEntity();
         if (!$this->entityReader->isEntitySupported($entity)) {

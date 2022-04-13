@@ -40,7 +40,7 @@ class DoctrinePreRemoveSubscriber implements EventSubscriber
      * @throws ReflectionException
      * @throws MissingIdPropertyException
      */
-    public function preRemove(LifecycleEventArgs $args)
+    public function preRemove(LifecycleEventArgs $args): void
     {
         $entity = $args->getEntity();
         if (!$this->entityReader->isEntitySupported($entity)) {

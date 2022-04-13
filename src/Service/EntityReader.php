@@ -14,11 +14,9 @@ use Syndesi\Neo4jSyncBundle\Object\EntityObject;
 
 class EntityReader
 {
-    private Neo4jNormalizer $normalizer;
-
-    public function __construct(Neo4jNormalizer $normalizer)
-    {
-        $this->normalizer = $normalizer;
+    public function __construct(
+        private Neo4jNormalizer $normalizer,
+    ) {
     }
 
     /**

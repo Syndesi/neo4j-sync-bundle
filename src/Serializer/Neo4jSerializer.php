@@ -55,7 +55,6 @@ class Neo4jSerializer implements SerializerInterface, ContextAwareNormalizerInte
      */
     protected $decoder;
 
-    private $normalizers = [];
     private $denormalizerCache = [];
     private $normalizerCache = [];
 
@@ -63,7 +62,7 @@ class Neo4jSerializer implements SerializerInterface, ContextAwareNormalizerInte
      * @param array<NormalizerInterface|DenormalizerInterface> $normalizers
      * @param array<EncoderInterface|DecoderInterface>         $encoders
      */
-    public function __construct(array $normalizers = [], array $encoders = [])
+    public function __construct(private array $normalizers = [], array $encoders = [])
     {
         foreach ($normalizers as $normalizer) {
             if ($normalizer instanceof SerializerAwareInterface) {
@@ -82,7 +81,6 @@ class Neo4jSerializer implements SerializerInterface, ContextAwareNormalizerInte
                 throw new InvalidArgumentException(sprintf('The class "%s" neither implements "%s" nor "%s".', get_debug_type($normalizer), NormalizerInterface::class, DenormalizerInterface::class));
             }
         }
-        $this->normalizers = $normalizers;
 
         $decoders = [];
         $realEncoders = [];

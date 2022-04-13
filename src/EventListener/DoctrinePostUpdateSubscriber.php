@@ -39,7 +39,7 @@ class DoctrinePostUpdateSubscriber implements EventSubscriber
     /**
      * @throws ReflectionException
      */
-    public function postUpdate(LifecycleEventArgs $args)
+    public function postUpdate(LifecycleEventArgs $args): void
     {
         $entity = $args->getEntity();
         if (!$this->entityReader->isEntitySupported($entity)) {

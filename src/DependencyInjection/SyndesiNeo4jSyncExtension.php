@@ -19,7 +19,7 @@ class SyndesiNeo4jSyncExtension extends Extension
     /**
      * @throws InvalidConfigurationException
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         /**
          * @psalm-var array{
@@ -62,7 +62,7 @@ class SyndesiNeo4jSyncExtension extends Extension
         return $this->processConfiguration($configuration, $configs);
     }
 
-    private function createClientServices(array $config, ContainerBuilder $container)
+    private function createClientServices(array $config, ContainerBuilder $container): void
     {
         // create client services
         foreach ($config['clients'] as $name => $clientConfig) {

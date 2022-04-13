@@ -10,18 +10,11 @@ use Syndesi\Neo4jSyncBundle\Contract\IndexType;
 #[Attribute]
 class Index
 {
-    private ?string $name;
-    private ?IndexType $type;
-    /**
-     * @var string[]
-     */
-    private array $fields;
-
-    public function __construct(string $name, IndexType $type, array $fields)
-    {
-        $this->name = $name;
-        $this->type = $type;
-        $this->fields = $fields;
+    public function __construct(
+        private string $name,
+        private IndexType $type,
+        private array $fields,
+    ) {
     }
 
     public function getName(): ?string

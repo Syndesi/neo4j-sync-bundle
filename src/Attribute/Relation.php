@@ -9,23 +9,18 @@ use Attribute;
 #[Attribute]
 class Relation
 {
-    private ?string $label;
-    private ?string $targetLabel;
-    private ?string $targetProperty;
-    private ?string $targetValue;
-
     /**
      * @param string|null $label          Label of the relationship
      * @param string|null $targetLabel    Label of the target/parent node
      * @param string|null $targetProperty Name of the target/parent node's id property
      * @param string|null $targetValue    Name of the serialized entities value which represents the targets/parents id
      */
-    public function __construct(?string $label = null, ?string $targetLabel = null, ?string $targetProperty = null, ?string $targetValue = null)
-    {
-        $this->label = $label;
-        $this->targetLabel = $targetLabel;
-        $this->targetProperty = $targetProperty;
-        $this->targetValue = $targetValue;
+    public function __construct(
+        private ?string $label = null,
+        private ?string $targetLabel = null,
+        private ?string $targetProperty = null,
+        private ?string $targetValue = null,
+    ) {
     }
 
     public function getLabel(): ?string
