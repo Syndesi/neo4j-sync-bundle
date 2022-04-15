@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Syndesi\Neo4jSyncBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,28 +16,17 @@ use Syndesi\Neo4jSyncBundle\Contract\Neo4jClientInterface;
 use Syndesi\Neo4jSyncBundle\Service\EntityReader;
 use Syndesi\Neo4jSyncBundle\Service\Neo4jStatementHelper;
 
-class DatabaseSyncCommand extends Command
+final class DatabaseSyncCommand extends Command
 {
     protected static $defaultName = 'neo4j-sync:db:sync';
 
-    private EntityManagerInterface $em;
-    private Neo4jClientInterface $client;
-    private Neo4jStatementHelper $neo4jStatementHelper;
-    private EntityReader $entityReader;
-    private int $pageSize;
-
     public function __construct(
-        EntityManagerInterface $em,
-        Neo4jClientInterface $client,
-        Neo4jStatementHelper $neo4jStatementHelper,
-        EntityReader $entityReader,
-        int $pageSize
+        private EntityManagerInterface $em,
+        private Neo4jClientInterface $client,
+        private Neo4jStatementHelper $neo4jStatementHelper,
+        private EntityReader $entityReader,
+        private int $pageSize
     ) {
-        $this->em = $em;
-        $this->client = $client;
-        $this->neo4jStatementHelper = $neo4jStatementHelper;
-        $this->entityReader = $entityReader;
-        $this->pageSize = $pageSize;
         parent::__construct();
     }
 
@@ -94,17 +84,10 @@ class DatabaseSyncCommand extends Command
                     min(($i + 1) * $this->pageSize, $count),
                     $count
                 ));
-                $entities = $entityRepository
-                    ->createQueryBuilder('n')
-                    ->setFirstResult($i * $this->pageSize)
-                    ->setMaxResults($this->pageSize)
-                    ->getQuery()
-                    ->getResult();
-                if ($input->getOption('create')) {
-                    $this->client->addStatements($this->neo4jStatementHelper->getNodeStatementsForEntityList($entities, CreateType::CREATE));
-                } else {
-                    $this->client->addStatements($this->neo4jStatementHelper->getNodeStatementsForEntityList($entities, CreateType::MERGE));
-                }
+                $entities = $this->getEntities($entityRepository, $i);
+
+                $this->addClientStatements($input->getOption('create'), $entities);
+
                 $this->client->flush();
                 ++$i;
             }
@@ -131,17 +114,10 @@ class DatabaseSyncCommand extends Command
                     min(($i + 1) * $this->pageSize, $count),
                     $count
                 ));
-                $entities = $entityRepository
-                    ->createQueryBuilder('n')
-                    ->setFirstResult($i * $this->pageSize)
-                    ->setMaxResults($this->pageSize)
-                    ->getQuery()
-                    ->getResult();
-                if ($input->getOption('create')) {
-                    $this->client->addStatements($this->neo4jStatementHelper->getRelationStatementsForEntityList($entities, CreateType::CREATE));
-                } else {
-                    $this->client->addStatements($this->neo4jStatementHelper->getRelationStatementsForEntityList($entities, CreateType::MERGE));
-                }
+                $entities = $this->getEntities($entityRepository);
+
+                $this->addClientStatements($input->getOption('create'), $entities);
+
                 $this->client->flush();
                 ++$i;
             }
@@ -151,5 +127,27 @@ class DatabaseSyncCommand extends Command
         $io->success('Finished');
 
         return Command::SUCCESS;
+    }
+
+    private function addClientStatements(mixed $option, mixed $entities): void
+    {
+        if (null !== $option) {
+            $this->client->addStatements($this->neo4jStatementHelper->getNodeStatementsForEntityList($entities, CreateType::CREATE));
+
+            return;
+        }
+
+        $this->client->addStatements($this->neo4jStatementHelper->getNodeStatementsForEntityList($entities, CreateType::MERGE));
+    }
+
+    private function getEntities(\Doctrine\ORM\EntityRepository|ObjectRepository $entityRepository, int $i): mixed
+    {
+        // TODO The Repository should have a method to handle it.
+        return $entityRepository
+            ->createQueryBuilder('n')
+            ->setFirstResult($i * $this->pageSize)
+            ->setMaxResults($this->pageSize)
+            ->getQuery()
+            ->getResult();
     }
 }

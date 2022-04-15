@@ -10,7 +10,7 @@ use Laudis\Neo4j\Types as Neo4j;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class Neo4jObjectNormalizer implements NormalizerInterface
+final class Neo4jObjectNormalizer implements NormalizerInterface
 {
     public const SUPPORTED_CLASSES = [
         DateTimeInterface::class,
@@ -30,7 +30,11 @@ class Neo4jObjectNormalizer implements NormalizerInterface
     /**
      * @throws InvalidArgumentException
      */
-    public function normalize(mixed $object, string $format = null, array $context = []): DateTimeInterface|
+    public function normalize(
+        mixed $object,
+        string $format = null,
+        array $context = []
+    ): DateTimeInterface|
         DateInterval|
         Neo4j\Date|
         Neo4j\Time|
@@ -41,8 +45,7 @@ class Neo4jObjectNormalizer implements NormalizerInterface
         Neo4j\Duration|
         Neo4j\Node|
         Neo4j\Relationship|
-        Neo4j\Path
-    {
+        Neo4j\Path {
         foreach (self::SUPPORTED_CLASSES as $supportedClass) {
             if ($object instanceof $supportedClass) {
                 return $object;

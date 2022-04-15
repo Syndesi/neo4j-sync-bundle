@@ -9,18 +9,6 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS)]
 class Node
 {
-    private ?string $label;
-    private ?string $id;
-    private ?string $serializationGroup;
-    /**
-     * @var Relation[]
-     */
-    private array $relations;
-    /**
-     * @var Index[]
-     */
-    private array $indices;
-
     /**
      * @param string $label              Label of the Neo4j node. Camel-case, beginning with an upper-case character, e.g. "VehicleOwner".
      * @param string $id                 Key of the serialized property which acts as the primary identifier, usually "id". Must be unique for the Neo4j node label.
@@ -28,13 +16,13 @@ class Node
      * @param array  $relations          Array of relation attributes. **Note**: Only use relations on the owning side, see readme.
      * @param array  $indices            Array of index attributes. **Note**: By default no index is created, please create at least one for the identifier.
      */
-    public function __construct(string $label, string $id, string $serializationGroup = 'neo4j', array $relations = [], array $indices = [])
-    {
-        $this->label = $label;
-        $this->id = $id;
-        $this->serializationGroup = $serializationGroup;
-        $this->relations = $relations;
-        $this->indices = $indices;
+    public function __construct(
+        private string $label,
+        private string $id,
+        private string $serializationGroup = 'neo4j',
+        private array $relations = [],
+        private array $indices = [],
+    ) {
     }
 
     public function getLabel(): ?string

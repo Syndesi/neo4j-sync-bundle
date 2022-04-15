@@ -15,18 +15,11 @@ use Syndesi\Neo4jSyncBundle\Service\Neo4jStatementHelper;
 
 class DoctrinePostUpdateSubscriber implements EventSubscriber
 {
-    private Neo4jClientInterface $client;
-    private EntityReader $entityReader;
-    private Neo4jStatementHelper $statementHelper;
-
     public function __construct(
-        Neo4jClientInterface $client,
-        EntityReader $entityReader,
-        Neo4jStatementHelper $statementHelper
+        private Neo4jClientInterface $client,
+        private EntityReader $entityReader,
+        private Neo4jStatementHelper $statementHelper
     ) {
-        $this->client = $client;
-        $this->entityReader = $entityReader;
-        $this->statementHelper = $statementHelper;
     }
 
     public function getSubscribedEvents(): array
@@ -39,7 +32,7 @@ class DoctrinePostUpdateSubscriber implements EventSubscriber
     /**
      * @throws ReflectionException
      */
-    public function postUpdate(LifecycleEventArgs $args)
+    public function postUpdate(LifecycleEventArgs $args): void
     {
         $entity = $args->getEntity();
         if (!$this->entityReader->isEntitySupported($entity)) {

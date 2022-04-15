@@ -11,17 +11,15 @@ use Syndesi\Neo4jSyncBundle\Contract\Neo4jClientInterface;
 
 class Neo4jClient implements Neo4jClientInterface
 {
-    private ClientInterface $client;
-    private LoggerInterface $logger;
     /**
      * @var Statement[]
      */
     private array $statements = [];
 
-    public function __construct(ClientInterface $client, LoggerInterface $logger)
-    {
-        $this->client = $client;
-        $this->logger = $logger;
+    public function __construct(
+        private ClientInterface $client,
+        private LoggerInterface $logger,
+    ) {
     }
 
     public function flush(bool $concurrently = false): self

@@ -12,15 +12,11 @@ use Syndesi\Neo4jSyncBundle\Object\EntityObject;
 
 class Neo4jStatementHelper
 {
-    private EntityReader $entityReader;
-    private int $pageSize;
-    private CreateType $defaultCreateType;
-
-    public function __construct(EntityReader $entityReader, int $pageSize, CreateType $defaultCreateType)
-    {
-        $this->entityReader = $entityReader;
-        $this->pageSize = $pageSize;
-        $this->defaultCreateType = $defaultCreateType;
+    public function __construct(
+        private EntityReader $entityReader,
+        private int $pageSize,
+        private CreateType $defaultCreateType,
+    ) {
     }
 
     /**

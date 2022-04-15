@@ -14,11 +14,9 @@ use Syndesi\Neo4jSyncBundle\Object\EntityObject;
 
 class EntityReader
 {
-    private Neo4jNormalizer $normalizer;
-
-    public function __construct(Neo4jNormalizer $normalizer)
-    {
-        $this->normalizer = $normalizer;
+    public function __construct(
+        private Neo4jNormalizer $normalizer,
+    ) {
     }
 
     /**
@@ -34,7 +32,7 @@ class EntityReader
      */
     public function isEntityClassSupported(string $class): bool
     {
-        $reflectionClass = new ReflectionClass($class);
+        $reflectionClass = $this->getReflectionClass($class);
 
         $isDoctrineEntity = false;
         $isNeo4jSyncEntity = false;
@@ -60,7 +58,9 @@ class EntityReader
         if (!$this->isEntityClassSupported($class)) {
             throw new UnsupportedEntityException(sprintf('Entity of class %s is not supported.', $class));
         }
-        foreach ((new ReflectionClass($class))->getAttributes() as $attribute) {
+
+        $attributes = $this->getReflectionClass($class)->getAttributes();
+        foreach ($attributes as $attribute) {
             $noteAttribute = $attribute->newInstance();
             if ($noteAttribute instanceof Node) {
                 return count($noteAttribute->getRelations()) > 0;
@@ -75,7 +75,9 @@ class EntityReader
         if (!$this->isEntityClassSupported($class)) {
             throw new UnsupportedEntityException(sprintf('Entity of class %s is not supported.', $class));
         }
-        foreach ((new ReflectionClass($class))->getAttributes() as $attribute) {
+        $attributes = $this->getReflectionClass($class)->getAttributes();
+
+        foreach ($attributes as $attribute) {
             $nodeAttribute = $attribute->newInstance();
             if ($nodeAttribute instanceof Node) {
                 return count($nodeAttribute->getIndices()) > 0;
@@ -86,7 +88,7 @@ class EntityReader
     }
 
     /**
-     * @throws
+     * @throws UnsupportedEntityException | Exception
      */
     public function getEntityObject(object $entity): EntityObject
     {
@@ -98,7 +100,10 @@ class EntityReader
         $entityObject = new EntityObject();
         $entityObject->setEntityClass($class);
         $nodeAttributeCount = 0;
-        foreach ((new ReflectionClass($class))->getAttributes() as $attribute) {
+
+        $attributes = $this->getReflectionClass($class)->getAttributes();
+
+        foreach ($attributes as $attribute) {
             if ($attribute->newInstance() instanceof Node) {
                 if ($nodeAttributeCount >= 1) {
                     throw new Exception('Only one node attribute per class is supported.');
@@ -116,16 +121,33 @@ class EntityReader
                 $entity,
                 null,
                 [
-                    'groups' => $entityObject->getNodeAttribute()->getSerializationGroup(),
+                    'groups' => $entityObject->getNodeAttribute()?->getSerializationGroup(),
                 ]
             )
         );
         $properties = $entityObject->getData();
-        foreach ($entityObject->getNodeAttribute()->getRelations() as $relation) {
-            unset($properties[$relation->getTargetValue()]);
+
+        $nodeAttribute = $entityObject->getNodeAttribute();
+
+        if ($nodeAttribute !== null) {
+            foreach ($nodeAttribute->getRelations() as $relation) {
+                $targetValue = $relation->getTargetValue();
+                if ($targetValue !== null && isset($properties[$targetValue])){
+                    unset($properties[$targetValue]);
+                }
+            }
         }
+
         $entityObject->setProperties($properties);
 
         return $entityObject;
+    }
+
+    private function getReflectionClass(string $class): ReflectionClass {
+        if(!class_exists($class)) {
+            throw new Exception(sprintf('Class %d does not exists', $class));
+        }
+
+        return new ReflectionClass($class);
     }
 }
