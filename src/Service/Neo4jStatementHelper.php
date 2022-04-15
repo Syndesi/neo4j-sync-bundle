@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Syndesi\Neo4jSyncBundle\Service;
 
 use Laudis\Neo4j\Databags\Statement;
@@ -106,21 +108,23 @@ class Neo4jStatementHelper
             }
 
             foreach ($firstEntityObject->getNodeAttribute()->getRelations() as $relation) {
-                $statements[] = new Statement(sprintf(
-                    "UNWIND \$batch as row\n".
+                $statements[] = new Statement(
+                    sprintf(
+                        "UNWIND \$batch as row\n".
                     "MATCH (child:%s {%s: row.childId})\n".
                     "MATCH (parent:%s {%s: row.parentId})\n".
                     '%s (child)-[relation:%s]->(parent)',
-                    $firstEntityObject->getNodeAttribute()->getLabel(),
-                    $this->getIdPropertyName($entityObject),
-                    $relation->getTargetLabel(),
-                    $relation->getTargetProperty(),
-                    $createType->value,
-                    $relation->getLabel()
-                ),
-                [
+                        $firstEntityObject->getNodeAttribute()->getLabel(),
+                        $this->getIdPropertyName($entityObject),
+                        $relation->getTargetLabel(),
+                        $relation->getTargetProperty(),
+                        $createType->value,
+                        $relation->getLabel()
+                    ),
+                    [
                     'batch' => $batchData[$relation->getLabel()],
-                ]);
+                ]
+                );
             }
         }
 

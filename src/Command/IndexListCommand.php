@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Syndesi\Neo4jSyncBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -127,7 +129,8 @@ class IndexListCommand extends Command
     private function getAllNeo4jIndices(): array
     {
         $result = $this->client->getClient()->runStatement(new Statement(
-            'SHOW INDEXES WHERE entityType = \'NODE\'', []
+            'SHOW INDEXES WHERE entityType = \'NODE\'',
+            []
         ));
         /**
          * @var $elements CypherMap[]

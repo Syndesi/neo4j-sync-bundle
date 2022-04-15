@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Syndesi\Neo4jSyncBundle\Object;
 
 use Syndesi\Neo4jSyncBundle\Attribute\Node;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Syndesi\Neo4jSyncBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;

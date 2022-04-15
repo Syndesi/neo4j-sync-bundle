@@ -49,6 +49,6 @@
     "scripts": {
         "test": "php ./vendor/phpunit/phpunit/phpunit",
         "cs:list": "php vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --dry-run ./src",
-        "cs:fix": "php vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix ./src"
+        "cs:fix": "php vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix ./src --allow-risky=yes"
     }
 }
