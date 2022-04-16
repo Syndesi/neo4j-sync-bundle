@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Syndesi\Neo4jSyncBundle\ValueObject;
 
+use Stringable;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedNodeLabelException;
 
-class NodeLabel
+class NodeLabel implements Stringable
 {
     public const NODE_LABEL_REGEX = '([A-Z][a-z0-9]+){2,}';
 
@@ -22,6 +23,11 @@ class NodeLabel
     }
 
     public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    public function __toString()
     {
         return $this->label;
     }

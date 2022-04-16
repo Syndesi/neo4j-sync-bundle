@@ -6,6 +6,7 @@ namespace Syndesi\Neo4jSyncBundle\ValueObject;
 
 use Syndesi\Neo4jSyncBundle\Exception\DuplicatePropertiesException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingIdPropertyException;
+use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyException;
 
 class Node
 {
@@ -39,9 +40,28 @@ class Node
         return $this->label;
     }
 
+    /**
+     * @return Property[]
+     */
     public function getProperties(): array
     {
         return $this->properties;
+    }
+
+    /**
+     * @throws MissingPropertyException
+     */
+    public function getProperty(string $name): mixed
+    {
+        foreach ($this->properties as $property) {
+            /**
+             * @var Property $property
+             */
+            if ($property->getName() === $name) {
+                return $property->getValue();
+            }
+        }
+        throw new MissingPropertyException(sprintf("Unable to find property with name '%s'.", $name));
     }
 
     public function getIdentifier(): Property
@@ -49,6 +69,9 @@ class Node
         return $this->identifier;
     }
 
+    /**
+     * @return Relation[]
+     */
     public function getRelations(): array
     {
         return $this->relations;

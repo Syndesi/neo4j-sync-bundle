@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Syndesi\Neo4jSyncBundle\ValueObject;
 
+use Stringable;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedRelationLabelException;
 
-class RelationLabel
+class RelationLabel implements Stringable
 {
     public const RELATION_LABEL_REGEX = '^[A-Z]+(_[A-Z]+)*$';
 
@@ -22,6 +23,11 @@ class RelationLabel
     }
 
     public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    public function __toString()
     {
         return $this->label;
     }

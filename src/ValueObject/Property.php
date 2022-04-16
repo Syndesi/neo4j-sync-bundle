@@ -15,7 +15,7 @@ class Property
      */
     public function __construct(
         private readonly string $name,
-        private readonly mixed $value
+        private readonly mixed $value = null
     ) {
         if (!preg_match(self::PROPERTY_NAME_REGEX, $name)) {
             throw new UnsupportedPropertyNameException(sprintf("Property name '%s' does not match Regex '%s'.", $name, self::PROPERTY_NAME_REGEX));
