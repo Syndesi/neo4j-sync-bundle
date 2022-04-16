@@ -1,7 +1,6 @@
 {
     "name": "syndesi/neo4j-sync-bundle",
     "description": "Syncs Doctrine entities to a Neo4j database",
-    "version": "1.0.0-RC1",
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
