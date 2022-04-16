@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Syndesi\Neo4jSyncBundle\DependencyInjection;
 
+use Exception;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -25,6 +26,9 @@ class SyndesiNeo4jSyncExtension extends Extension
         $this->createClientServices($config, $container);
     }
 
+    /**
+     * @throws Exception
+     */
     private function parseConfig(array $configs, ContainerBuilder $container): array
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
@@ -34,6 +38,9 @@ class SyndesiNeo4jSyncExtension extends Extension
         return $this->processConfiguration($configuration, $configs);
     }
 
+    /**
+     * @throws InvalidConfigurationException
+     */
     private function createClientServices(array $config, ContainerBuilder $container)
     {
         // create client services

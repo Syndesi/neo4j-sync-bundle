@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Syndesi\Neo4jSyncBundle\Contract\Neo4jSerializerInterface;
 use Syndesi\Neo4jSyncBundle\Contract\NodePropertiesProviderInterface;
+use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
 use Syndesi\Neo4jSyncBundle\Normalizer\Neo4jObjectNormalizer;
 use Syndesi\Neo4jSyncBundle\Serializer\Neo4jSerializer;
 use Syndesi\Neo4jSyncBundle\ValueObject\Property;
@@ -30,9 +31,11 @@ class SerializerNodePropertiesProvider implements NodePropertiesProviderInterfac
     }
 
     /**
-     * @throws ExceptionInterface
-     *
      * @return Property[]
+     *
+     * @throws UnsupportedPropertyNameException
+     * @throws ExceptionInterface
+     * @throws UnsupportedPropertyNameException
      */
     public function getNodeProperties(object $entity): array
     {

@@ -36,7 +36,7 @@ class Neo4jClientFactory
         if (null !== $config['default_driver']) {
             $defaultDriver = $config['default_driver'];
             if (!array_key_exists($defaultDriver, $config['drivers'])) {
-                throw new InvalidConfigurationException(sprintf("Did not found default driver with name '%s' under configured drivers", $driver));
+                throw new InvalidConfigurationException(sprintf("Did not found default driver with name '%s' under configured drivers", $config['default_driver']));
             }
         }
         $clientBuilder = $clientBuilder->withDefaultDriver($defaultDriver);

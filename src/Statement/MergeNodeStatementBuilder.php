@@ -18,7 +18,7 @@ class MergeNodeStatementBuilder implements NodeStatementBuilderInterface
     {
         $propertiesString = [];
         foreach ($properties as $property) {
-            $propertiesString[] = sprintf('%s: %s', $property->getName(), $property->getName());
+            $propertiesString[] = sprintf('%s: $%s', $property->getName(), $property->getName());
         }
 
         return implode(', ', $propertiesString);

@@ -9,15 +9,22 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
 use ReflectionException;
 use Syndesi\Neo4jSyncBundle\Contract\Neo4jClientInterface;
+use Syndesi\Neo4jSyncBundle\Contract\NodeAttributeProviderInterface;
+use Syndesi\Neo4jSyncBundle\Provider\NodeAttributeProvider;
+use Syndesi\Neo4jSyncBundle\Statement\MergeNodeStatementBuilder;
 
 class DoctrinePostUpdateSubscriber implements EventSubscriber
 {
     private Neo4jClientInterface $client;
+    private NodeAttributeProviderInterface $nodeAttributeProvider;
+    private MergeNodeStatementBuilder $mergeNodeStatementBuilder;
 
     public function __construct(
         Neo4jClientInterface $client
     ) {
         $this->client = $client;
+        $this->nodeAttributeProvider = new NodeAttributeProvider();
+        $this->mergeNodeStatementBuilder = new MergeNodeStatementBuilder();
     }
 
     public function getSubscribedEvents(): array
@@ -33,12 +40,14 @@ class DoctrinePostUpdateSubscriber implements EventSubscriber
     public function postUpdate(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-//        if (!$this->entityReader->isEntitySupported($entity)) {
-//            return;
-//        }
-//        $this->client->addStatements([
-//            ...$this->statementHelper->getNodeStatements($entity, CreateType::MERGE),
-//            ...$this->statementHelper->getRelationStatements($entity, CreateType::MERGE),
-//        ]);
+        $nodeAttribute = $this->nodeAttributeProvider->getNodeAttribute($entity);
+        if (!$nodeAttribute) {
+            return;
+        }
+
+        $node = $nodeAttribute->getNode($entity);
+        $this->client->addStatements([
+            ...$this->mergeNodeStatementBuilder->getStatements($node),
+        ]);
     }
 }
