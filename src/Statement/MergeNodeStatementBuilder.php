@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Syndesi\Neo4jSyncBundle\ValueObject;
+namespace Syndesi\Neo4jSyncBundle\Statement;
 
 use Laudis\Neo4j\Databags\Statement;
 use Syndesi\Neo4jSyncBundle\Contract\NodeStatementBuilderInterface;
+use Syndesi\Neo4jSyncBundle\ValueObject\Node;
+use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 
 class MergeNodeStatementBuilder implements NodeStatementBuilderInterface
 {

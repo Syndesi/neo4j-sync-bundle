@@ -31,7 +31,7 @@ class Node
             throw new DuplicatePropertiesException('Node require each property to have an unique name.');
         }
         if (!in_array($identifier->getName(), $propertyNames)) {
-            throw new MissingIdPropertyException(sprintf("Node has identifier with name '%s', but it is not part of its properties.", $identifier->getName()));
+            throw new MissingIdPropertyException(sprintf("Node has identifier with name '%s', but it is not part of its properties.\n".'If it is a Doctrine entity, was it yet persisted and flushed?', $identifier->getName()));
         }
     }
 

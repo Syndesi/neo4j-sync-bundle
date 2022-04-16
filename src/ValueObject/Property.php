@@ -8,7 +8,7 @@ use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
 
 class Property
 {
-    public const PROPERTY_NAME_REGEX = '^[a-z][a-zA-Z0-9_]+$';
+    public const PROPERTY_NAME_REGEX = '/^[a-z][a-zA-Z0-9_]+$/';
 
     /**
      * @throws UnsupportedPropertyNameException

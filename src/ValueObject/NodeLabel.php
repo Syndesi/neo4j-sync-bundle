@@ -9,7 +9,7 @@ use Syndesi\Neo4jSyncBundle\Exception\UnsupportedNodeLabelException;
 
 class NodeLabel implements Stringable
 {
-    public const NODE_LABEL_REGEX = '([A-Z][a-z0-9]+){2,}';
+    public const NODE_LABEL_REGEX = '/^[A-Z][a-zA-Z0-9]*$/';
 
     /**
      * @throws UnsupportedNodeLabelException

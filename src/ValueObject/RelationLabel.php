@@ -9,7 +9,7 @@ use Syndesi\Neo4jSyncBundle\Exception\UnsupportedRelationLabelException;
 
 class RelationLabel implements Stringable
 {
-    public const RELATION_LABEL_REGEX = '^[A-Z]+(_[A-Z]+)*$';
+    public const RELATION_LABEL_REGEX = '/^[A-Z]+(_[A-Z]+)*$/';
 
     /**
      * @throws UnsupportedRelationLabelException

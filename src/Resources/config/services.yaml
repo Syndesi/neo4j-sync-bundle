@@ -24,51 +24,6 @@ services:
     Syndesi\Neo4jSyncBundle\Service\Neo4jClientFactory: '@neo4j_sync.neo4j_client_factory'
 
 
-    neo4j_sync.neo4j_normalizer:
-        class: Syndesi\Neo4jSyncBundle\Service\Neo4jNormalizer
-        public: false
-
-    Syndesi\Neo4jSyncBundle\Service\Neo4jNormalizer: '@neo4j_sync.neo4j_normalizer'
-
-
-    neo4j_sync.entity_reader:
-        class: Syndesi\Neo4jSyncBundle\Service\EntityReader
-        public: false
-        arguments:
-            - '@neo4j_sync.neo4j_normalizer'
-    
-    Syndesi\Neo4jSyncBundle\Service\EntityReader: '@neo4j_sync.entity_reader'
-
-
-    neo4j_sync.neo4j_statement_helper:
-        class: Syndesi\Neo4jSyncBundle\Service\Neo4jStatementHelper
-        public: false
-        arguments:
-            - '@neo4j_sync.entity_reader'
-    
-    Syndesi\Neo4jSyncBundle\Service\Neo4jStatementHelper: '@neo4j_sync.neo4j_statement_helper'
-
-
-    neo4j_sync.object_normalizer_provider:
-        class: Syndesi\Neo4jSyncBundle\Service\ObjectNormalizerProvider
-        public: false
-        tags:
-            - name: 'neo4j_sync_normalizer_provider'
-              priority: 64
-    
-    Syndesi\Neo4jSyncBundle\Service\ObjectNormalizerProvider: '@neo4j_sync.object_normalizer_provider'
-
-
-    neo4j_sync.neo4j_object_normalizer_provider:
-        class: Syndesi\Neo4jSyncBundle\Service\Neo4jObjectNormalizerProvider
-        public: false
-        tags:
-            - name: 'neo4j_sync_normalizer_provider'
-              priority: 256
-    
-    Syndesi\Neo4jSyncBundle\Service\Neo4jObjectNormalizerProvider: '@neo4j_sync.neo4j_object_normalizer_provider'
-
-
 # ----------------------------------------------------------------------------------------------------------------------
 #  Event subscribers
 # ----------------------------------------------------------------------------------------------------------------------
@@ -89,8 +44,6 @@ services:
             - 'doctrine.event_subscriber'
         arguments:
             - '@neo4j_sync.neo4j_client'
-            - '@neo4j_sync.entity_reader'
-            - '@neo4j_sync.neo4j_statement_helper'
 
 
     Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateSubscriber:
@@ -100,8 +53,6 @@ services:
             - 'doctrine.event_subscriber'
         arguments:
             - '@neo4j_sync.neo4j_client'
-            - '@neo4j_sync.entity_reader'
-            - '@neo4j_sync.neo4j_statement_helper'
 
 
     Syndesi\Neo4jSyncBundle\EventListener\DoctrinePreRemoveSubscriber:
@@ -111,62 +62,8 @@ services:
             - 'doctrine.event_subscriber'
         arguments:
             - '@neo4j_sync.neo4j_client'
-            - '@neo4j_sync.entity_reader'
-            - '@neo4j_sync.neo4j_statement_helper'
 
 
 # ----------------------------------------------------------------------------------------------------------------------
 #  Commands
 # ----------------------------------------------------------------------------------------------------------------------
-
-    neo4j_sync.command.db.delete:
-        class: Syndesi\Neo4jSyncBundle\Command\DatabaseDeleteCommand
-        public: true
-        tags:
-            - 'console.command'
-        arguments:
-            - '@neo4j_sync.neo4j_client'
-
-    Syndesi\Neo4jSyncBundle\Command\DatabaseDeleteCommand: '@neo4j_sync.command.db.delete'
-
-
-    neo4j_sync.command.db.sync:
-        class: Syndesi\Neo4jSyncBundle\Command\DatabaseSyncCommand
-        public: true
-        tags:
-            - 'console.command'
-        arguments:
-            - '@doctrine.orm.entity_manager'
-            - '@neo4j_sync.neo4j_client'
-            - '@neo4j_sync.neo4j_statement_helper'
-            - '@neo4j_sync.entity_reader'
-
-    Syndesi\Neo4jSyncBundle\Command\DatabaseSyncCommand: '@neo4j_sync.command.db.sync'
-
-
-    neo4j_sync.command.index.list:
-        class: Syndesi\Neo4jSyncBundle\Command\IndexListCommand
-        public: true
-        tags:
-            - 'console.command'
-        arguments:
-            - '@doctrine.orm.entity_manager'
-            - '@neo4j_sync.neo4j_client'
-            - '@neo4j_sync.neo4j_statement_helper'
-            - '@neo4j_sync.entity_reader'
-
-    Syndesi\Neo4jSyncBundle\Command\IndexListCommand: '@neo4j_sync.command.index.list'
-
-
-    neo4j_sync.command.index.sync:
-        class: Syndesi\Neo4jSyncBundle\Command\IndexSyncCommand
-        public: true
-        tags:
-            - 'console.command'
-        arguments:
-            - '@doctrine.orm.entity_manager'
-            - '@neo4j_sync.neo4j_client'
-            - '@neo4j_sync.neo4j_statement_helper'
-            - '@neo4j_sync.entity_reader'
-
-    Syndesi\Neo4jSyncBundle\Command\IndexSyncCommand: '@neo4j_sync.command.index.sync'
