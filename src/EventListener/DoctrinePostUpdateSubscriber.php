@@ -45,7 +45,7 @@ class DoctrinePostUpdateSubscriber implements EventSubscriber
 
         $node = $nodeAttribute->getNode($entity);
         $this->client->addStatements([
-            ...CreateOrUpdateNodeWithRelationsStatementBuilder::build($node)
+            ...CreateOrUpdateNodeWithRelationsStatementBuilder::build($node),
         ]);
     }
 }

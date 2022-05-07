@@ -28,7 +28,7 @@ class DeleteRelationsFromNodeStatementBuilder implements NodeStatementBuilderInt
                 $node->getIdentifier()->getName()
             ),
             [
-                $node->getIdentifier()->getName() => $node->getProperty($node->getIdentifier()->getName())
+                $node->getIdentifier()->getName() => $node->getProperty($node->getIdentifier()->getName()),
             ]
         )];
     }

@@ -16,18 +16,19 @@ class CreateRelationStatementBuilder implements RelationStatementBuilderInterfac
      */
     public static function build(Relation $relation): array
     {
-        if ($relation->getRelatesFromLabel() === null) {
+        if (null === $relation->getRelatesFromLabel()) {
             throw new InvalidArgumentException('relatesFromLabel can not be null.');
         }
-        if ($relation->getRelatesFromIdentifier() === null) {
+        if (null === $relation->getRelatesFromIdentifier()) {
             throw new InvalidArgumentException('relatesFromIdentifier can not be null.');
         }
         $relationPropertyString = [];
         foreach ($relation->getProperties() as $property) {
             // do not filter relation id property
-            $relationPropertyString[] = sprintf("%s: $%s", $property->getName(), $property->getName());
+            $relationPropertyString[] = sprintf('%s: $%s', $property->getName(), $property->getName());
         }
         $relationPropertyString = implode(', ', $relationPropertyString);
+
         return [new Statement(
             sprintf(
                 "MATCH\n".
@@ -44,7 +45,7 @@ class CreateRelationStatementBuilder implements RelationStatementBuilderInterfac
             [
                 ...$relation->getPropertiesAsAssociativeArray(),
                 '_parentId' => $relation->getRelatesToIdentifier()->getValue(),
-                '_childId' => $relation->getRelatesFromIdentifier()->getValue()
+                '_childId' => $relation->getRelatesFromIdentifier()->getValue(),
             ]
         )];
     }

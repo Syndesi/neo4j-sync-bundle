@@ -49,7 +49,7 @@ class DoctrinePreRemoveSubscriber implements EventSubscriber
 
         $node = $nodeAttribute->getNode($entity);
         $this->client->addStatements([
-            ...DeleteNodeStatementBuilder::build($node)
+            ...DeleteNodeStatementBuilder::build($node),
         ]);
     }
 }

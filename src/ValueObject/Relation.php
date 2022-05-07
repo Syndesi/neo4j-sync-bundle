@@ -95,6 +95,7 @@ class Relation implements Stringable
         foreach ($this->properties as $property) {
             $associativeArray[$property->getName()] = $property->getValue();
         }
+
         return $associativeArray;
     }
 
@@ -123,10 +124,11 @@ class Relation implements Stringable
     {
         $properties = [];
         foreach ($this->properties as $property) {
-            /** @var $property Property */
+            /* @var $property Property */
             $properties[] = sprintf("%s: %s", $property->getName(), $property->getValue());
         }
         $properties = implode(', ', $properties);
+
         return sprintf(
             "(:%s {%s: %s})-[:%s {%s}]->(:%s {%s: %s})",
             $this->relatesFromLabel,
@@ -139,5 +141,4 @@ class Relation implements Stringable
             $this->relatesToIdentifier->getValue()
         );
     }
-
 }

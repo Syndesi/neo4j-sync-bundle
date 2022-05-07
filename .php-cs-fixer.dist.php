@@ -15,7 +15,8 @@ return (new PhpCsFixer\Config())
             'on_multiline' => 'ensure_fully_multiline',
             'keep_multiple_spaces_after_comma' => true
         ],
-        'declare_strict_types' => true
+        'declare_strict_types' => true,
+        'single_quote' => false,
     ])
     ->setFinder($finder)
 ;

@@ -21,6 +21,7 @@ class MergeNodeStatementBuilder implements NodeStatementBuilderInterface
             $propertiesString[] = sprintf('    n.%s = $%s', $property->getName(), $property->getName());
         }
         $propertiesString = implode(",\n", $propertiesString);
+
         return [new Statement(
             sprintf(
                 "MERGE (n:%s {%s: $%s})\n".

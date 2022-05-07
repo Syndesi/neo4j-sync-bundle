@@ -63,6 +63,7 @@ class Node implements Stringable
         foreach ($this->properties as $property) {
             $associativeArray[$property->getName()] = $property->getValue();
         }
+
         return $associativeArray;
     }
 
@@ -96,8 +97,7 @@ class Node implements Stringable
     }
 
     /**
-     * checks if all relations have a non-null identifier
-     * @return bool
+     * checks if all relations have a non-null identifier.
      */
     public function areAllRelationsIdentifiable(): bool
     {
@@ -109,6 +109,7 @@ class Node implements Stringable
                 return false;
             }
         }
+
         return true;
     }
 
@@ -116,10 +117,11 @@ class Node implements Stringable
     {
         $properties = [];
         foreach ($this->properties as $property) {
-            /** @var $property Property */
+            /* @var $property Property */
             $properties[] = sprintf("%s: %s", $property->getName(), $property->getValue());
         }
         $properties = implode(', ', $properties);
+
         return sprintf("%s {%s}", $this->label, $properties);
     }
 }

@@ -18,7 +18,7 @@ class CreateOrUpdateNodeWithRelationsStatementBuilder implements NodeStatementBu
     public static function build(Node $node): array
     {
         $statements = [
-            ...MergeNodeStatementBuilder::build($node)
+            ...MergeNodeStatementBuilder::build($node),
         ];
         if (!empty($node->getRelations())) {
             if ($node->areAllRelationsIdentifiable()) {
@@ -29,7 +29,7 @@ class CreateOrUpdateNodeWithRelationsStatementBuilder implements NodeStatementBu
                 // recreated
                 $statements = [
                     ...$statements,
-                    ...DeleteRelationsFromNodeStatementBuilder::build($node)
+                    ...DeleteRelationsFromNodeStatementBuilder::build($node),
                 ];
                 foreach ($node->getRelations() as $relation) {
                     $tmpRelation = new Relation(
@@ -43,11 +43,12 @@ class CreateOrUpdateNodeWithRelationsStatementBuilder implements NodeStatementBu
                     );
                     $statements = [
                         ...$statements,
-                        ...CreateRelationStatementBuilder::build($tmpRelation)
+                        ...CreateRelationStatementBuilder::build($tmpRelation),
                     ];
                 }
             }
         }
+
         return $statements;
     }
 }
