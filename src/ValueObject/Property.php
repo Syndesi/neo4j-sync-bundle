@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Syndesi\Neo4jSyncBundle\ValueObject;
 
+use Stringable;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
 
-class Property
+class Property implements Stringable
 {
-    public const PROPERTY_NAME_REGEX = '/^[a-z][a-zA-Z0-9_]+$/';
+    public const PROPERTY_NAME_REGEX = '/^[a-z_][a-zA-Z0-9_]+$/';
 
     /**
      * @throws UnsupportedPropertyNameException
@@ -30,5 +31,10 @@ class Property
     public function getValue(): mixed
     {
         return $this->value;
+    }
+
+    public function __toString()
+    {
+        return sprintf("%s: %s", $this->getName(), $this->getValue());
     }
 }

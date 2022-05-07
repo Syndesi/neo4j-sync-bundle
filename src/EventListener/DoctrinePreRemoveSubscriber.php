@@ -19,14 +19,12 @@ class DoctrinePreRemoveSubscriber implements EventSubscriber
 {
     private Neo4jClientInterface $client;
     private NodeAttributeProviderInterface $nodeAttributeProvider;
-    private DeleteNodeStatementBuilder $deleteNodeStatementBuilder;
 
     public function __construct(
         Neo4jClientInterface $client
     ) {
         $this->client = $client;
         $this->nodeAttributeProvider = new NodeAttributeProvider();
-        $this->deleteNodeStatementBuilder = new DeleteNodeStatementBuilder();
     }
 
     public function getSubscribedEvents(): array
@@ -51,7 +49,7 @@ class DoctrinePreRemoveSubscriber implements EventSubscriber
 
         $node = $nodeAttribute->getNode($entity);
         $this->client->addStatements([
-            ...$this->deleteNodeStatementBuilder->getStatements($node),
+            ...DeleteNodeStatementBuilder::build($node)
         ]);
     }
 }
