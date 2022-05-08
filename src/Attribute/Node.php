@@ -17,7 +17,6 @@ use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyValueException;
 #[Attribute(Attribute::TARGET_CLASS)]
 class Node implements NodeAttributeInterface
 {
-
     /**
      * @param Relation[] $relations
      */

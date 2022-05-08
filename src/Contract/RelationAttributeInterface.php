@@ -9,7 +9,5 @@ use Syndesi\Neo4jSyncBundle\ValueObject\Relation;
 
 interface RelationAttributeInterface
 {
-
     public function getRelation(object $entity, Node $nodeWithoutRelations): Relation;
-
 }

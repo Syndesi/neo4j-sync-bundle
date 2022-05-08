@@ -7,6 +7,9 @@ namespace Syndesi\Neo4jSyncBundle\Attribute;
 use Attribute;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Syndesi\Neo4jSyncBundle\Contract\Neo4jSerializerInterface;
 use Syndesi\Neo4jSyncBundle\Contract\RelationAttributeInterface;
 use Syndesi\Neo4jSyncBundle\Contract\RelationIdentifierProviderInterface;
@@ -19,9 +22,6 @@ use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
 use Syndesi\Neo4jSyncBundle\Normalizer\Neo4jObjectNormalizer;
 use Syndesi\Neo4jSyncBundle\Serializer\Neo4jSerializer;
 use Syndesi\Neo4jSyncBundle\ValueObject\Node;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Syndesi\Neo4jSyncBundle\ValueObject\NodeLabel;
 use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 use Syndesi\Neo4jSyncBundle\ValueObject\RelationLabel;
@@ -57,6 +57,7 @@ class SmartRelation implements RelationAttributeInterface
     public function getRelation(object $entity, Node $nodeWithoutRelations): \Syndesi\Neo4jSyncBundle\ValueObject\Relation
     {
         $data = $this->serializer->normalize($entity, null, $this->context);
+
         return new \Syndesi\Neo4jSyncBundle\ValueObject\Relation(
             $this->relationLabel,
             $this->relatesToNodeLabel,

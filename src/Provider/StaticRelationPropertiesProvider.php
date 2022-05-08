@@ -17,6 +17,7 @@ class StaticRelationPropertiesProvider implements RelationPropertiesProviderInte
         private readonly array $nodeProperties
     ) {
     }
+
     /**
      * @return Property[]
      */

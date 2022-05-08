@@ -8,7 +8,5 @@ use Syndesi\Neo4jSyncBundle\ValueObject\Node;
 
 interface NodeAttributeInterface
 {
-
     public function getNode(object $entity): Node;
-
 }

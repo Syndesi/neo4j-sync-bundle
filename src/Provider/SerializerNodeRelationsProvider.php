@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace Syndesi\Neo4jSyncBundle\Provider;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Syndesi\Neo4jSyncBundle\Contract\Neo4jSerializerInterface;
-use Syndesi\Neo4jSyncBundle\Contract\NodePropertiesProviderInterface;
 use Syndesi\Neo4jSyncBundle\Contract\NodeRelationsProviderInterface;
 use Syndesi\Neo4jSyncBundle\Exception\DuplicatePropertiesException;
 use Syndesi\Neo4jSyncBundle\Exception\InvalidArgumentException;
@@ -43,6 +41,7 @@ class SerializerNodeRelationsProvider implements NodeRelationsProviderInterface
 
     /**
      * @param Property[] $nodeProperties
+     *
      * @return Relation[]
      *
      * @throws UnsupportedPropertyNameException
@@ -67,7 +66,7 @@ class SerializerNodeRelationsProvider implements NodeRelationsProviderInterface
         $data = $this->serializer->normalize($entity, null, $this->context);
         $serializedRelations = [];
         foreach ($this->relations as $relation) {
-            /**
+            /*
              * @var $relation Relation
              */
             $serializedRelations[] = new Relation(
@@ -79,8 +78,6 @@ class SerializerNodeRelationsProvider implements NodeRelationsProviderInterface
             );
         }
 
-
         return $serializedRelations;
     }
-
 }
