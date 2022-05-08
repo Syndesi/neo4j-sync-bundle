@@ -11,10 +11,11 @@ use Syndesi\Neo4jSyncBundle\Contract\Neo4jClientInterface;
 use Syndesi\Neo4jSyncBundle\Contract\NodeAttributeProviderInterface;
 use Syndesi\Neo4jSyncBundle\Exception\DuplicatePropertiesException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingIdPropertyException;
+use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyException;
 use Syndesi\Neo4jSyncBundle\Provider\NodeAttributeProvider;
-use Syndesi\Neo4jSyncBundle\Statement\CreateOrUpdateNodeWithRelationsStatementBuilder;
+use Syndesi\Neo4jSyncBundle\Statement\DeleteNodeStatementBuilder;
 
-class DoctrinePostPersistSubscriber implements EventSubscriber
+class DoctrinePreRemoveNodeSubscriber implements EventSubscriber
 {
     private Neo4jClientInterface $client;
     private NodeAttributeProviderInterface $nodeAttributeProvider;
@@ -29,15 +30,16 @@ class DoctrinePostPersistSubscriber implements EventSubscriber
     public function getSubscribedEvents(): array
     {
         return [
-            Events::postPersist,
+            Events::preRemove,
         ];
     }
 
     /**
      * @throws MissingIdPropertyException
+     * @throws MissingPropertyException
      * @throws DuplicatePropertiesException
      */
-    public function postPersist(LifecycleEventArgs $args)
+    public function preRemove(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
         $nodeAttribute = $this->nodeAttributeProvider->getNodeAttribute($entity);
@@ -47,7 +49,7 @@ class DoctrinePostPersistSubscriber implements EventSubscriber
 
         $node = $nodeAttribute->getNode($entity);
         $this->client->addStatements([
-            ...CreateOrUpdateNodeWithRelationsStatementBuilder::build($node),
+            ...DeleteNodeStatementBuilder::build($node),
         ]);
     }
 }

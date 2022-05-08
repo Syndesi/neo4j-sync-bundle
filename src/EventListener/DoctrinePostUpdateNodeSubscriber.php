@@ -13,7 +13,7 @@ use Syndesi\Neo4jSyncBundle\Contract\NodeAttributeProviderInterface;
 use Syndesi\Neo4jSyncBundle\Provider\NodeAttributeProvider;
 use Syndesi\Neo4jSyncBundle\Statement\CreateOrUpdateNodeWithRelationsStatementBuilder;
 
-class DoctrinePostUpdateSubscriber implements EventSubscriber
+class DoctrinePostUpdateNodeSubscriber implements EventSubscriber
 {
     private Neo4jClientInterface $client;
     private NodeAttributeProviderInterface $nodeAttributeProvider;

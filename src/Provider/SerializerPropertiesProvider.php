@@ -9,19 +9,18 @@ use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Syndesi\Neo4jSyncBundle\Contract\Neo4jSerializerInterface;
-use Syndesi\Neo4jSyncBundle\Contract\NodePropertiesProviderInterface;
+use Syndesi\Neo4jSyncBundle\Contract\PropertiesProviderInterface;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
 use Syndesi\Neo4jSyncBundle\Normalizer\Neo4jObjectNormalizer;
 use Syndesi\Neo4jSyncBundle\Serializer\Neo4jSerializer;
 use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 
-class SerializerNodePropertiesProvider implements NodePropertiesProviderInterface
+class SerializerPropertiesProvider implements PropertiesProviderInterface
 {
-    private readonly Neo4jSerializerInterface $serializer;
+    private Neo4jSerializer $serializer;
 
     public function __construct(
-        private readonly array $context = []
+        private array $context = []
     ) {
         $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
         $this->serializer = new Neo4jSerializer([
@@ -31,20 +30,13 @@ class SerializerNodePropertiesProvider implements NodePropertiesProviderInterfac
     }
 
     /**
-     * @return Property[]
+     * @returns Property[]
      *
-     * @throws UnsupportedPropertyNameException
      * @throws ExceptionInterface
      * @throws UnsupportedPropertyNameException
      */
-    public function getNodeProperties(object $entity): array
+    public function getProperties(object $entity): array
     {
-        $data = $this->serializer->normalize($entity, null, $this->context);
-        $propertiesArray = [];
-        foreach ($data as $name => $value) {
-            $propertiesArray[] = new Property($name, $value);
-        }
-
-        return $propertiesArray;
+        return $this->serializer->normalize($entity, null, $this->context);
     }
 }

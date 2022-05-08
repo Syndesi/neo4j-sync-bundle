@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Syndesi\Neo4jSyncBundle\Attribute;
 
 use Attribute;
+use Syndesi\Neo4jSyncBundle\Contract\IdentifierProviderInterface;
 use Syndesi\Neo4jSyncBundle\Contract\NodeAttributeInterface;
-use Syndesi\Neo4jSyncBundle\Contract\NodeIdentifierProviderInterface;
 use Syndesi\Neo4jSyncBundle\Contract\NodeLabelProviderInterface;
-use Syndesi\Neo4jSyncBundle\Contract\NodePropertiesProviderInterface;
-use Syndesi\Neo4jSyncBundle\Contract\RelationAttributeInterface;
+use Syndesi\Neo4jSyncBundle\Contract\PropertiesProviderInterface;
+use Syndesi\Neo4jSyncBundle\Contract\RelationAttributeFromNodeInterface;
 use Syndesi\Neo4jSyncBundle\Exception\DuplicatePropertiesException;
 use Syndesi\Neo4jSyncBundle\Exception\InvalidArgumentException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingIdPropertyException;
@@ -23,15 +23,15 @@ class Node implements NodeAttributeInterface
      * This attribute configures how to generate Neo4j nodes & relationships from the target class.
      * Usually applied to Doctrine entities, but not dependent on them. Can be used manually.
      *
-     * @param NodeLabelProviderInterface      $nodeLabelProvider      provider which returns the node's label
-     * @param NodePropertiesProviderInterface $nodePropertiesProvider provider which returns the node's properties
-     * @param NodeIdentifierProviderInterface $nodeIdentifierProvider provider which returns the node's identifier (name only)
-     * @param RelationAttributeInterface[]    $relations              array of relation attributes
+     * @param NodeLabelProviderInterface           $nodeLabelProvider      provider which returns the node's label
+     * @param PropertiesProviderInterface          $nodePropertiesProvider provider which returns the node's properties
+     * @param IdentifierProviderInterface          $nodeIdentifierProvider provider which returns the node's identifier (name only)
+     * @param RelationAttributeFromNodeInterface[] $relations              array of relation attributes
      */
     public function __construct(
         private readonly NodeLabelProviderInterface $nodeLabelProvider,
-        private readonly NodePropertiesProviderInterface $nodePropertiesProvider,
-        private readonly NodeIdentifierProviderInterface $nodeIdentifierProvider,
+        private readonly PropertiesProviderInterface $nodePropertiesProvider,
+        private readonly IdentifierProviderInterface $nodeIdentifierProvider,
         private readonly array $relations = []
     ) {
     }
@@ -47,8 +47,8 @@ class Node implements NodeAttributeInterface
     {
         $nodeWithoutRelations = new \Syndesi\Neo4jSyncBundle\ValueObject\Node(
             $this->nodeLabelProvider->getNodeLabel($entity),
-            $this->nodePropertiesProvider->getNodeProperties($entity),
-            $this->nodeIdentifierProvider->getNodeIdentifier($entity)
+            $this->nodePropertiesProvider->getProperties($entity),
+            $this->nodeIdentifierProvider->getIdentifier($entity)
         );
 
         $relations = [];

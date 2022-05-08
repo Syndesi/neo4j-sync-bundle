@@ -37,8 +37,8 @@ services:
             - '@neo4j_sync.neo4j_client'
 
 
-    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistSubscriber:
-        class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistSubscriber
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistNodeSubscriber:
+        class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistNodeSubscriber
         public: false
         tags:
             - 'doctrine.event_subscriber'
@@ -46,8 +46,8 @@ services:
             - '@neo4j_sync.neo4j_client'
 
 
-    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateSubscriber:
-        class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateSubscriber
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistRelationSubscriber:
+        class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistRelationSubscriber
         public: false
         tags:
             - 'doctrine.event_subscriber'
@@ -55,8 +55,35 @@ services:
             - '@neo4j_sync.neo4j_client'
 
 
-    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePreRemoveSubscriber:
-        class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePreRemoveSubscriber
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateNodeSubscriber:
+        class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateNodeSubscriber
+        public: false
+        tags:
+            - 'doctrine.event_subscriber'
+        arguments:
+            - '@neo4j_sync.neo4j_client'
+
+
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateRelationSubscriber:
+        class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateRelationSubscriber
+        public: false
+        tags:
+            - 'doctrine.event_subscriber'
+        arguments:
+            - '@neo4j_sync.neo4j_client'
+
+
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePreRemoveNodeSubscriber:
+        class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePreRemoveNodeSubscriber
+        public: false
+        tags:
+            - 'doctrine.event_subscriber'
+        arguments:
+            - '@neo4j_sync.neo4j_client'
+
+
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePreRemoveRelationSubscriber:
+        class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePreRemoveRelationSubscriber
         public: false
         tags:
             - 'doctrine.event_subscriber'

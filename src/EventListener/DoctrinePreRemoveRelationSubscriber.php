@@ -8,23 +8,22 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
 use Syndesi\Neo4jSyncBundle\Contract\Neo4jClientInterface;
-use Syndesi\Neo4jSyncBundle\Contract\NodeAttributeProviderInterface;
-use Syndesi\Neo4jSyncBundle\Exception\DuplicatePropertiesException;
-use Syndesi\Neo4jSyncBundle\Exception\MissingIdPropertyException;
+use Syndesi\Neo4jSyncBundle\Contract\RelationAttributeProviderInterface;
 use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyException;
-use Syndesi\Neo4jSyncBundle\Provider\NodeAttributeProvider;
-use Syndesi\Neo4jSyncBundle\Statement\DeleteNodeStatementBuilder;
+use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
+use Syndesi\Neo4jSyncBundle\Provider\RelationAttributeProvider;
+use Syndesi\Neo4jSyncBundle\Statement\DeleteRelationStatementBuilder;
 
-class DoctrinePreRemoveSubscriber implements EventSubscriber
+class DoctrinePreRemoveRelationSubscriber implements EventSubscriber
 {
     private Neo4jClientInterface $client;
-    private NodeAttributeProviderInterface $nodeAttributeProvider;
+    private RelationAttributeProviderInterface $relationAttributeProvider;
 
     public function __construct(
         Neo4jClientInterface $client
     ) {
         $this->client = $client;
-        $this->nodeAttributeProvider = new NodeAttributeProvider();
+        $this->relationAttributeProvider = new RelationAttributeProvider();
     }
 
     public function getSubscribedEvents(): array
@@ -35,21 +34,20 @@ class DoctrinePreRemoveSubscriber implements EventSubscriber
     }
 
     /**
-     * @throws MissingIdPropertyException
      * @throws MissingPropertyException
-     * @throws DuplicatePropertiesException
+     * @throws UnsupportedPropertyNameException
      */
     public function preRemove(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        $nodeAttribute = $this->nodeAttributeProvider->getNodeAttribute($entity);
-        if (!$nodeAttribute) {
+        $relationAttribute = $this->relationAttributeProvider->getRelationAttribute($entity);
+        if (!$relationAttribute) {
             return;
         }
 
-        $node = $nodeAttribute->getNode($entity);
+        $relation = $relationAttribute->getRelation($entity);
         $this->client->addStatements([
-            ...DeleteNodeStatementBuilder::build($node),
+            ...DeleteRelationStatementBuilder::build($relation),
         ]);
     }
 }

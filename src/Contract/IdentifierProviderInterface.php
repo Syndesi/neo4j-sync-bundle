@@ -6,7 +6,7 @@ namespace Syndesi\Neo4jSyncBundle\Contract;
 
 use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 
-interface NodeIdentifierProviderInterface
+interface IdentifierProviderInterface
 {
-    public function getNodeIdentifier(object $entity): Property;
+    public function getIdentifier(object $entity): Property;
 }

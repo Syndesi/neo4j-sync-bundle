@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Syndesi\Neo4jSyncBundle\Provider;
 
-use Syndesi\Neo4jSyncBundle\Contract\NodeRelationsProviderInterface;
+use Syndesi\Neo4jSyncBundle\Contract\RelationsProviderInterface;
 use Syndesi\Neo4jSyncBundle\ValueObject\Relation;
 
-class StaticNodeRelationsProvider implements NodeRelationsProviderInterface
+class StaticRelationsProvider implements RelationsProviderInterface
 {
     public function __construct(
         /**
@@ -17,7 +17,7 @@ class StaticNodeRelationsProvider implements NodeRelationsProviderInterface
     ) {
     }
 
-    public function getNodeRelations(object $entity): array
+    public function getRelations(object $entity): array
     {
         return $this->nodeRelations;
     }
