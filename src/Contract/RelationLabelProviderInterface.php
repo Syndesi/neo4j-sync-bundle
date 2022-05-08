@@ -6,7 +6,7 @@ namespace Syndesi\Neo4jSyncBundle\Contract;
 
 use Syndesi\Neo4jSyncBundle\ValueObject\RelationLabel;
 
-interface RelationLabelProviderInterface
+interface RelationLabelProviderInterface extends LabelProviderInterface
 {
-    public function getRelationLabel(object $entity): RelationLabel;
+    public function getLabel(object $entity): RelationLabel;
 }

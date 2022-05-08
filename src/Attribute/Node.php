@@ -46,7 +46,7 @@ class Node implements NodeAttributeInterface
     public function getNode(object $entity): \Syndesi\Neo4jSyncBundle\ValueObject\Node
     {
         $nodeWithoutRelations = new \Syndesi\Neo4jSyncBundle\ValueObject\Node(
-            $this->nodeLabelProvider->getNodeLabel($entity),
+            $this->nodeLabelProvider->getLabel($entity),
             $this->nodePropertiesProvider->getProperties($entity),
             $this->nodeIdentifierProvider->getIdentifier($entity)
         );

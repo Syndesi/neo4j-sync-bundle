@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Syndesi\Neo4jSyncBundle\ValueObject;
 
 use Stringable;
+use Syndesi\Neo4jSyncBundle\Contract\LabelInterface;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedNodeLabelException;
 
-class NodeLabel implements Stringable
+class NodeLabel implements Stringable, LabelInterface
 {
     public const NODE_LABEL_REGEX = '/^[A-Z][a-zA-Z0-9]*$/';
 

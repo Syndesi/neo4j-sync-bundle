@@ -10,12 +10,12 @@ use Syndesi\Neo4jSyncBundle\ValueObject\RelationLabel;
 class StaticRelationLabelProvider implements RelationLabelProviderInterface
 {
     public function __construct(
-        private readonly RelationLabel $relationLabel
+        private readonly RelationLabel $label
     ) {
     }
 
-    public function getRelationLabel(object $entity): RelationLabel
+    public function getLabel(object $entity): RelationLabel
     {
-        return $this->relationLabel;
+        return $this->label;
     }
 }

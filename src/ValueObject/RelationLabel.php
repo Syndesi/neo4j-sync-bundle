@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Syndesi\Neo4jSyncBundle\ValueObject;
 
 use Stringable;
+use Syndesi\Neo4jSyncBundle\Contract\LabelInterface;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedRelationLabelException;
 
-class RelationLabel implements Stringable
+class RelationLabel implements Stringable, LabelInterface
 {
     public const RELATION_LABEL_REGEX = '/^[A-Z]+(_[A-Z]+)*$/';
 

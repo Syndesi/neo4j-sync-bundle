@@ -50,12 +50,12 @@ class Relation implements RelationAttributeInterface
     public function getRelation(object $entity): \Syndesi\Neo4jSyncBundle\ValueObject\Relation
     {
         return new \Syndesi\Neo4jSyncBundle\ValueObject\Relation(
-            $this->relationLabelProvider->getRelationLabel($entity),
-            $this->relationRelatesToNodeLabelProvider->getNodeLabel($entity),
+            $this->relationLabelProvider->getLabel($entity),
+            $this->relationRelatesToNodeLabelProvider->getLabel($entity),
             $this->relationRelatesToIdentifierProvider->getIdentifier($entity),
-            $this->relationRelatesFromNodeLabelProvider->getNodeLabel($entity),
+            $this->relationRelatesFromNodeLabelProvider->getLabel($entity),
             $this->relationRelatesFromIdentifierProvider->getIdentifier($entity),
-            $this->relationPropertiesProvider?->getProperties($entity),
+            $this->relationPropertiesProvider ? $this->relationPropertiesProvider->getProperties($entity) : [],
             $this->relationIdentifierProvider?->getIdentifier($entity)
         );
     }

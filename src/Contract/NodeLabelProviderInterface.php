@@ -6,7 +6,7 @@ namespace Syndesi\Neo4jSyncBundle\Contract;
 
 use Syndesi\Neo4jSyncBundle\ValueObject\NodeLabel;
 
-interface NodeLabelProviderInterface
+interface NodeLabelProviderInterface extends LabelProviderInterface
 {
-    public function getNodeLabel(object $entity): NodeLabel;
+    public function getLabel(object $entity): NodeLabel;
 }

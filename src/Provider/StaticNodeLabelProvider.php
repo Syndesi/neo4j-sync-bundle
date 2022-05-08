@@ -10,12 +10,12 @@ use Syndesi\Neo4jSyncBundle\ValueObject\NodeLabel;
 class StaticNodeLabelProvider implements NodeLabelProviderInterface
 {
     public function __construct(
-        private readonly NodeLabel $nodeLabel
+        private readonly NodeLabel $label
     ) {
     }
 
-    public function getNodeLabel(object $entity): NodeLabel
+    public function getLabel(object $entity): NodeLabel
     {
-        return $this->nodeLabel;
+        return $this->label;
     }
 }
