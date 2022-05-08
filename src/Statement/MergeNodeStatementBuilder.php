@@ -18,13 +18,13 @@ class MergeNodeStatementBuilder implements NodeStatementBuilderInterface
                 // id is not a property, it cannot be changed once set
                 continue;
             }
-            $propertiesString[] = sprintf('    n.%s = $%s', $property->getName(), $property->getName());
+            $propertiesString[] = sprintf('    node.%s = $%s', $property->getName(), $property->getName());
         }
         $propertiesString = implode(",\n", $propertiesString);
 
         return [new Statement(
             sprintf(
-                "MERGE (n:%s {%s: $%s})\n".
+                "MERGE (node:%s {%s: $%s})\n".
                 "ON CREATE\n".
                 "  SET\n".
                 "%s\n".

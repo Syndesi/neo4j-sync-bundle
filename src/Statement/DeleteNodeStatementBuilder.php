@@ -19,8 +19,8 @@ class DeleteNodeStatementBuilder implements NodeStatementBuilderInterface
         return [new Statement(
             sprintf(
                 "MATCH\n".
-                "  (n:%s {%s: $%s})\n".
-                'DETACH DELETE n',
+                "  (node:%s {%s: $%s})\n".
+                'DETACH DELETE node',
                 $node->getLabel(),
                 $node->getIdentifier()->getName(),
                 $node->getIdentifier()->getName()

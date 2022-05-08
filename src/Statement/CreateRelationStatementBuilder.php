@@ -34,7 +34,7 @@ class CreateRelationStatementBuilder implements RelationStatementBuilderInterfac
                 "MATCH\n".
                 "  (child:%s {%s: \$_childId}),\n".
                 "  (parent:%s {%s: \$_parentId})\n".
-                "CREATE (child)-[r:%s {%s}]->(parent)",
+                "CREATE (child)-[:%s {%s}]->(parent)",
                 $relation->getRelatesFromLabel(),
                 $relation->getRelatesFromIdentifier()->getName(),
                 $relation->getRelatesToLabel(),
