@@ -12,6 +12,8 @@ class NodeLabel implements Stringable
     public const NODE_LABEL_REGEX = '/^[A-Z][a-zA-Z0-9]*$/';
 
     /**
+     * @param string $label Label of the node, e.g. DemoLabel.
+     *
      * @throws UnsupportedNodeLabelException
      */
     public function __construct(

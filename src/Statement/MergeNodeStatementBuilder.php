@@ -6,10 +6,20 @@ namespace Syndesi\Neo4jSyncBundle\Statement;
 
 use Laudis\Neo4j\Databags\Statement;
 use Syndesi\Neo4jSyncBundle\Contract\NodeStatementBuilderInterface;
+use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyException;
+use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
 use Syndesi\Neo4jSyncBundle\ValueObject\Node;
 
 class MergeNodeStatementBuilder implements NodeStatementBuilderInterface
 {
+    /**
+     * Returns a statement for creating/updating a single node. Relationships are not covered.
+     *
+     * @return Statement[]
+     *
+     * @throws MissingPropertyException
+     * @throws UnsupportedPropertyNameException
+     */
     public static function build(Node $node): array
     {
         $propertiesString = [];

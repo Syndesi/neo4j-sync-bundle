@@ -9,31 +9,39 @@ use Syndesi\Neo4jSyncBundle\Contract\NodeAttributeInterface;
 use Syndesi\Neo4jSyncBundle\Contract\NodeIdentifierProviderInterface;
 use Syndesi\Neo4jSyncBundle\Contract\NodeLabelProviderInterface;
 use Syndesi\Neo4jSyncBundle\Contract\NodePropertiesProviderInterface;
+use Syndesi\Neo4jSyncBundle\Contract\RelationAttributeInterface;
 use Syndesi\Neo4jSyncBundle\Exception\DuplicatePropertiesException;
 use Syndesi\Neo4jSyncBundle\Exception\InvalidArgumentException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingIdPropertyException;
-use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyValueException;
+use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyException;
+use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 class Node implements NodeAttributeInterface
 {
     /**
-     * @param Relation[] $relations
+     * This attribute configures how to generate Neo4j nodes & relationships from the target class.
+     * Usually applied to Doctrine entities, but not dependent on them. Can be used manually.
+     *
+     * @param NodeLabelProviderInterface      $nodeLabelProvider      provider which returns the node's label
+     * @param NodePropertiesProviderInterface $nodePropertiesProvider provider which returns the node's properties
+     * @param NodeIdentifierProviderInterface $nodeIdentifierProvider provider which returns the node's identifier (name only)
+     * @param RelationAttributeInterface[]    $relations              array of relation attributes
      */
     public function __construct(
         private readonly NodeLabelProviderInterface $nodeLabelProvider,
         private readonly NodePropertiesProviderInterface $nodePropertiesProvider,
         private readonly NodeIdentifierProviderInterface $nodeIdentifierProvider,
-//        private readonly ?NodeRelationsProviderInterface $nodeRelationsProvider = null
         private readonly array $relations = []
     ) {
     }
 
     /**
      * @throws DuplicatePropertiesException
-     * @throws MissingPropertyValueException
      * @throws InvalidArgumentException
      * @throws MissingIdPropertyException
+     * @throws MissingPropertyException
+     * @throws UnsupportedPropertyNameException
      */
     public function getNode(object $entity): \Syndesi\Neo4jSyncBundle\ValueObject\Node
     {
@@ -45,7 +53,7 @@ class Node implements NodeAttributeInterface
 
         $relations = [];
         foreach ($this->relations as $relation) {
-            $relations[] = $relation->getNode($entity, $nodeWithoutRelations);
+            $relations[] = $relation->getRelation($entity, $nodeWithoutRelations);
         }
 
         return new \Syndesi\Neo4jSyncBundle\ValueObject\Node(

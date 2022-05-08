@@ -47,7 +47,8 @@ class RelationTest extends TestCase {
         $this->assertSame($parentNodeLabel, $relation->getRelatesToLabel());
         $this->assertSame($parentNodeIdentifier, $relation->getRelatesToIdentifier());
         $this->assertSame($properties, $relation->getProperties());
-        $this->assertSame($identifier, $relation->getIdentifier());
+        $this->assertSame($identifier->getName(), $relation->getIdentifier()->getName());
+        $this->assertSame(1234, $relation->getIdentifier()->getValue());
     }
 
     public function testParentMissingPropertyValueException(){
@@ -55,7 +56,9 @@ class RelationTest extends TestCase {
         new Relation(
             new RelationLabel('RELATION_LABEL'),
             new NodeLabel('ParentNode'),
-            new Property('id')
+            new Property('id'),
+            new NodeLabel('ChildNode'),
+            new Property('id', 4321),
         );
     }
 
@@ -76,7 +79,9 @@ class RelationTest extends TestCase {
             new RelationLabel('RELATION_LABEL'),
             new NodeLabel('ParentNode'),
             new Property('id', 1234),
-            properties: [
+            new NodeLabel('ChildNode'),
+            new Property('id', 4321),
+            [
                 new DateTime()
             ]
         );
@@ -88,7 +93,9 @@ class RelationTest extends TestCase {
             new RelationLabel('RELATION_LABEL'),
             new NodeLabel('ParentNode'),
             new Property('id', 1234),
-            properties: [
+            new NodeLabel('ChildNode'),
+            new Property('id', 4321),
+            [
                 new Property('someProperty', 'someValue'),
                 new Property('someProperty', 'otherValue')
             ]
@@ -101,10 +108,12 @@ class RelationTest extends TestCase {
             new RelationLabel('RELATION_LABEL'),
             new NodeLabel('ParentNode'),
             new Property('id', 1234),
-            properties: [
+            new NodeLabel('ChildNode'),
+            new Property('id', 4321),
+            [
                 new Property('someProperty', 'someValue')
             ],
-            identifier: new Property('id')
+            new Property('id')
         );
     }
 
@@ -113,7 +122,9 @@ class RelationTest extends TestCase {
             new RelationLabel('RELATION_LABEL'),
             new NodeLabel('ParentNode'),
             new Property('id', 1234),
-            properties: [
+            new NodeLabel('ChildNode'),
+            new Property('id', 4321),
+            [
                 new Property('someProperty', 'someValue'),
                 new Property('otherProperty', 'otherValue'),
             ]
@@ -134,7 +145,9 @@ class RelationTest extends TestCase {
             new RelationLabel('RELATION_LABEL'),
             new NodeLabel('ParentNode'),
             new Property('id', 1234),
-            properties: [
+            new NodeLabel('ChildNode'),
+            new Property('id', 4321),
+            [
                 $idProperty,
                 $stringProperty
             ],
@@ -147,6 +160,33 @@ class RelationTest extends TestCase {
 
         $this->expectException(MissingPropertyException::class);
         $relation->getProperty('thisPropertyDoesNotExist');
+    }
+
+    public function testGetIdentifier(){
+        $relationWithoutIdentifier = new Relation(
+            new RelationLabel('RELATION_LABEL'),
+            new NodeLabel('ParentNode'),
+            new Property('id', 4321),
+            new NodeLabel('ChildNode'),
+            new Property('id', 1234),
+            [
+                new Property('id', 1234),
+            ]
+        );
+        $this->assertNull($relationWithoutIdentifier->getIdentifier());
+        $relationWithIdentifier = new Relation(
+            new RelationLabel('RELATION_LABEL'),
+            new NodeLabel('ParentNode'),
+            new Property('id', 4321),
+            new NodeLabel('ChildNode'),
+            new Property('id', 1234),
+            [
+                new Property('id', 1234),
+            ],
+            new Property('id')
+        );
+        $this->assertSame('id', $relationWithIdentifier->getIdentifier()->getName());
+        $this->assertSame(1234, $relationWithIdentifier->getIdentifier()->getValue());
     }
 
     public function testStringable(){

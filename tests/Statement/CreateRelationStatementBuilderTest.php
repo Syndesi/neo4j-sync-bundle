@@ -6,8 +6,6 @@ namespace Syndesi\Neo4jSyncBundle\Tests\Statement;
 
 use PHPUnit\Framework\TestCase;
 use Syndesi\Neo4jSyncBundle\Statement\CreateRelationStatementBuilder;
-use Syndesi\Neo4jSyncBundle\Statement\MergeNodeStatementBuilder;
-use Syndesi\Neo4jSyncBundle\ValueObject\Node;
 use Syndesi\Neo4jSyncBundle\ValueObject\NodeLabel;
 use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 use Syndesi\Neo4jSyncBundle\ValueObject\Relation;

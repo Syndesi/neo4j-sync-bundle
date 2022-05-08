@@ -12,6 +12,11 @@ class Property implements Stringable
     public const PROPERTY_NAME_REGEX = '/^[a-z_][a-zA-Z0-9_]+$/';
 
     /**
+     * Generic type for properties.
+     *
+     * @param string     $name  name of the property, always required
+     * @param mixed|null $value value of the property, in some contexts optional
+     *
      * @throws UnsupportedPropertyNameException
      */
     public function __construct(

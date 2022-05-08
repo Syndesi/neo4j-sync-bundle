@@ -9,24 +9,24 @@ use Syndesi\Neo4jSyncBundle\Exception\DuplicatePropertiesException;
 use Syndesi\Neo4jSyncBundle\Exception\InvalidArgumentException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingIdPropertyException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyException;
+use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
 
 class Node implements Stringable
 {
     /**
+     * @param NodeLabel  $label      Label of the node
+     * @param Property[] $properties Array of properties. Must include the identifier.
+     * @param Property   $identifier Name of the identifier must be stored in the Properties' name. Value is ignored.
+     * @param Relation[] $relations  Array of relations, optional
+     *
      * @throws DuplicatePropertiesException
-     * @throws MissingIdPropertyException
      * @throws InvalidArgumentException
+     * @throws MissingIdPropertyException
      */
     public function __construct(
         private readonly NodeLabel $label,
-        /**
-         * @var Property[] $properties
-         */
         private readonly array $properties,
         private readonly Property $identifier,
-        /**
-         * @var Relation[] $relations
-         */
         private readonly array $relations = []
     ) {
         $propertyNames = [];
@@ -83,9 +83,15 @@ class Node implements Stringable
         throw new MissingPropertyException(sprintf("Unable to find property with name '%s'.", $name));
     }
 
+    /**
+     * Returns a new instance of a property with both the identifiers name and the identifiers value from the properties.
+     *
+     * @throws MissingPropertyException
+     * @throws UnsupportedPropertyNameException
+     */
     public function getIdentifier(): Property
     {
-        return $this->identifier;
+        return new Property($this->identifier->getName(), $this->getProperty($this->identifier->getName()));
     }
 
     /**

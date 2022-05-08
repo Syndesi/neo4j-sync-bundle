@@ -12,6 +12,8 @@ class RelationLabel implements Stringable
     public const RELATION_LABEL_REGEX = '/^[A-Z]+(_[A-Z]+)*$/';
 
     /**
+     * @param string $label Label of the relationship
+     *
      * @throws UnsupportedRelationLabelException
      */
     public function __construct(

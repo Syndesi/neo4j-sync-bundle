@@ -30,14 +30,17 @@ class NodeTest extends TestCase {
             new Relation(
                 new RelationLabel('SOME_RELATION'),
                 new NodeLabel('OtherNode'),
-                new Property('id', 'someValue')
+                new Property('id', 'someValue'),
+                $nodeLabel,
+                new Property('id', 1234)
             )
         ];
         $node = new Node($nodeLabel, $properties, $identifier, $relations);
 
         $this->assertSame($nodeLabel, $node->getLabel());
         $this->assertSame($properties, $node->getProperties());
-        $this->assertSame($identifier, $node->getIdentifier());
+        $this->assertSame($identifier->getName(), $node->getIdentifier()->getName());
+        $this->assertSame(1234, $node->getIdentifier()->getValue());
         $this->assertSame($relations, $node->getRelations());
     }
 
@@ -124,16 +127,20 @@ class NodeTest extends TestCase {
         $anonymousRelation = new Relation(
             new RelationLabel('SOME_RELATION'),
             new NodeLabel('OtherNode'),
-            new Property('id', 'someValue')
+            new Property('id', 'someValue'),
+            $nodeLabel,
+            new Property('id', 1234)
         );
         $identifiableRelation = new Relation(
             new RelationLabel('SOME_RELATION'),
             new NodeLabel('OtherNode'),
             new Property('id', 'someValue'),
-            properties: [
+            $nodeLabel,
+            new Property('id', 1234),
+            [
                 new Property('relationId', 1234)
             ],
-            identifier: new Property('relationId')
+            new Property('relationId')
         );
 
         $anonymousNode = new Node($nodeLabel, $properties, $identifier, [$anonymousRelation]);

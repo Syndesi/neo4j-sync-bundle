@@ -12,6 +12,10 @@ use Syndesi\Neo4jSyncBundle\ValueObject\Relation;
 class CreateRelationStatementBuilder implements RelationStatementBuilderInterface
 {
     /**
+     * Returns a statement for creating a relationship between two already existing nodes.
+     *
+     * @return Statement[]
+     *
      * @throws InvalidArgumentException
      */
     public static function build(Relation $relation): array

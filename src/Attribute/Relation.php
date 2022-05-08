@@ -20,6 +20,18 @@ use Syndesi\Neo4jSyncBundle\ValueObject\Node;
 #[Attribute(Attribute::TARGET_CLASS)]
 class Relation implements RelationAttributeInterface
 {
+    /**
+     * This attribute configures how to generate Neo4j relationships from the target class.
+     * Usually applied to Doctrine entities, but not dependent on them. Can be used manually.
+     *
+     * @param RelationLabelProviderInterface           $relationLabelProvider                 provider which returns the relationship's label
+     * @param RelationNodeLabelProviderInterface       $relationRelatesToNodeLabelProvider    provider which returns the parent nodes' label
+     * @param RelationNodeIdentifierProviderInterface  $relationRelatesToIdentifierProvider   provider which returns the parent nodes' identifier
+     * @param RelationNodeLabelProviderInterface       $relationRelatesFromNodeLabelProvider  provider which returns the child nodes' label
+     * @param RelationNodeIdentifierProviderInterface  $relationRelatesFromIdentifierProvider provider which returns the child nodes' identifier
+     * @param RelationPropertiesProviderInterface|null $relationPropertiesProvider            provider which returns the relationships' properties, optional
+     * @param RelationIdentifierProviderInterface|null $relationIdentifierProvider            provider which returns the relationships' identifier, optional
+     */
     public function __construct(
         private readonly RelationLabelProviderInterface $relationLabelProvider,
         private readonly RelationNodeLabelProviderInterface $relationRelatesToNodeLabelProvider,

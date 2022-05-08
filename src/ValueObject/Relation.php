@@ -10,21 +10,30 @@ use Syndesi\Neo4jSyncBundle\Exception\InvalidArgumentException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingIdPropertyException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyValueException;
+use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
 
 class Relation implements Stringable
 {
     /**
-     * @throws MissingPropertyValueException
+     * @param RelationLabel  $label                 Label of the relationship, e.g. CHILD_NODE_PARENT_NODE.
+     * @param NodeLabel      $relatesToLabel        label of the parent node
+     * @param Property       $relatesToIdentifier
+     * @param NodeLabel|null $relatesFromLabel
+     * @param Property|null  $relatesFromIdentifier
+     * @param array          $properties
+     * @param Property|null  $identifier
+     *
      * @throws DuplicatePropertiesException
-     * @throws MissingIdPropertyException
      * @throws InvalidArgumentException
+     * @throws MissingIdPropertyException
+     * @throws MissingPropertyValueException
      */
     public function __construct(
         private readonly RelationLabel $label,
         private readonly NodeLabel $relatesToLabel,
         private readonly Property $relatesToIdentifier,
-        private readonly ?NodeLabel $relatesFromLabel = null,
-        private readonly ?Property $relatesFromIdentifier = null,
+        private readonly NodeLabel $relatesFromLabel,
+        private readonly Property $relatesFromIdentifier,
         /**
          * @var Property[]
          */
@@ -34,10 +43,8 @@ class Relation implements Stringable
         if (null === $relatesToIdentifier->getValue()) {
             throw new MissingPropertyValueException('The value of the relates to property of a relation can not be null.');
         }
-        if ($relatesFromIdentifier) {
-            if (null === $relatesFromIdentifier->getValue()) {
-                throw new MissingPropertyValueException('The value of the relates from property of a relation can not be null.');
-            }
+        if (null === $relatesFromIdentifier->getValue()) {
+            throw new MissingPropertyValueException('The value of the relates from property of a relation can not be null.');
         }
         $propertyNames = [];
         foreach ($properties as $property) {
@@ -115,9 +122,20 @@ class Relation implements Stringable
         throw new MissingPropertyException(sprintf("Unable to find property with name '%s'.", $name));
     }
 
+    /**
+     * If relation was created with an identifier, this method returns a new instance of a property with both the
+     * identifiers name and the identifiers value from the properties.
+     *
+     * @throws MissingPropertyException
+     * @throws UnsupportedPropertyNameException
+     */
     public function getIdentifier(): ?Property
     {
-        return $this->identifier;
+        if ($this->identifier) {
+            return new Property($this->identifier->getName(), $this->getProperty($this->identifier->getName()));
+        }
+
+        return null;
     }
 
     public function __toString()
