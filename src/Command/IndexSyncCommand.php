@@ -7,7 +7,9 @@ namespace Syndesi\Neo4jSyncBundle\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Syndesi\Neo4jSyncBundle\Contract\Neo4jClientInterface;
@@ -24,6 +26,18 @@ class IndexSyncCommand extends Command
         private EventDispatcherInterface $eventDispatcher
     ) {
         parent::__construct();
+    }
+
+    protected function configure()
+    {
+        $this
+            ->addOption(
+                'force',
+                'f',
+                InputOption::VALUE_NEGATABLE,
+                'Disables sanity check, executes without questions',
+                false
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -68,12 +82,24 @@ class IndexSyncCommand extends Command
             ->setRows($rows);
         $table->render();
 
-        // ask user if indices should be created
+        $helper = $this->getHelper('question');
+        $question = new ConfirmationQuestion(sprintf("Continue and create %d indices? (yes/NO): ", count($indices)), false);
+        if (!$input->getOption('force')) {
+            if (!$helper->ask($input, $output, $question)) {
+                $io->writeln("Canceled execution");
 
+                return Command::SUCCESS;
+            }
+        } else {
+            $io->writeln("Skipped confirmation question due to force flag");
+        }
+
+        $io->write('Creating indices...');
         foreach ($indices as $index) {
             $this->client->addStatements(CreateNodeIndexStatementBuilder::build($index));
         }
         $this->client->flush();
+        $io->writeln(' done');
 
         return Command::SUCCESS;
     }

@@ -95,4 +95,12 @@ class Neo4jClient implements Neo4jClientInterface
 
         return $this;
     }
+
+    /**
+     * @return \Ds\Vector|mixed
+     */
+    public function runStatement(Statement $statement): mixed
+    {
+        return $this->client->runStatement($statement);
+    }
 }
