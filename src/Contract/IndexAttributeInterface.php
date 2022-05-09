@@ -11,5 +11,5 @@ use Syndesi\Neo4jSyncBundle\ValueObject\Index;
  */
 interface IndexAttributeInterface
 {
-    public function getIndex(object $entity): Index;
+    public function getIndex(): Index;
 }

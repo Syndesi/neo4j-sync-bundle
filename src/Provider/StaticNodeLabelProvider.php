@@ -14,7 +14,7 @@ class StaticNodeLabelProvider implements NodeLabelProviderInterface
     ) {
     }
 
-    public function getLabel(object $entity): NodeLabel
+    public function getLabel(?object $entity = null): NodeLabel
     {
         return $this->label;
     }

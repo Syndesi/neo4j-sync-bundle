@@ -8,5 +8,5 @@ use Syndesi\Neo4jSyncBundle\ValueObject\RelationLabel;
 
 interface RelationLabelProviderInterface extends LabelProviderInterface
 {
-    public function getLabel(object $entity): RelationLabel;
+    public function getLabel(?object $entity = null): RelationLabel;
 }

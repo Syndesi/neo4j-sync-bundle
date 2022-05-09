@@ -14,7 +14,7 @@ class StaticRelationLabelProvider implements RelationLabelProviderInterface
     ) {
     }
 
-    public function getLabel(object $entity): RelationLabel
+    public function getLabel(?object $entity = null): RelationLabel
     {
         return $this->label;
     }

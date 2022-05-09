@@ -70,6 +70,6 @@ class Index implements Stringable
         }
         $propertyString = implode(', ', $propertyString);
 
-        return sprintf("%s INDEX %s FOR (:%s) ON (%s)", $this->type->value, $this->name, $nameString, $propertyString);
+        return sprintf("%s INDEX %s FOR %s ON (%s)", $this->type->value, $this->name, $nameString, $propertyString);
     }
 }

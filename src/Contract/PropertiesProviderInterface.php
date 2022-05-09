@@ -11,5 +11,5 @@ interface PropertiesProviderInterface
     /**
      * @return Property[]
      */
-    public function getProperties(object $entity): array;
+    public function getProperties(?object $entity = null): array;
 }

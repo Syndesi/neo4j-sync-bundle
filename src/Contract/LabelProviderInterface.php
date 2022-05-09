@@ -6,5 +6,5 @@ namespace Syndesi\Neo4jSyncBundle\Contract;
 
 interface LabelProviderInterface
 {
-    public function getLabel(object $entity): LabelInterface;
+    public function getLabel(?object $entity = null): LabelInterface;
 }

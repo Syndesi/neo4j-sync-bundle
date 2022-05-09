@@ -5,20 +5,25 @@ declare(strict_types=1);
 namespace Syndesi\Neo4jSyncBundle\Provider;
 
 use ReflectionClass;
+use Syndesi\Neo4jSyncBundle\Attribute\Index;
 use Syndesi\Neo4jSyncBundle\Contract\IndexAttributeInterface;
 use Syndesi\Neo4jSyncBundle\Contract\IndexAttributeProviderInterface;
 
 class IndexAttributeProvider implements IndexAttributeProviderInterface
 {
-    public function getIndexAttribute(object $entity): ?IndexAttributeInterface
+    /**
+     * @return Index[]
+     */
+    public function getIndexAttributes(string $className): array
     {
-        foreach ((new ReflectionClass(get_class($entity)))->getAttributes() as $attribute) {
+        $attributes = [];
+        foreach ((new ReflectionClass($className))->getAttributes() as $attribute) {
             $attributeInstance = $attribute->newInstance();
             if ($attributeInstance instanceof IndexAttributeInterface) {
-                return $attributeInstance;
+                $attributes[] = $attributeInstance;
             }
         }
 
-        return null;
+        return $attributes;
     }
 }

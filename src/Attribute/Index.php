@@ -11,7 +11,7 @@ use Syndesi\Neo4jSyncBundle\Contract\IndexTypeProviderInterface;
 use Syndesi\Neo4jSyncBundle\Contract\LabelProviderInterface;
 use Syndesi\Neo4jSyncBundle\Contract\PropertiesProviderInterface;
 
-#[Attribute(Attribute::TARGET_CLASS)]
+#[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 class Index implements IndexAttributeInterface
 {
     public function __construct(
@@ -22,7 +22,7 @@ class Index implements IndexAttributeInterface
     ) {
     }
 
-    public function getIndex(object $entity): \Syndesi\Neo4jSyncBundle\ValueObject\Index
+    public function getIndex(): \Syndesi\Neo4jSyncBundle\ValueObject\Index
     {
         return new \Syndesi\Neo4jSyncBundle\ValueObject\Index(
             $this->indexNameProvider->getName(),

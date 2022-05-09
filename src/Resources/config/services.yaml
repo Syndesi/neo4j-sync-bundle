@@ -28,25 +28,29 @@ services:
 #  Event subscribers
 # ----------------------------------------------------------------------------------------------------------------------
 
-    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostFlushSubscriber:
+    neo4j_sync.event_listener.doctrine_post_flush_subscriber:
         class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostFlushSubscriber
         public: false
         tags:
             - 'doctrine.event_subscriber'
         arguments:
             - '@neo4j_sync.neo4j_client'
+    
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostFlushSubscriber: '@neo4j_sync.event_listener.doctrine_post_flush_subscriber'
 
 
-    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistNodeSubscriber:
+    neo4j_sync.event_listener.doctrine_post_persist_node_subscriber:
         class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistNodeSubscriber
         public: false
         tags:
             - 'doctrine.event_subscriber'
         arguments:
             - '@neo4j_sync.neo4j_client'
+    
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistNodeSubscriber: '@neo4j_sync.event_listener.doctrine_post_persist_node_subscriber'
 
 
-    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistRelationSubscriber:
+    neo4j_sync.event_listener.doctrine_post_persist_relation_subscriber:
         class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistRelationSubscriber
         public: false
         tags:
@@ -54,41 +58,62 @@ services:
         arguments:
             - '@neo4j_sync.neo4j_client'
 
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostPersistRelationSubscriber: '@neo4j_sync.event_listener.doctrine_post_persist_relation_subscriber'
+    
 
-    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateNodeSubscriber:
+    neo4j_sync.event_listener.doctrine_post_update_node_subscriber:
         class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateNodeSubscriber
         public: false
         tags:
             - 'doctrine.event_subscriber'
         arguments:
             - '@neo4j_sync.neo4j_client'
+    
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateNodeSubscriber: '@neo4j_sync.event_listener.doctrine_post_update_node_subscriber'
 
 
-    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateRelationSubscriber:
+    neo4j_sync.event_listener.doctrine_post_update_relation_subscriber:
         class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateRelationSubscriber
         public: false
         tags:
             - 'doctrine.event_subscriber'
         arguments:
             - '@neo4j_sync.neo4j_client'
+    
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostUpdateRelationSubscriber: '@neo4j_sync.event_listener.doctrine_post_update_relation_subscriber'
 
 
-    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePreRemoveNodeSubscriber:
+    neo4j_sync.event_listener.doctrine_pre_remove_node_subscriber:
         class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePreRemoveNodeSubscriber
         public: false
         tags:
             - 'doctrine.event_subscriber'
         arguments:
             - '@neo4j_sync.neo4j_client'
+    
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePreRemoveNodeSubscriber: '@neo4j_sync.event_listener.doctrine_pre_remove_node_subscriber'
 
 
-    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePreRemoveRelationSubscriber:
+    neo4j_sync.event_listener.doctrine_pre_remove_relation_subscriber:
         class: Syndesi\Neo4jSyncBundle\EventListener\DoctrinePreRemoveRelationSubscriber
         public: false
         tags:
             - 'doctrine.event_subscriber'
         arguments:
             - '@neo4j_sync.neo4j_client'
+    
+    Syndesi\Neo4jSyncBundle\EventListener\DoctrinePreRemoveRelationSubscriber: '@neo4j_sync.event_listener.doctrine_pre_remove_relation_subscriber'
+
+
+    neo4j_sync.event_listener.get_all_indices_subscriber:
+        class: Syndesi\Neo4jSyncBundle\EventListener\GetAllIndicesSubscriber
+        public: false
+        tags:
+            - kernel.event_subscriber
+        arguments:
+            - '@doctrine.orm.entity_manager'
+    
+    Syndesi\Neo4jSyncBundle\EventListener\GetAllIndicesSubscriber: '@neo4j_sync.event_listener.get_all_indices_subscriber'
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -137,7 +162,7 @@ services:
         tags:
             - 'console.command'
         arguments:
-            - '@doctrine.orm.entity_manager'
             - '@neo4j_sync.neo4j_client'
+            - '@event_dispatcher'
 
     Syndesi\Neo4jSyncBundle\Command\IndexSyncCommand: '@neo4j_sync.command.index.sync'

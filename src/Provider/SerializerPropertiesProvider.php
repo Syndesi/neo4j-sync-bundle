@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Syndesi\Neo4jSyncBundle\Contract\PropertiesProviderInterface;
-use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
+use Syndesi\Neo4jSyncBundle\Exception\InvalidArgumentException;
 use Syndesi\Neo4jSyncBundle\Normalizer\Neo4jObjectNormalizer;
 use Syndesi\Neo4jSyncBundle\Serializer\Neo4jSerializer;
 use Syndesi\Neo4jSyncBundle\ValueObject\Property;
@@ -33,10 +33,14 @@ class SerializerPropertiesProvider implements PropertiesProviderInterface
      * @returns Property[]
      *
      * @throws ExceptionInterface
-     * @throws UnsupportedPropertyNameException
+     * @throws InvalidArgumentException
      */
-    public function getProperties(object $entity): array
+    public function getProperties(?object $entity = null): array
     {
+        if (!$entity) {
+            throw new InvalidArgumentException('Entity must not be null');
+        }
+
         return $this->serializer->normalize($entity, null, $this->context);
     }
 }
