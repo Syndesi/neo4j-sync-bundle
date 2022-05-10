@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Syndesi\Neo4jSyncBundle\ValueObject;
 
 use Stringable;
+use Syndesi\Neo4jSyncBundle\Contract\IsEqualToInterface;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
 
-class Property implements Stringable
+class Property implements Stringable, IsEqualToInterface
 {
     public const PROPERTY_NAME_REGEX = '/^[a-z_][a-zA-Z0-9_]+$/';
 
@@ -41,5 +42,16 @@ class Property implements Stringable
     public function __toString()
     {
         return sprintf("%s: %s", $this->getName(), $this->getValue());
+    }
+
+    public function isEqualTo(object $element): bool
+    {
+        if (!($element instanceof Property)) {
+            return false;
+        }
+
+        return
+            ($this->name === $element->name) &&
+            ($this->value === $element->value);
     }
 }

@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Syndesi\Neo4jSyncBundle\ValueObject;
 
 use Stringable;
+use Syndesi\Neo4jSyncBundle\Contract\IsEqualToInterface;
 use Syndesi\Neo4jSyncBundle\Contract\LabelInterface;
 use Syndesi\Neo4jSyncBundle\Enum\IndexType;
 use Syndesi\Neo4jSyncBundle\Exception\InvalidArgumentException;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedIndexNameException;
 
-class Index implements Stringable
+class Index implements Stringable, IsEqualToInterface
 {
     /**
      * @param IndexName      $name
@@ -71,5 +72,33 @@ class Index implements Stringable
         $propertyString = implode(', ', $propertyString);
 
         return sprintf("%s INDEX %s FOR %s ON (%s)", $this->type->value, $this->name, $nameString, $propertyString);
+    }
+
+    public function isEqualTo(object $element): bool
+    {
+        if (!($element instanceof Index)) {
+            return false;
+        }
+
+        $arePropertiesEqual = true;
+        if (count($this->properties) !== count($element->properties)) {
+            $arePropertiesEqual = false;
+        } else {
+            foreach ($this->properties as $i => $property) {
+                /**
+                 * @var $property Property
+                 */
+                if (!$property->isEqualTo($element->properties[$i])) {
+                    $arePropertiesEqual = false;
+                    break;
+                }
+            }
+        }
+
+        return
+            $this->name->isEqualTo($element->name) &&
+            $this->label->isEqualTo($element->label) &&
+            $arePropertiesEqual &&
+            $this->type->value === $element->type->value;
     }
 }

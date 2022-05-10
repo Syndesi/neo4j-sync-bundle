@@ -36,4 +36,9 @@ interface Neo4jClientInterface
      * @param Statement[] $statements
      */
     public function addStatements(array $statements): self;
+
+    /**
+     * @return \Ds\Vector|mixed
+     */
+    public function runStatement(Statement $statement): mixed;
 }

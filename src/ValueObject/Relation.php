@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Syndesi\Neo4jSyncBundle\ValueObject;
 
 use Stringable;
+use Syndesi\Neo4jSyncBundle\Contract\IsEqualToInterface;
 use Syndesi\Neo4jSyncBundle\Exception\DuplicatePropertiesException;
 use Syndesi\Neo4jSyncBundle\Exception\InvalidArgumentException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingIdPropertyException;
@@ -12,7 +13,7 @@ use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyValueException;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
 
-class Relation implements Stringable
+class Relation implements Stringable, IsEqualToInterface
 {
     /**
      * @param RelationLabel  $label                 Label of the relationship, e.g. CHILD_NODE_PARENT_NODE.
@@ -158,5 +159,46 @@ class Relation implements Stringable
             $this->relatesToIdentifier->getName(),
             $this->relatesToIdentifier->getValue()
         );
+    }
+
+    public function isEqualTo(object $element): bool
+    {
+        if (!($element instanceof Relation)) {
+            return false;
+        }
+
+        $arePropertiesEqual = true;
+        if (count($this->properties) !== count($element->properties)) {
+            $arePropertiesEqual = false;
+        } else {
+            foreach ($this->properties as $i => $property) {
+                /**
+                 * @var $property Property
+                 */
+                if (!$property->isEqualTo($element->properties[$i])) {
+                    $arePropertiesEqual = false;
+                    break;
+                }
+            }
+        }
+
+        if (!$this->identifier && !$element->identifier) {
+            $isIdentifierEqual = true;
+        } elseif (!$this->identifier && $element->identifier) {
+            $isIdentifierEqual = false;
+        } elseif ($this->identifier && !$element->identifier) {
+            $isIdentifierEqual = false;
+        } else {
+            $isIdentifierEqual = $this->identifier->isEqualTo($element->identifier);
+        }
+
+        return
+            $this->label->isEqualTo($element->label) &&
+            $this->relatesToLabel->isEqualTo($element->relatesToLabel) &&
+            $this->relatesToIdentifier->isEqualTo($element->relatesToIdentifier) &&
+            $this->relatesFromLabel->isEqualTo($element->getRelatesFromLabel()) &&
+            $this->relatesFromIdentifier->isEqualTo($element->getRelatesFromIdentifier()) &&
+            $arePropertiesEqual &&
+            $isIdentifierEqual;
     }
 }

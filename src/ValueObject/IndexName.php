@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Syndesi\Neo4jSyncBundle\ValueObject;
 
 use Stringable;
+use Syndesi\Neo4jSyncBundle\Contract\IsEqualToInterface;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedIndexNameException;
 
-class IndexName implements Stringable
+class IndexName implements Stringable, IsEqualToInterface
 {
     public const INDEX_REGEX = '/^[a-z][a-z\d_]*$/';
 
@@ -27,5 +28,14 @@ class IndexName implements Stringable
     public function __toString()
     {
         return $this->name;
+    }
+
+    public function isEqualTo(object $element): bool
+    {
+        if (!($element instanceof IndexName)) {
+            return false;
+        }
+
+        return $this->name === $element->name;
     }
 }

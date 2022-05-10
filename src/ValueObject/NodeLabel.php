@@ -34,4 +34,13 @@ class NodeLabel implements Stringable, LabelInterface
     {
         return $this->label;
     }
+
+    public function isEqualTo(object $element): bool
+    {
+        if (!($element instanceof NodeLabel)) {
+            return false;
+        }
+
+        return $this->label === $element->label;
+    }
 }

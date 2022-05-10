@@ -150,8 +150,8 @@ services:
         tags:
             - 'console.command'
         arguments:
-            - '@doctrine.orm.entity_manager'
             - '@neo4j_sync.neo4j_client'
+            - '@event_dispatcher'
 
     Syndesi\Neo4jSyncBundle\Command\IndexListCommand: '@neo4j_sync.command.index.list'
 
@@ -166,3 +166,14 @@ services:
             - '@event_dispatcher'
 
     Syndesi\Neo4jSyncBundle\Command\IndexSyncCommand: '@neo4j_sync.command.index.sync'
+
+
+    neo4j_sync.command.index.purge:
+        class: Syndesi\Neo4jSyncBundle\Command\IndexPurgeCommand
+        public: true
+        tags:
+            - 'console.command'
+        arguments:
+            - '@neo4j_sync.neo4j_client'
+
+    Syndesi\Neo4jSyncBundle\Command\IndexPurgeCommand: '@neo4j_sync.command.index.purge'
