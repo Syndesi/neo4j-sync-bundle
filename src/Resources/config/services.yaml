@@ -126,7 +126,6 @@ services:
         tags:
             - 'console.command'
         arguments:
-            - '@doctrine.orm.entity_manager'
             - '@neo4j_sync.neo4j_client'
 
     Syndesi\Neo4jSyncBundle\Command\DatabasePurgeCommand: '@neo4j_sync.command.db.purge'
