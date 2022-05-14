@@ -6,5 +6,5 @@ namespace Syndesi\Neo4jSyncBundle\Contract;
 
 interface NodeAttributeProviderInterface
 {
-    public function getNodeAttribute(object $entity): ?NodeAttributeInterface;
+    public function getNodeAttribute(string|object $entityOrClassName): ?NodeAttributeInterface;
 }

@@ -10,9 +10,13 @@ use Syndesi\Neo4jSyncBundle\Contract\NodeAttributeProviderInterface;
 
 class NodeAttributeProvider implements NodeAttributeProviderInterface
 {
-    public function getNodeAttribute(object $entity): ?NodeAttributeInterface
+    public function getNodeAttribute(string|object $entityOrClassName): ?NodeAttributeInterface
     {
-        foreach ((new ReflectionClass(get_class($entity)))->getAttributes() as $attribute) {
+        $className = $entityOrClassName;
+        if (is_object($entityOrClassName)) {
+            $className = get_class($entityOrClassName);
+        }
+        foreach ((new ReflectionClass($className))->getAttributes() as $attribute) {
             $attributeInstance = $attribute->newInstance();
             if ($attributeInstance instanceof NodeAttributeInterface) {
                 return $attributeInstance;

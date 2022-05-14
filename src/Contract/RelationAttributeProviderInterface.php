@@ -6,5 +6,5 @@ namespace Syndesi\Neo4jSyncBundle\Contract;
 
 interface RelationAttributeProviderInterface
 {
-    public function getRelationAttribute(object $entity): ?RelationAttributeInterface;
+    public function getRelationAttribute(string|object $entityOrClassName): ?RelationAttributeInterface;
 }

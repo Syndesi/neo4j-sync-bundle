@@ -20,7 +20,9 @@ class SerializerPropertiesProvider implements PropertiesProviderInterface
     private Neo4jSerializer $serializer;
 
     public function __construct(
-        private array $context = []
+        private array $context = [
+            'group' => 'neo4j',
+        ]
     ) {
         $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
         $this->serializer = new Neo4jSerializer([

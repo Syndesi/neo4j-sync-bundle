@@ -116,6 +116,39 @@ services:
     Syndesi\Neo4jSyncBundle\EventListener\GetAllIndicesSubscriber: '@neo4j_sync.event_listener.get_all_indices_subscriber'
 
 
+    neo4j_sync.event_listener.database_sync_node_subscriber:
+        class: Syndesi\Neo4jSyncBundle\EventListener\DatabaseSyncNodeSubscriber
+        public: false
+        tags:
+            - kernel.event_subscriber
+        arguments:
+            - '@doctrine.orm.entity_manager'
+    
+    Syndesi\Neo4jSyncBundle\EventListener\DatabaseSyncNodeSubscriber: '@neo4j_sync.event_listener.database_sync_node_subscriber'
+
+
+    neo4j_sync.event_listener.database_sync_node_relation_subscriber:
+        class: Syndesi\Neo4jSyncBundle\EventListener\DatabaseSyncNodeRelationSubscriber
+        public: false
+        tags:
+            - kernel.event_subscriber
+        arguments:
+            - '@doctrine.orm.entity_manager'
+    
+    Syndesi\Neo4jSyncBundle\EventListener\DatabaseSyncNodeRelationSubscriber: '@neo4j_sync.event_listener.database_sync_node_relation_subscriber'
+
+
+    neo4j_sync.event_listener.database_sync_relation_subscriber:
+        class: Syndesi\Neo4jSyncBundle\EventListener\DatabaseSyncRelationSubscriber
+        public: false
+        tags:
+            - kernel.event_subscriber
+        arguments:
+            - '@doctrine.orm.entity_manager'
+    
+    Syndesi\Neo4jSyncBundle\EventListener\DatabaseSyncRelationSubscriber: '@neo4j_sync.event_listener.database_sync_relation_subscriber'
+
+
 # ----------------------------------------------------------------------------------------------------------------------
 #  Commands
 # ----------------------------------------------------------------------------------------------------------------------
@@ -137,8 +170,8 @@ services:
         tags:
             - 'console.command'
         arguments:
-            - '@doctrine.orm.entity_manager'
             - '@neo4j_sync.neo4j_client'
+            - '@event_dispatcher'
 
     Syndesi\Neo4jSyncBundle\Command\DatabaseSyncCommand: '@neo4j_sync.command.db.sync'
 
