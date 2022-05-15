@@ -10,9 +10,13 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Syndesi\Neo4jSyncBundle\Enum\DriverType;
 use Syndesi\Neo4jSyncBundle\Exception\InvalidConfigurationException;
 use Syndesi\Neo4jSyncBundle\Service\Neo4jClient;
 use Syndesi\Neo4jSyncBundle\Service\Neo4jClientFactory;
+use Syndesi\Neo4jSyncBundle\ValueObject\Client;
+use Syndesi\Neo4jSyncBundle\ValueObject\Configuration as ConfigurationVO;
+use Syndesi\Neo4jSyncBundle\ValueObject\Driver;
 
 class SyndesiNeo4jSyncExtension extends Extension
 {
@@ -24,49 +28,62 @@ class SyndesiNeo4jSyncExtension extends Extension
         $config = $this->parseConfig($configs, $container);
 
         $this->createClientServices($config, $container);
-        $this->handleDisableDoctrineListeners($container, $config['disable_doctrine_listeners']);
+        $this->handleDisableDoctrineListeners($container, $config->isDisableDoctrineListeners());
     }
 
     /**
      * @throws Exception
      */
-    private function parseConfig(array $configs, ContainerBuilder $container): array
+    private function parseConfig(array $configs, ContainerBuilder $container): ConfigurationVO
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yaml');
         $configuration = $this->getConfiguration($configs, $container);
 
-        return $this->processConfiguration($configuration, $configs);
+        $config = $this->processConfiguration($configuration, $configs);
+
+        $clients = [];
+        foreach ($config['clients'] as $name => $clientConfig) {
+            $drivers = [];
+            foreach ($clientConfig['drivers'] as $driverName => $driverConfig) {
+                $drivers[$driverName] = new Driver(
+                    DriverType::from($driverConfig['type']),
+                    $driverConfig['url']
+                );
+            }
+            $clients[$name] = new Client(
+                $drivers,
+                $clientConfig['default_driver'] ?: array_keys($clientConfig['drivers'])[0]
+            );
+        }
+
+        return new ConfigurationVO(
+            $clients,
+            $config['default_client'] ?: array_keys($config['clients'])[0],
+            $config['page_size'],
+            $config['disable_doctrine_listeners']
+        );
     }
 
     /**
      * @throws InvalidConfigurationException
      */
-    private function createClientServices(array $config, ContainerBuilder $container)
+    private function createClientServices(ConfigurationVO $config, ContainerBuilder $container)
     {
         // create client services
-        foreach ($config['clients'] as $name => $clientConfig) {
+        foreach ($config->getClients() as $name => $clientConfig) {
             $serviceName = sprintf('neo4j_sync.neo4j_client.%s', $name);
             $definition = (new Definition(Neo4jClient::class, []))
                 ->setFactory([Neo4jClientFactory::class, 'createClient'])
                 ->addTag('monolog.logger', ['channel' => 'neo4j_sync'])
-                ->addArgument($clientConfig)
+//                ->addArgument($clientConfig)
+                ->setArgument('$client', [$clientConfig])
             ;
             $container->setDefinition($serviceName, $definition);
         }
 
         // set default client
-        if (!array_key_exists('default_client', $config)) {
-            throw new InvalidConfigurationException('Missing configuration default_client');
-        }
-        $defaultClient = array_keys($config['clients'])[0];
-        if (null !== $config['default_client']) {
-            $defaultClient = $config['default_client'];
-            if (!array_key_exists($defaultClient, $config['clients'])) {
-                throw new InvalidConfigurationException(sprintf("Did not found default client with name '%s' under configured clients", $defaultClient));
-            }
-        }
-        $defaultClient = $container->getDefinition(sprintf('neo4j_sync.neo4j_client.%s', $defaultClient));
+        $defaultClient = $container->getDefinition(sprintf('neo4j_sync.neo4j_client.%s', $clientConfig->getDefaultDriver()));
         $container->setDefinition('neo4j_sync.neo4j_client', $defaultClient);
     }
 
