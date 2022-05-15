@@ -6,6 +6,7 @@ namespace Syndesi\Neo4jSyncBundle\Event;
 
 use Symfony\Contracts\EventDispatcher\Event;
 use Syndesi\Neo4jSyncBundle\Contract\PaginatedStatementProviderInterface;
+use Syndesi\Neo4jSyncBundle\Enum\CreateType;
 
 class DatabaseSyncEvent extends Event
 {
@@ -15,7 +16,8 @@ class DatabaseSyncEvent extends Event
      * @param PaginatedStatementProviderInterface[] $paginatedStatementProviders
      */
     public function __construct(
-        private array $paginatedStatementProviders = []
+        private array $paginatedStatementProviders = [],
+        private CreateType $createType = CreateType::MERGE
     ) {
     }
 
@@ -46,5 +48,10 @@ class DatabaseSyncEvent extends Event
     public function getPaginatedStatementProviders(): array
     {
         return $this->paginatedStatementProviders;
+    }
+
+    public function getCreateType(): CreateType
+    {
+        return $this->createType;
     }
 }

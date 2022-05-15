@@ -8,17 +8,20 @@ use Doctrine\ORM\EntityManagerInterface;
 use Laudis\Neo4j\Databags\Statement;
 use Syndesi\Neo4jSyncBundle\Contract\NodeAttributeInterface;
 use Syndesi\Neo4jSyncBundle\Contract\PaginatedStatementProviderInterface;
-use Syndesi\Neo4jSyncBundle\Statement\MergeNodeStatementBuilder;
+use Syndesi\Neo4jSyncBundle\Enum\CreateType;
+use Syndesi\Neo4jSyncBundle\Statement\BatchCreateNodeStatementBuilder;
+use Syndesi\Neo4jSyncBundle\Statement\BatchMergeNodeStatementBuilder;
 
 class DatabaseSyncNodeProvider implements PaginatedStatementProviderInterface
 {
     private int $page = 0;
-    private int $size = 0;
+    private int $size;
 
     public function __construct(
         private string $className,
         private EntityManagerInterface $em,
-        private NodeAttributeInterface $nodeAttribute
+        private NodeAttributeInterface $nodeAttribute,
+        private CreateType $createType = CreateType::MERGE
     ) {
         $this->size = $this->em->getRepository($this->className)->count([]);
     }
@@ -54,15 +57,15 @@ class DatabaseSyncNodeProvider implements PaginatedStatementProviderInterface
             ->setMaxResults(($this->page + 1) * self::PAGE_SIZE - 1)
             ->getQuery()
             ->execute();
-        $statements = [];
+        $nodes = [];
         foreach ($elements as $element) {
-            $node = $this->nodeAttribute->getNode($element);
-            $statements = [
-                ...$statements,
-                ...MergeNodeStatementBuilder::build($node),
-            ];
+            $nodes[] = $this->nodeAttribute->getNode($element);
         }
 
-        return $statements;
+        if (CreateType::MERGE === $this->createType) {
+            return BatchMergeNodeStatementBuilder::build($nodes);
+        } else {
+            return BatchCreateNodeStatementBuilder::build($nodes);
+        }
     }
 }

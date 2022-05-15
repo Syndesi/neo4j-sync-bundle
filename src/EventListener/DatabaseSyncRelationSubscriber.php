@@ -35,7 +35,7 @@ class DatabaseSyncRelationSubscriber implements EventSubscriberInterface
                 $className = $metadata->getReflectionClass()->getName();
                 $relationAttribute = (new RelationAttributeProvider())->getRelationAttribute($className);
                 if ($relationAttribute) {
-                    $tmpProvider = new DatabaseSyncRelationProvider($className, $this->em, $relationAttribute);
+                    $tmpProvider = new DatabaseSyncRelationProvider($className, $this->em, $relationAttribute, $databaseSyncEvent->getCreateType());
                     $databaseSyncEvent->addPaginatedStatementProvider($tmpProvider);
                 }
             }

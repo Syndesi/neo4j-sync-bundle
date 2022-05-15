@@ -7,13 +7,13 @@ namespace Syndesi\Neo4jSyncBundle\Provider;
 use Doctrine\ORM\EntityManagerInterface;
 use Syndesi\Neo4jSyncBundle\Contract\NodeAttributeInterface;
 use Syndesi\Neo4jSyncBundle\Contract\PaginatedStatementProviderInterface;
-use Syndesi\Neo4jSyncBundle\Statement\CreateRelationStatementBuilder;
-use Syndesi\Neo4jSyncBundle\Statement\DeleteRelationsFromNodeStatementBuilder;
+use Syndesi\Neo4jSyncBundle\Statement\BatchCreateRelationStatementBuilder;
+use Syndesi\Neo4jSyncBundle\Statement\BatchDeleteRelationsFromNodeStatementBuilder;
 
 class DatabaseSyncNodeRelationProvider implements PaginatedStatementProviderInterface
 {
     private int $page = 0;
-    private int $size = 0;
+    private int $size;
 
     public function __construct(
         private string $className,
@@ -51,21 +51,31 @@ class DatabaseSyncNodeRelationProvider implements PaginatedStatementProviderInte
             ->setMaxResults(($this->page + 1) * self::PAGE_SIZE - 1)
             ->getQuery()
             ->execute();
-        $statements = [];
+
+        $nodes = [];
+        $relationTypes = []; // contains one array per relationship type
         foreach ($elements as $element) {
             $node = $this->nodeAttribute->getNode($element);
-            $statements = [
-                ...$statements,
-                ...DeleteRelationsFromNodeStatementBuilder::build($node),
-            ];
+            $nodes[] = $node;
             foreach ($node->getRelations() as $relation) {
-                $statements = [
-                    ...$statements,
-                    ...CreateRelationStatementBuilder::build($relation),
-                ];
+                $key = $relation->getLabel()->getLabel();
+                if (!array_key_exists($key, $relationTypes)) {
+                    $relationTypes[$key] = [];
+                }
+                $relationTypes[$key][] = $relation;
             }
         }
+        $relationStatements = [];
+        foreach ($relationTypes as $relations) {
+            $relationStatements = [
+                ...$relationStatements,
+                ...BatchCreateRelationStatementBuilder::build($relations),
+            ];
+        }
 
-        return $statements;
+        return [
+            ...BatchDeleteRelationsFromNodeStatementBuilder::build($nodes),
+            ...$relationStatements,
+        ];
     }
 }

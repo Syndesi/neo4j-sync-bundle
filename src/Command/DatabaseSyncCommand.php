@@ -11,6 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Syndesi\Neo4jSyncBundle\Contract\Neo4jClientInterface;
+use Syndesi\Neo4jSyncBundle\Enum\CreateType;
 use Syndesi\Neo4jSyncBundle\Event\DatabaseSyncEvent;
 
 class DatabaseSyncCommand extends Command
@@ -45,7 +46,7 @@ class DatabaseSyncCommand extends Command
             return Command::FAILURE;
         }
 
-        $event = new DatabaseSyncEvent();
+        $event = new DatabaseSyncEvent(createType: CreateType::MERGE);
         /**
          * @var DatabaseSyncEvent $databaseSyncEvent
          */
