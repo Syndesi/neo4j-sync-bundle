@@ -10,11 +10,10 @@ use Syndesi\Neo4jSyncBundle\Contract\Neo4jClientInterface;
 
 class DoctrinePostFlushSubscriber implements EventSubscriber
 {
-    private Neo4jClientInterface $client;
-
-    public function __construct(Neo4jClientInterface $client)
-    {
-        $this->client = $client;
+    public function __construct(
+        private Neo4jClientInterface $client,
+        private bool $disableSubscriber = false
+    ) {
     }
 
     public function getSubscribedEvents(): array
@@ -26,6 +25,9 @@ class DoctrinePostFlushSubscriber implements EventSubscriber
 
     public function postFlush()
     {
+        if ($this->disableSubscriber) {
+            return;
+        }
         $this->client->flush();
     }
 }

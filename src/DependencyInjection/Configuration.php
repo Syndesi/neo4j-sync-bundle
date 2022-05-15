@@ -78,6 +78,12 @@ class Configuration implements ConfigurationInterface
                     'Determines how many elements are used within every Neo4j batch request.'
                 )
             ->end()
+            ->booleanNode('disable_doctrine_listeners')
+                ->defaultFalse()
+                ->info(
+                    'Disables doctrine listeners, useful for local development'
+                )
+            ->end()
             ->scalarNode('use_merge_for_create_statements')
                 ->defaultTrue()
                 ->info(

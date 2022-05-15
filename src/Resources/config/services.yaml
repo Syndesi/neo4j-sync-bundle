@@ -35,6 +35,7 @@ services:
             - 'doctrine.event_subscriber'
         arguments:
             - '@neo4j_sync.neo4j_client'
+            - ''
     
     Syndesi\Neo4jSyncBundle\EventListener\DoctrinePostFlushSubscriber: '@neo4j_sync.event_listener.doctrine_post_flush_subscriber'
 

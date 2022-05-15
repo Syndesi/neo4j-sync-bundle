@@ -17,13 +17,12 @@ use Syndesi\Neo4jSyncBundle\Statement\DeleteNodeStatementBuilder;
 
 class DoctrinePreRemoveNodeSubscriber implements EventSubscriber
 {
-    private Neo4jClientInterface $client;
     private NodeAttributeProviderInterface $nodeAttributeProvider;
 
     public function __construct(
-        Neo4jClientInterface $client
+        private Neo4jClientInterface $client,
+        private bool $disableSubscriber = false
     ) {
-        $this->client = $client;
         $this->nodeAttributeProvider = new NodeAttributeProvider();
     }
 
@@ -41,6 +40,9 @@ class DoctrinePreRemoveNodeSubscriber implements EventSubscriber
      */
     public function preRemove(LifecycleEventArgs $args)
     {
+        if ($this->disableSubscriber) {
+            return;
+        }
         $entity = $args->getEntity();
         $nodeAttribute = $this->nodeAttributeProvider->getNodeAttribute($entity);
         if (!$nodeAttribute) {

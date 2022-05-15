@@ -24,6 +24,7 @@ class SyndesiNeo4jSyncExtension extends Extension
         $config = $this->parseConfig($configs, $container);
 
         $this->createClientServices($config, $container);
+        $this->handleDisableDoctrineListeners($container, $config['disable_doctrine_listeners']);
     }
 
     /**
@@ -67,6 +68,23 @@ class SyndesiNeo4jSyncExtension extends Extension
         }
         $defaultClient = $container->getDefinition(sprintf('neo4j_sync.neo4j_client.%s', $defaultClient));
         $container->setDefinition('neo4j_sync.neo4j_client', $defaultClient);
+    }
+
+    private function handleDisableDoctrineListeners(ContainerBuilder $container, bool $disableDoctrineListeners = false)
+    {
+        $listeners = [
+            'neo4j_sync.event_listener.doctrine_post_flush_subscriber',
+            'neo4j_sync.event_listener.doctrine_post_persist_node_subscriber',
+            'neo4j_sync.event_listener.doctrine_post_persist_relation_subscriber',
+            'neo4j_sync.event_listener.doctrine_post_update_node_subscriber',
+            'neo4j_sync.event_listener.doctrine_post_update_relation_subscriber',
+            'neo4j_sync.event_listener.doctrine_pre_remove_node_subscriber',
+            'neo4j_sync.event_listener.doctrine_pre_remove_relation_subscriber',
+        ];
+        foreach ($listeners as $listener) {
+            $container->getDefinition($listener)
+                ->addArgument($disableDoctrineListeners);
+        }
     }
 
     public function getAlias(): string

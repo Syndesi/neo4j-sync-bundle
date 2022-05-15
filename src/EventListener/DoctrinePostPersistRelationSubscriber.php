@@ -15,13 +15,12 @@ use Syndesi\Neo4jSyncBundle\Statement\MergeRelationStatementBuilder;
 
 class DoctrinePostPersistRelationSubscriber implements EventSubscriber
 {
-    private Neo4jClientInterface $client;
     private RelationAttributeProviderInterface $relationAttributeProvider;
 
     public function __construct(
-        Neo4jClientInterface $client
+        private Neo4jClientInterface $client,
+        private bool $disableSubscriber = false
     ) {
-        $this->client = $client;
         $this->relationAttributeProvider = new RelationAttributeProvider();
     }
 
@@ -37,6 +36,9 @@ class DoctrinePostPersistRelationSubscriber implements EventSubscriber
      */
     public function postPersist(LifecycleEventArgs $args)
     {
+        if ($this->disableSubscriber) {
+            return;
+        }
         $entity = $args->getEntity();
         $relationAttribute = $this->relationAttributeProvider->getRelationAttribute($entity);
         if (!$relationAttribute) {
