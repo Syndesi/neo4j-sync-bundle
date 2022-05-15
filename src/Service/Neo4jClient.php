@@ -29,13 +29,14 @@ class Neo4jClient implements Neo4jClientInterface
         $this->logger->debug('START FLUSHING');
         if ($concurrently) {
             $this->client->runStatements($this->statements);
-            $this->statements = [];
         } else {
             while ($statement = array_shift($this->statements)) {
                 $this->logger->debug($statement->getText(), $statement->getParameters());
                 $this->client->runStatement($statement);
             }
         }
+//        unset($this->statements);
+        $this->statements = [];
         $this->logger->debug('FINISHED FLUSHING');
 
         return $this;

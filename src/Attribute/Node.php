@@ -63,4 +63,9 @@ class Node implements NodeAttributeInterface
             $relations
         );
     }
+
+    public function hasRelations(): bool
+    {
+        return !empty($this->relations);
+    }
 }

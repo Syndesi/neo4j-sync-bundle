@@ -15,4 +15,10 @@ interface PaginatedStatementProviderInterface extends Iterator
      * @return Statement[]
      */
     public function current(): array;
+
+    public function countPages(): int;
+
+    public function countElements(): int;
+
+    public function getName(): string;
 }

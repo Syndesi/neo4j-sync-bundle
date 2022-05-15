@@ -64,7 +64,7 @@ class IndexPurgeCommand extends Command
             $io->writeln("Skipped confirmation question due to force flag");
         }
 
-        $io->write("Purging all indices...");
+        $io->writeln("Purging all indices...");
         $indices = $this->client->runStatement(GetIndicesStatementBuilder::build()[0]);
         foreach ($indices as $index) {
             /**
@@ -80,9 +80,10 @@ class IndexPurgeCommand extends Command
             );
             $this->client->addStatements(DeleteIndexStatementBuilder::build($indexVo));
         }
-
         $this->client->flush();
-        $io->writeln(" done");
+        $io->newLine();
+
+        $io->success("Index purge completed");
 
         return Command::SUCCESS;
     }

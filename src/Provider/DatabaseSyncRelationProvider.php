@@ -54,7 +54,7 @@ class DatabaseSyncRelationProvider implements PaginatedStatementProviderInterfac
         $elements = $this->em->getRepository($this->className)
             ->createQueryBuilder('n')
             ->setFirstResult($this->page * self::PAGE_SIZE)
-            ->setMaxResults(($this->page + 1) * self::PAGE_SIZE - 1)
+            ->setMaxResults(($this->page + 1) * self::PAGE_SIZE)
             ->getQuery()
             ->execute();
 
@@ -68,5 +68,20 @@ class DatabaseSyncRelationProvider implements PaginatedStatementProviderInterfac
         } else {
             return BatchCreateRelationStatementBuilder::build($relations);
         }
+    }
+
+    public function countPages(): int
+    {
+        return (int) ceil((float) $this->size / (float) self::PAGE_SIZE);
+    }
+
+    public function countElements(): int
+    {
+        return $this->size;
+    }
+
+    public function getName(): string
+    {
+        return $this->className;
     }
 }

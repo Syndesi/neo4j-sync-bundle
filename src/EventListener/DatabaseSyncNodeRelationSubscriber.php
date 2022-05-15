@@ -35,8 +35,10 @@ class DatabaseSyncNodeRelationSubscriber implements EventSubscriberInterface
                 $className = $metadata->getReflectionClass()->getName();
                 $nodeAttribute = (new NodeAttributeProvider())->getNodeAttribute($className);
                 if ($nodeAttribute) {
-                    $tmpProvider = new DatabaseSyncNodeRelationProvider($className, $this->em, $nodeAttribute);
-                    $databaseSyncEvent->addPaginatedStatementProvider($tmpProvider);
+                    if ($nodeAttribute->hasRelations()) {
+                        $tmpProvider = new DatabaseSyncNodeRelationProvider($className, $this->em, $nodeAttribute);
+                        $databaseSyncEvent->addPaginatedStatementProvider($tmpProvider);
+                    }
                 }
             }
         }

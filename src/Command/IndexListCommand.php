@@ -113,7 +113,7 @@ class IndexListCommand extends Command
                 $index->getType()->value,
                 $propertiesString,
                 $rowElement['defined'] ? 'yes' : '-',
-                $rowElement['exists'] ? 'yes' : '-',
+                $rowElement['exists'] ? 'yes' : 'no',
                 $rowElement['conflict'] ? 'yes' : '-',
             ];
         }
