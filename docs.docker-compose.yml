@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  docsify:
+    image: sujaykumarh/docsify:latest
+    container_name: neo4j-sync-docsify
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+      - 3001:3001
+    volumes:
+      - ./docs:/docs
+    command: serve --livereload-port=3001
