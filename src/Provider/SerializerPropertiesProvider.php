@@ -43,6 +43,8 @@ class SerializerPropertiesProvider implements PropertiesProviderInterface
             throw new InvalidArgumentException('Entity must not be null');
         }
 
-        return $this->serializer->normalize($entity, null, $this->context);
+        $data = $this->serializer->normalize($entity, null, $this->context);
+
+        return $data ?: [];
     }
 }

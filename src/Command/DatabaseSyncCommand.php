@@ -72,7 +72,7 @@ class DatabaseSyncCommand extends Command
                     throw new InvalidArgumentException("Memory limit must be greater than 0 MB");
                 }
                 $memoryLimitInBytes = $memoryLimitInMegaBytes * 1024 * 1024;
-                ini_set('memory_limit', $memoryLimitInBytes);
+                ini_set('memory_limit', (string) $memoryLimitInBytes);
                 $io->writeln(sprintf("Memory set to %d MB", $memoryLimitInMegaBytes));
             }
         }

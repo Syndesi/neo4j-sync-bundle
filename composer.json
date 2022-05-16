@@ -44,11 +44,17 @@
     "require-dev": {
         "symfony/test-pack": "^1.0",
         "friendsofphp/php-cs-fixer": "^3.8",
-        "symfony/phpunit-bridge": "^6.0"
+        "symfony/phpunit-bridge": "^6.0",
+        "vimeo/psalm": "^4.23",
+        "psalm/plugin-symfony": "^3.1",
+        "weirdan/doctrine-psalm-plugin": "^2.3",
+        "boesing/psalm-plugin-stringf": "^1.1"
     },
     "scripts": {
         "test": "php ./vendor/phpunit/phpunit/phpunit",
         "cs:list": "php vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --dry-run ./src",
-        "cs:fix": "php vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix ./src --allow-risky=yes"
+        "cs:fix": "php vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix ./src --allow-risky=yes",
+        "psalm": "php vendor/bin/psalm",
+        "psalm:fix": "php vendor/bin/psalm --alter --issues=MissingReturnType,InvalidReturnType,InvalidNullableReturnType,MismatchingDocblockParamType"
     }
 }

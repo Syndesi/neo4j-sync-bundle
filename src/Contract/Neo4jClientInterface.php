@@ -37,8 +37,5 @@ interface Neo4jClientInterface
      */
     public function addStatements(array $statements): self;
 
-    /**
-     * @return \Ds\Vector|mixed
-     */
     public function runStatement(Statement $statement): mixed;
 }

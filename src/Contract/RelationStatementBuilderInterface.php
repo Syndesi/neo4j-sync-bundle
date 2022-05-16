@@ -12,5 +12,5 @@ interface RelationStatementBuilderInterface
     /**
      * @return Statement[]
      */
-    public static function build(Relation $relations): array;
+    public static function build(Relation $relation): array;
 }
