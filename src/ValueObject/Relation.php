@@ -12,17 +12,18 @@ use Syndesi\Neo4jSyncBundle\Exception\MissingIdPropertyException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyValueException;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
+use Syndesi\Neo4jSyncBundle\Helper\CompareEqualHelper;
 
 class Relation implements Stringable, IsEqualToInterface
 {
     /**
-     * @param RelationLabel  $label                 Label of the relationship, e.g. CHILD_NODE_PARENT_NODE.
-     * @param NodeLabel      $relatesToLabel        label of the parent node
-     * @param Property       $relatesToIdentifier
-     * @param NodeLabel|null $relatesFromLabel
-     * @param Property|null  $relatesFromIdentifier
-     * @param array          $properties
-     * @param Property|null  $identifier
+     * @param RelationLabel $label                 Label of the relationship, e.g. CHILD_NODE_PARENT_NODE.
+     * @param NodeLabel     $relatesToLabel        label of the parent node
+     * @param Property      $relatesToIdentifier
+     * @param NodeLabel     $relatesFromLabel
+     * @param Property      $relatesFromIdentifier
+     * @param array         $properties
+     * @param Property|null $identifier
      *
      * @throws DuplicatePropertiesException
      * @throws InvalidArgumentException
@@ -79,12 +80,12 @@ class Relation implements Stringable, IsEqualToInterface
         return $this->relatesToIdentifier;
     }
 
-    public function getRelatesFromLabel(): ?NodeLabel
+    public function getRelatesFromLabel(): NodeLabel
     {
         return $this->relatesFromLabel;
     }
 
-    public function getRelatesFromIdentifier(): ?Property
+    public function getRelatesFromIdentifier(): Property
     {
         return $this->relatesFromIdentifier;
     }
@@ -150,12 +151,12 @@ class Relation implements Stringable, IsEqualToInterface
 
         return sprintf(
             "(:%s {%s: %s})-[:%s {%s}]->(:%s {%s: %s})",
-            $this->relatesFromLabel,
+            (string) $this->relatesFromLabel,
             $this->relatesFromIdentifier->getName(),
             $this->relatesFromIdentifier->getValue(),
-            $this->label,
+            (string) $this->label,
             $properties,
-            $this->relatesToLabel,
+            (string) $this->relatesToLabel,
             $this->relatesToIdentifier->getName(),
             $this->relatesToIdentifier->getValue()
         );
@@ -172,9 +173,6 @@ class Relation implements Stringable, IsEqualToInterface
             $arePropertiesEqual = false;
         } else {
             foreach ($this->properties as $i => $property) {
-                /**
-                 * @var $property Property
-                 */
                 if (!$property->isEqualTo($element->properties[$i])) {
                     $arePropertiesEqual = false;
                     break;
@@ -182,23 +180,13 @@ class Relation implements Stringable, IsEqualToInterface
             }
         }
 
-        if (!$this->identifier && !$element->identifier) {
-            $isIdentifierEqual = true;
-        } elseif (!$this->identifier && $element->identifier) {
-            $isIdentifierEqual = false;
-        } elseif ($this->identifier && !$element->identifier) {
-            $isIdentifierEqual = false;
-        } else {
-            $isIdentifierEqual = $this->identifier->isEqualTo($element->identifier);
-        }
-
         return
             $this->label->isEqualTo($element->label) &&
             $this->relatesToLabel->isEqualTo($element->relatesToLabel) &&
             $this->relatesToIdentifier->isEqualTo($element->relatesToIdentifier) &&
-            $this->relatesFromLabel->isEqualTo($element->getRelatesFromLabel()) &&
-            $this->relatesFromIdentifier->isEqualTo($element->getRelatesFromIdentifier()) &&
+            $this->relatesFromLabel->isEqualTo($element->relatesFromLabel) &&
+            $this->relatesFromIdentifier->isEqualTo($element->relatesFromIdentifier) &&
             $arePropertiesEqual &&
-            $isIdentifierEqual;
+            CompareEqualHelper::compare($this->identifier, $element->identifier);
     }
 }

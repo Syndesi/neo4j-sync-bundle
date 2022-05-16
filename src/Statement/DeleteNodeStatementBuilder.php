@@ -27,7 +27,7 @@ class DeleteNodeStatementBuilder implements NodeStatementBuilderInterface
                 "MATCH\n".
                 "  (node:%s {%s: $%s})\n".
                 'DETACH DELETE node',
-                $node->getLabel(),
+                (string) $node->getLabel(),
                 $node->getIdentifier()->getName(),
                 $node->getIdentifier()->getName()
             ),

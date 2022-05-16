@@ -50,7 +50,7 @@ class BatchDeleteRelationsFromNodeStatementBuilder implements BatchNodeStatement
                 "  -[relation]->\n".
                 "  (parent)\n".
                 "DELETE relation",
-                $nodes[0]->getLabel(),
+                (string) $nodes[0]->getLabel(),
                 $nodes[0]->getIdentifier()->getName()
             ),
             [

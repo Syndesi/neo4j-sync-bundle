@@ -41,7 +41,7 @@ class MergeNodeStatementBuilder implements NodeStatementBuilderInterface
                 "ON MATCH\n".
                 "  SET\n".
                 "%s",
-                $node->getLabel(),
+                (string) $node->getLabel(),
                 $node->getIdentifier()->getName(),
                 $node->getIdentifier()->getName(),
                 $propertiesString,

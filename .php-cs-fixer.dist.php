@@ -17,6 +17,7 @@ return (new PhpCsFixer\Config())
         ],
         'declare_strict_types' => true,
         'single_quote' => false,
+        'phpdoc_to_comment' => false
     ])
     ->setFinder($finder)
 ;

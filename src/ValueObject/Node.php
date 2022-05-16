@@ -57,6 +57,9 @@ class Node implements Stringable
         return $this->properties;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getPropertiesAsAssociativeArray(): array
     {
         $associativeArray = [];
@@ -73,9 +76,6 @@ class Node implements Stringable
     public function getProperty(string $name): mixed
     {
         foreach ($this->properties as $property) {
-            /**
-             * @var Property $property
-             */
             if ($property->getName() === $name) {
                 return $property->getValue();
             }
@@ -128,6 +128,6 @@ class Node implements Stringable
         }
         $properties = implode(', ', $properties);
 
-        return sprintf("%s {%s}", $this->label, $properties);
+        return sprintf("%s {%s}", (string) $this->label, $properties);
     }
 }

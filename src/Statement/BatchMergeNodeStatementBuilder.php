@@ -56,7 +56,7 @@ class BatchMergeNodeStatementBuilder implements BatchNodeStatementBuilderInterfa
                 "UNWIND \$batch as row\n".
                 "MERGE (n:%s {%s: row.id})\n".
                 "SET n += row.properties",
-                $nodes[0]->getLabel(),
+                (string) $nodes[0]->getLabel(),
                 $nodes[0]->getIdentifier()->getName()
             ),
             [

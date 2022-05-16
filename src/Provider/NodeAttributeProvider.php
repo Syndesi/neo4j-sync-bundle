@@ -16,6 +16,7 @@ class NodeAttributeProvider implements NodeAttributeProviderInterface
         if (is_object($entityOrClassName)) {
             $className = get_class($entityOrClassName);
         }
+        /** @psalm-suppress ArgumentTypeCoercion */
         foreach ((new ReflectionClass($className))->getAttributes() as $attribute) {
             $attributeInstance = $attribute->newInstance();
             if ($attributeInstance instanceof NodeAttributeInterface) {

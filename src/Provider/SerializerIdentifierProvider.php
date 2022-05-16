@@ -10,6 +10,7 @@ use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Syndesi\Neo4jSyncBundle\Contract\IdentifierProviderInterface;
+use Syndesi\Neo4jSyncBundle\Exception\NormalizationException;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
 use Syndesi\Neo4jSyncBundle\Normalizer\Neo4jObjectNormalizer;
 use Syndesi\Neo4jSyncBundle\Serializer\Neo4jSerializer;
@@ -35,10 +36,14 @@ class SerializerIdentifierProvider implements IdentifierProviderInterface
     /**
      * @throws ExceptionInterface
      * @throws UnsupportedPropertyNameException
+     * @throws NormalizationException
      */
     public function getIdentifier(object $entity): Property
     {
         $data = $this->serializer->normalize($entity, null, $this->context);
+        if (!is_array($data)) {
+            throw new NormalizationException(sprintf("Entity of type %s was unable to normalize.", get_class($entity)));
+        }
 
         return new Property($this->identifier->getName(), $data[$this->identifier->getValue()]);
     }

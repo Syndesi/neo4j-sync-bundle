@@ -20,12 +20,6 @@ class CreateRelationStatementBuilder implements RelationStatementBuilderInterfac
      */
     public static function build(Relation $relation): array
     {
-        if (null === $relation->getRelatesFromLabel()) {
-            throw new InvalidArgumentException('relatesFromLabel can not be null.');
-        }
-        if (null === $relation->getRelatesFromIdentifier()) {
-            throw new InvalidArgumentException('relatesFromIdentifier can not be null.');
-        }
         $relationPropertyString = [];
         foreach ($relation->getProperties() as $property) {
             // do not filter relation id property
@@ -39,11 +33,11 @@ class CreateRelationStatementBuilder implements RelationStatementBuilderInterfac
                 "  (child:%s {%s: \$_childId}),\n".
                 "  (parent:%s {%s: \$_parentId})\n".
                 "CREATE (child)-[:%s {%s}]->(parent)",
-                $relation->getRelatesFromLabel(),
+                (string) $relation->getRelatesFromLabel(),
                 $relation->getRelatesFromIdentifier()->getName(),
-                $relation->getRelatesToLabel(),
+                (string) $relation->getRelatesToLabel(),
                 $relation->getRelatesToIdentifier()->getName(),
-                $relation->getLabel(),
+                (string) $relation->getLabel(),
                 $relationPropertyString
             ),
             [

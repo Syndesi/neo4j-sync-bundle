@@ -56,7 +56,7 @@ class BatchCreateNodeStatementBuilder implements BatchNodeStatementBuilderInterf
                 "UNWIND \$batch as row\n".
                 "CREATE (n:%s {%s: row.id})\n".
                 "SET n += row.properties",
-                $nodes[0]->getLabel(),
+                (string) $nodes[0]->getLabel(),
                 $nodes[0]->getIdentifier()->getName()
             ),
             [

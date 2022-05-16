@@ -29,8 +29,8 @@ class CreateRelationIndexStatementBuilder implements IndexStatementBuilderInterf
                 "FOR ()-[relation:%s]-()\n".
                 "ON (%s)",
                 $index->getType()->value,
-                $index->getName(),
-                $index->getLabel(),
+                (string) $index->getName(),
+                (string) $index->getLabel(),
                 $propertiesString
             ),
             []

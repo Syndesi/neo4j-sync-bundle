@@ -55,6 +55,7 @@
         "cs:list": "php vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --dry-run ./src",
         "cs:fix": "php vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix ./src --allow-risky=yes",
         "psalm": "php vendor/bin/psalm",
+        "psalm:info": "php vendor/bin/psalm --show-info=true",
         "psalm:fix": "php vendor/bin/psalm --alter --issues=MissingReturnType,InvalidReturnType,InvalidNullableReturnType,MismatchingDocblockParamType"
     }
 }

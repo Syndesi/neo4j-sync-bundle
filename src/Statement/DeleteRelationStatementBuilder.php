@@ -6,6 +6,7 @@ namespace Syndesi\Neo4jSyncBundle\Statement;
 
 use Laudis\Neo4j\Databags\Statement;
 use Syndesi\Neo4jSyncBundle\Contract\RelationStatementBuilderInterface;
+use Syndesi\Neo4jSyncBundle\Exception\InvalidArgumentException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyException;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
 use Syndesi\Neo4jSyncBundle\ValueObject\Relation;
@@ -19,20 +20,26 @@ class DeleteRelationStatementBuilder implements RelationStatementBuilderInterfac
      *
      * @throws MissingPropertyException
      * @throws UnsupportedPropertyNameException
+     * @throws InvalidArgumentException
      */
     public static function build(Relation $relation): array
     {
+        $identifier = $relation->getIdentifier();
+        if (!$identifier) {
+            throw new InvalidArgumentException("Relation must contain identifier.");
+        }
+
         return [new Statement(
             sprintf(
                 "MATCH\n".
                 "  ()-[relation:%s {%s: $%s}]->()\n".
                 "DELETE relation",
-                $relation->getLabel(),
-                $relation->getIdentifier()->getName(),
-                $relation->getIdentifier()->getName()
+                (string) $relation->getLabel(),
+                $identifier->getName(),
+                $identifier->getName()
             ),
             [
-                $relation->getIdentifier()->getName() => $relation->getIdentifier()->getValue(),
+                $identifier->getName() => $identifier->getValue(),
             ]
         )];
     }

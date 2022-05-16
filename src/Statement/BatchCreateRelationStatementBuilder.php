@@ -30,12 +30,6 @@ class BatchCreateRelationStatementBuilder implements BatchRelationStatementBuild
             if (!$relation->getLabel()->isEqualTo($relations[0]->getLabel())) {
                 throw new InvalidArgumentException('All relations need to be for the same relation label');
             }
-            if (null === $relation->getRelatesFromLabel()) {
-                throw new InvalidArgumentException('relatesFromLabel can not be null.');
-            }
-            if (null === $relation->getRelatesFromIdentifier()) {
-                throw new InvalidArgumentException('relatesFromIdentifier can not be null.');
-            }
         }
         $batch = [];
         foreach ($relations as $relation) {
@@ -57,11 +51,11 @@ class BatchCreateRelationStatementBuilder implements BatchRelationStatementBuild
                 "  (parent:%s {%s: row.parentId})\n".
                 "CREATE (child)-[relation:%s]->(parent)\n".
                 "SET relation += row.properties",
-                $relations[0]->getRelatesFromLabel(),
+                (string) $relations[0]->getRelatesFromLabel(),
                 $relations[0]->getRelatesFromIdentifier()->getName(),
-                $relations[0]->getRelatesToLabel(),
+                (string) $relations[0]->getRelatesToLabel(),
                 $relations[0]->getRelatesToIdentifier()->getName(),
-                $relations[0]->getLabel()
+                (string) $relations[0]->getLabel()
             ),
             [
                 'batch' => $batch,

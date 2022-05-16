@@ -29,7 +29,7 @@ class DeleteRelationsFromNodeStatementBuilder implements NodeStatementBuilderInt
                 "  -[relation]->\n".
                 "  (parent)\n".
                 "DELETE relation",
-                $node->getLabel(),
+                (string) $node->getLabel(),
                 $node->getIdentifier()->getName(),
                 $node->getIdentifier()->getName()
             ),

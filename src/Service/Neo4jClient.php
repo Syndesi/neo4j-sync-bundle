@@ -31,7 +31,7 @@ class Neo4jClient implements Neo4jClientInterface
             $this->client->runStatements($this->statements);
         } else {
             while ($statement = array_shift($this->statements)) {
-                $this->logger->debug($statement->getText(), $statement->getParameters());
+                $this->logger->debug($statement->getText(), [$statement->getParameters()]);
                 $this->client->runStatement($statement);
             }
         }

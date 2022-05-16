@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Syndesi\Neo4jSyncBundle\Contract;
 
-use Syndesi\Neo4jSyncBundle\Attribute\Index;
-
 interface IndexAttributeProviderInterface
 {
     /**
-     * @return Index[]
+     * @return list<IndexAttributeInterface>
      */
-    public function getIndexAttributes(string $className): array;
+    public function getIndexAttributes(string|object $entityOrClassName): array;
 }

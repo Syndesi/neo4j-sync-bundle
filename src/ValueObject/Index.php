@@ -9,7 +9,6 @@ use Syndesi\Neo4jSyncBundle\Contract\IsEqualToInterface;
 use Syndesi\Neo4jSyncBundle\Contract\LabelInterface;
 use Syndesi\Neo4jSyncBundle\Enum\IndexType;
 use Syndesi\Neo4jSyncBundle\Exception\InvalidArgumentException;
-use Syndesi\Neo4jSyncBundle\Exception\UnsupportedIndexNameException;
 
 class Index implements Stringable, IsEqualToInterface
 {
@@ -20,7 +19,6 @@ class Index implements Stringable, IsEqualToInterface
      * @param IndexType      $type
      *
      * @throws InvalidArgumentException
-     * @throws UnsupportedIndexNameException
      */
     public function __construct(
         private readonly IndexName $name,
@@ -71,7 +69,13 @@ class Index implements Stringable, IsEqualToInterface
         }
         $propertyString = implode(', ', $propertyString);
 
-        return sprintf("%s INDEX %s FOR %s ON (%s)", $this->type->value, $this->name, $nameString, $propertyString);
+        return sprintf(
+            "%s INDEX %s FOR %s ON (%s)",
+            $this->type->value,
+            (string) $this->name,
+            $nameString,
+            $propertyString
+        );
     }
 
     public function isEqualTo(object $element): bool
@@ -85,9 +89,6 @@ class Index implements Stringable, IsEqualToInterface
             $arePropertiesEqual = false;
         } else {
             foreach ($this->properties as $i => $property) {
-                /**
-                 * @var $property Property
-                 */
                 if (!$property->isEqualTo($element->properties[$i])) {
                     $arePropertiesEqual = false;
                     break;

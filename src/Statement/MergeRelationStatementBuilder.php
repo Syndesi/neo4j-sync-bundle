@@ -6,6 +6,7 @@ namespace Syndesi\Neo4jSyncBundle\Statement;
 
 use Laudis\Neo4j\Databags\Statement;
 use Syndesi\Neo4jSyncBundle\Contract\RelationStatementBuilderInterface;
+use Syndesi\Neo4jSyncBundle\Exception\InvalidArgumentException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyException;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
 use Syndesi\Neo4jSyncBundle\ValueObject\Relation;
@@ -19,12 +20,17 @@ class MergeRelationStatementBuilder implements RelationStatementBuilderInterface
      *
      * @throws MissingPropertyException
      * @throws UnsupportedPropertyNameException
+     * @throws InvalidArgumentException
      */
     public static function build(Relation $relation): array
     {
+        $identifier = $relation->getIdentifier();
+        if (!$identifier) {
+            throw new InvalidArgumentException("Relation must contain identifier.");
+        }
         $propertiesString = [];
         foreach ($relation->getProperties() as $property) {
-            if ($property->getName() === $relation->getIdentifier()->getName()) {
+            if ($property->getName() === $identifier->getName()) {
                 // id is not a property, it cannot be changed once set
                 continue;
             }
@@ -44,13 +50,13 @@ class MergeRelationStatementBuilder implements RelationStatementBuilderInterface
                 "ON MATCH\n".
                 "  SET\n".
                 "%s",
-                $relation->getRelatesFromLabel(),
+                (string) $relation->getRelatesFromLabel(),
                 $relation->getRelatesFromIdentifier()->getName(),
-                $relation->getRelatesToLabel(),
+                (string) $relation->getRelatesToLabel(),
                 $relation->getRelatesToIdentifier()->getName(),
-                $relation->getLabel(),
-                $relation->getIdentifier()->getName(),
-                $relation->getIdentifier()->getName(),
+                (string) $relation->getLabel(),
+                $identifier->getName(),
+                $identifier->getName(),
                 $propertiesString,
                 $propertiesString,
             ),

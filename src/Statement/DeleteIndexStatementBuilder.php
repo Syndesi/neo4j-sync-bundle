@@ -15,6 +15,6 @@ class DeleteIndexStatementBuilder implements IndexStatementBuilderInterface
      */
     public static function build(Index $index): array
     {
-        return [new Statement(sprintf("DROP INDEX %s", $index->getName()), [])];
+        return [new Statement(sprintf("DROP INDEX %s", (string) $index->getName()), [])];
     }
 }
