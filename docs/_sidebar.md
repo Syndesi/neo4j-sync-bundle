@@ -4,3 +4,4 @@
 - [Defining Relations](/defining_relations.md)
 - [Commands](/commands.md)
 - [Todo List](/todo.md)
+- [Credits](/credits.md)

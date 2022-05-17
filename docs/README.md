@@ -1,33 +1,63 @@
 # Home
 
-This bundle provides real time synchronization capabilities between Doctrine's EntityManager and a Neo4j database.
+![image](/assets/Header.png)
 
-See also [Neo4j's Graph database concepts](https://neo4j.com/docs/getting-started/current/graphdb-concepts/) for a good
-introduction into this topic.
+This bundle provides real time synchronization capabilities between
+[Doctrine's EntityManager](https://www.doctrine-project.org/) and a [Neo4j database](https://neo4j.com/) in
+[Symfony](https://symfony.com/) applications.
 
-## Data model requirements
+## Data model
 
-In order to work correctly this library has a few requirements on the data model.  
-While some of them are not strictly enforced, all of them have the goal to make the synchronized Neo4j database
-consistent and not to delete nodes and relations provided by 3rd parties.
+![](/assets/Synchronization_Types.png)
 
-### Nodes
+### Independent Nodes
 
-- Although nodes in a Neo4j database can have zero or more node labels, this library expects exactly one label per
-  managed node.
-- Each node is required to contain a unique identifier, e.g. the primary key of the Doctrine entity.
+These are nodes which have a one to one mapping to a Doctrine entity.  
+They are required to contain one node label and one identifier. Additional Properties are optional.
 
-### Relations provided by nodes
+### Independent Nodes with Dependent Relations
 
-- Because the relations are identifiable by the providing node, their identifier is optional.
-- All relations start at the providing nodes and point to other nodes.
-- All relations which start at the providing node will be deleted and recreated when the providing node is updated.
+These are nodes with relations that also have a one to one mapping to a Doctrine entity.  
+The generated relations are required to contain one relation label, but an identifier and additional properties are
+optional. The relations always start at the node which returned the relationship.
 
 ### Independent Relations
 
-- Independent relations must contain an identifier.
+These are relations which have a one to one mapping to a Doctrine entity.  
+They are required to contain one relation label and one identifier. Additional Properties are optional. Their direction
+is defined by their start/child and end/parent nodes. They can both be the same node, therefore creating a loop.
 
 ### Indices
 
-- Indices must be manually created and synced.
+[Indices](https://neo4j.com/docs/cypher-manual/current/indexes-for-search-performance/) are non-data-elements which can
+tell Neo4j how to optimize lookups. This library does not create them automatically, every index must be explicitly
+defined.
 
+## How this bundle works
+
+![](/assets/Flowchart_Doctrine_Events.png)
+
+This bundle works by subscribing to Doctrines `PostPersist`, `PostUpdate` and `PreRemove`
+[lifecycle events](https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/events.html) and
+generating Neo4j statements for changed nodes and relations. These statements are cached by the `Neo4jClient` and
+executed during Doctrine's `PostFlush` event.
+
+Every mapped Doctrine entity must be marked by an attribute implementing `NodeAttributeInterface` or
+`RelationAttributeInterface`.
+
+## Data persistence
+
+While most logic in this bundle is working hard to keep your data safe, there are a few cases worth looking out for:
+
+- Using the command `neo4j-sync:db:prune` deletes every node and relation from the Neo4j database, whether it was
+  managed by this library or not.
+- Using the command `neo4j-sync:idnex:prune` deletes every index from the Neo4j database, whether it was managed by this
+  library or not.
+- Most functions check if a node/relation with the same label and identifier already exists and will merge new data into
+  it if possible. Therefore, make sure to use different labels for managed nodes/identifiers if the Neo4j database is
+  shared.
+- Because data is merged, removed properties will not be removed and will stay in the Neo4j database as long as the
+  node/relation itself exists.
+- The labels and identifiers of nodes and relations are expected to be static; changing them after the node/relation was
+  persisted will most likely fail or result in two nodes/relations, one with the old state and one with the new one.  
+  However, changing the label or identifier is possible in manual mode.
