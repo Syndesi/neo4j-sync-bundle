@@ -10,14 +10,14 @@ class CompareEqualHelper
 {
     public static function compare(?IsEqualToInterface $a, ?IsEqualToInterface $b): bool
     {
-        if ($a === null && $b === null) {
+        if (null === $a && null === $b) {
             return true;
         }
         /** @psalm-suppress RedundantCondition */
-        if ($a === null && $b) {
+        if (null === $a && $b) {
             return false;
         }
-        if ($a && $b === null) {
+        if ($a && null === $b) {
             return false;
         }
         // a and b must be not null

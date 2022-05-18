@@ -8,9 +8,9 @@ use DateInterval;
 use DateTimeInterface;
 use Laudis\Neo4j\Types as Neo4j;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Syndesi\Neo4jSyncBundle\Contract\Neo4jNormalizerInterface;
 
-class Neo4jObjectNormalizer implements NormalizerInterface
+class Neo4jObjectNormalizer implements Neo4jNormalizerInterface
 {
     public const SUPPORTED_CLASSES = [
         DateTimeInterface::class,
@@ -27,10 +27,6 @@ class Neo4jObjectNormalizer implements NormalizerInterface
         Neo4j\Path::class,
     ];
 
-    /**
-     * @psalm-suppress ImplementedReturnTypeMismatch
-     * @return DateTimeInterface|DateInterval|Neo4j\Date|Neo4j\Time|Neo4j\LocalTime|Neo4j\DateTime|Neo4j\DateTimeZoneId|Neo4j\LocalDateTime|Neo4j\Duration|Neo4j\Node|Neo4j\Relationship|Neo4j\Path
-     */
     public function normalize(mixed $object, string $format = null, array $context = []): DateTimeInterface|
         DateInterval|
         Neo4j\Date|

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Syndesi\Neo4jSyncBundle\Command;
 
-use Laudis\Neo4j\Types\CypherMap;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
