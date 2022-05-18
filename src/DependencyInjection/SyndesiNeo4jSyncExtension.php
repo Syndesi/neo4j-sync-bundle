@@ -18,6 +18,7 @@ class SyndesiNeo4jSyncExtension extends Extension
 {
     /**
      * @param array<array-key, mixed> $configs
+     *
      *@throws InvalidConfigurationException
      */
     public function load(array $configs, ContainerBuilder $container): void
@@ -30,7 +31,9 @@ class SyndesiNeo4jSyncExtension extends Extension
 
     /**
      * @param array<array-key, mixed> $configs
+     *
      * @return array<array-key, mixed>
+     *
      * @throws Exception
      */
     private function parseConfig(array $configs, ContainerBuilder $container): array
@@ -47,6 +50,7 @@ class SyndesiNeo4jSyncExtension extends Extension
 
     /**
      * @param array<array-key, mixed> $config
+     *
      * @throws InvalidConfigurationException
      */
     private function createClientServices(array $config, ContainerBuilder $container): void
