@@ -48,7 +48,9 @@
         "vimeo/psalm": "^4.23",
         "psalm/plugin-symfony": "^3.1",
         "weirdan/doctrine-psalm-plugin": "^2.3",
-        "boesing/psalm-plugin-stringf": "^1.1"
+        "boesing/psalm-plugin-stringf": "^1.1",
+        "phpstan/phpstan": "^1.6",
+        "symfony/dotenv": "^6.0"
     },
     "scripts": {
         "test": "php ./vendor/phpunit/phpunit/phpunit",

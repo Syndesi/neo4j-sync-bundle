@@ -86,7 +86,7 @@ class DatabaseSyncCommand extends Command
         if (!$syncType) {
             throw new InvalidArgumentException('sync-type can not be null');
         }
-        $syncType = CreateType::from(strtoupper($input->getOption('sync-type')));
+        $syncType = CreateType::from(strtoupper($syncType));
 
         $io->write("Loading data providers...");
         $event = new DatabaseSyncEvent(createType: $syncType);

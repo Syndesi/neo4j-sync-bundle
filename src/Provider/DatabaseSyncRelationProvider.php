@@ -9,6 +9,9 @@ use Laudis\Neo4j\Databags\Statement;
 use Syndesi\Neo4jSyncBundle\Contract\PaginatedStatementProviderInterface;
 use Syndesi\Neo4jSyncBundle\Contract\RelationAttributeInterface;
 use Syndesi\Neo4jSyncBundle\Enum\CreateType;
+use Syndesi\Neo4jSyncBundle\Exception\InvalidArgumentException;
+use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyException;
+use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
 use Syndesi\Neo4jSyncBundle\Statement\BatchCreateRelationStatementBuilder;
 use Syndesi\Neo4jSyncBundle\Statement\BatchMergeRelationStatementBuilder;
 
@@ -51,11 +54,16 @@ class DatabaseSyncRelationProvider implements PaginatedStatementProviderInterfac
 
     /**
      * @return Statement[]
+     *
+     * @throws InvalidArgumentException
+     * @throws MissingPropertyException
+     * @throws UnsupportedPropertyNameException
      */
     public function current(): array
     {
-        /** @var class-string $this->className */
-        $elements = $this->em->getRepository($this->className)
+        /** @var class-string $className */
+        $className = $this->className;
+        $elements = $this->em->getRepository($className)
             ->createQueryBuilder('n')
             ->setFirstResult($this->page * self::PAGE_SIZE)
             ->setMaxResults(($this->page + 1) * self::PAGE_SIZE)

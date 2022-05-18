@@ -54,7 +54,8 @@ class DatabaseSyncNodeProvider implements PaginatedStatementProviderInterface
      */
     public function current(): array
     {
-        /** @var class-string $this->className */
+        /** @var class-string $className */
+        $className = $this->className;
         $elements = $this->em->getRepository($this->className)
             ->createQueryBuilder('n')
             ->setFirstResult($this->page * self::PAGE_SIZE)
