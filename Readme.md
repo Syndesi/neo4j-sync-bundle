@@ -1,6 +1,6 @@
-# Syndesi's Neo4jSyncBundle
-
 ![Overview; Doctrine is synchronized in real time to Neo4j.](./docs/assets/Header.png)
+
+# Syndesi's Neo4jSyncBundle
 
 This bundle provides real time synchronization capabilities between Doctrine's EntityManager and a Neo4j database.
 
