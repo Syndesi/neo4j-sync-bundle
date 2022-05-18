@@ -98,6 +98,9 @@ class Relation implements Stringable, IsEqualToInterface
         return $this->properties;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getPropertiesAsAssociativeArray(): array
     {
         $associativeArray = [];

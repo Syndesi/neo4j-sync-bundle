@@ -10,18 +10,21 @@ use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 
 class PropertyTest extends TestCase {
 
-    public function testValidProperty(){
+    public function testValidProperty(): void
+    {
         $property = new Property('someName', 'someValue');
         $this->assertSame('someName', $property->getName());
         $this->assertSame('someValue', $property->getValue());
     }
 
-    public function testInvalidProperty(){
+    public function testInvalidProperty(): void
+    {
         $this->expectException(UnsupportedPropertyNameException::class);
         new Property('SomeName', 'someValue');
     }
 
-    public function testStringable(){
+    public function testStringable(): void
+    {
         $property = new Property('someName', 'someValue');
         $this->assertSame('someName: someValue', (string) $property);
     }

@@ -12,6 +12,7 @@ use Syndesi\Neo4jSyncBundle\Contract\IndexAttributeProviderInterface;
 class IndexAttributeProvider implements IndexAttributeProviderInterface
 {
     /**
+     * @param class-string|object $entityOrClassName
      * @return list<IndexAttributeInterface>
      *
      * @throws ReflectionException

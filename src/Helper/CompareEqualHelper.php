@@ -13,11 +13,10 @@ class CompareEqualHelper
         if (null === $a && null === $b) {
             return true;
         }
-        /** @psalm-suppress RedundantCondition */
-        if (null === $a && $b) {
+        if (null === $a) {
             return false;
         }
-        if ($a && null === $b) {
+        if (null === $b) {
             return false;
         }
         // a and b must be not null

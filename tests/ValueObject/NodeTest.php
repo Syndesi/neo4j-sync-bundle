@@ -19,7 +19,8 @@ use Syndesi\Neo4jSyncBundle\ValueObject\RelationLabel;
 
 class NodeTest extends TestCase {
 
-    public function testValidNode(){
+    public function testValidNode(): void
+    {
         $nodeLabel = new NodeLabel('NodeLabel');
         $properties = [
             new Property('id', 1234),
@@ -44,7 +45,8 @@ class NodeTest extends TestCase {
         $this->assertSame($relations, $node->getRelations());
     }
 
-    public function testInvalidArgumentException(){
+    public function testInvalidArgumentException(): void
+    {
         $this->expectException(InvalidArgumentException::class);
         new Node(
             new NodeLabel('NodeLabel'),
@@ -55,7 +57,8 @@ class NodeTest extends TestCase {
         );
     }
 
-    public function testDuplicatePropertiesException(){
+    public function testDuplicatePropertiesException(): void
+    {
         $this->expectException(DuplicatePropertiesException::class);
         new Node(
             new NodeLabel('NodeLabel'),
@@ -68,7 +71,8 @@ class NodeTest extends TestCase {
         );
     }
 
-    public function testMissingIdPropertyException(){
+    public function testMissingIdPropertyException(): void
+    {
         $this->expectException(MissingIdPropertyException::class);
         new Node(
             new NodeLabel('NodeLabel'),
@@ -79,7 +83,8 @@ class NodeTest extends TestCase {
         );
     }
 
-    public function testGetPropertiesAsAssociativeArray(){
+    public function testGetPropertiesAsAssociativeArray(): void
+    {
         $node = new Node(
             new NodeLabel('NodeLabel'),
             [
@@ -97,7 +102,8 @@ class NodeTest extends TestCase {
         );
     }
 
-    public function testGetProperty(){
+    public function testGetProperty(): void
+    {
         $idProperty = new Property('id', 1234);
         $stringProperty = new Property('someProperty', 'someValue');
         $node = new Node(
@@ -117,7 +123,8 @@ class NodeTest extends TestCase {
         $node->getProperty('thisPropertyDoesNotExist');
     }
 
-    public function testAreAllRelationsIdentifiable(){
+    public function testAreAllRelationsIdentifiable(): void
+    {
         $nodeLabel = new NodeLabel('NodeLabel');
         $properties = [
             new Property('id', 1234),
@@ -156,7 +163,8 @@ class NodeTest extends TestCase {
         $this->assertFalse($emptyNode->areAllRelationsIdentifiable());
     }
 
-    public function testStringable(){
+    public function testStringable(): void
+    {
         $node = new Node(
             new NodeLabel('NodeLabel'),
             [

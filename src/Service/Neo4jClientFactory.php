@@ -11,7 +11,8 @@ use Syndesi\Neo4jSyncBundle\Exception\InvalidConfigurationException;
 class Neo4jClientFactory
 {
     /**
-     * @throws InvalidConfigurationException
+     * @param array<array-key, mixed> $config
+     *@throws InvalidConfigurationException
      */
     public static function createClient(array $config, LoggerInterface $logger): Neo4jClient
     {

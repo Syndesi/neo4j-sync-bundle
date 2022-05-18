@@ -27,6 +27,10 @@ class Neo4jObjectNormalizer implements Neo4jNormalizerInterface
         Neo4j\Path::class,
     ];
 
+    /**
+     * @param array<array-key, mixed> $context
+     * @psalm-suppress ImplementedReturnTypeMismatch
+     */
     public function normalize(mixed $object, string $format = null, array $context = []): DateTimeInterface|
         DateInterval|
         Neo4j\Date|

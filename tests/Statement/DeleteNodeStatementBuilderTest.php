@@ -12,7 +12,8 @@ use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 
 class DeleteNodeStatementBuilderTest extends TestCase {
 
-    public function testBuild(){
+    public function testBuild(): void
+    {
         $node = new Node(
             new NodeLabel('DemoNode'),
             [

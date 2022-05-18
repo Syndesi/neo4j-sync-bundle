@@ -44,6 +44,9 @@ class Index implements Stringable, IsEqualToInterface
         return $this->label;
     }
 
+    /**
+     * @return Property[]
+     */
     public function getProperties(): array
     {
         return $this->properties;

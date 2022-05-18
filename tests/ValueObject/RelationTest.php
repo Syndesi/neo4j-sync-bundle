@@ -19,7 +19,8 @@ use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 class RelationTest extends TestCase {
 
 
-    public function testValidRelation(){
+    public function testValidRelation(): void
+    {
         $relationLabel = new RelationLabel('RELATION_LABEL');
         $parentNodeLabel = new NodeLabel('ParentNode');
         $parentNodeIdentifier = new Property('id', 4321);
@@ -51,7 +52,8 @@ class RelationTest extends TestCase {
         $this->assertSame(1234, $relation->getIdentifier()->getValue());
     }
 
-    public function testParentMissingPropertyValueException(){
+    public function testParentMissingPropertyValueException(): void
+    {
         $this->expectException(MissingPropertyValueException::class);
         new Relation(
             new RelationLabel('RELATION_LABEL'),
@@ -62,7 +64,8 @@ class RelationTest extends TestCase {
         );
     }
 
-    public function testChildMissingPropertyValueException(){
+    public function testChildMissingPropertyValueException(): void
+    {
         $this->expectException(MissingPropertyValueException::class);
         new Relation(
             new RelationLabel('RELATION_LABEL'),
@@ -73,7 +76,8 @@ class RelationTest extends TestCase {
         );
     }
 
-    public function testInvalidArgumentException(){
+    public function testInvalidArgumentException(): void
+    {
         $this->expectException(InvalidArgumentException::class);
         new Relation(
             new RelationLabel('RELATION_LABEL'),
@@ -87,7 +91,8 @@ class RelationTest extends TestCase {
         );
     }
 
-    public function testDuplicatePropertiesException(){
+    public function testDuplicatePropertiesException(): void
+    {
         $this->expectException(DuplicatePropertiesException::class);
         new Relation(
             new RelationLabel('RELATION_LABEL'),
@@ -102,7 +107,8 @@ class RelationTest extends TestCase {
         );
     }
 
-    public function testMissingIdPropertyException(){
+    public function testMissingIdPropertyException(): void
+    {
         $this->expectException(MissingIdPropertyException::class);
         new Relation(
             new RelationLabel('RELATION_LABEL'),
@@ -117,7 +123,8 @@ class RelationTest extends TestCase {
         );
     }
 
-    public function testGetPropertiesAsAssociativeArray(){
+    public function testGetPropertiesAsAssociativeArray(): void
+    {
         $relation = new Relation(
             new RelationLabel('RELATION_LABEL'),
             new NodeLabel('ParentNode'),
@@ -138,7 +145,8 @@ class RelationTest extends TestCase {
         );
     }
 
-    public function testGetProperty(){
+    public function testGetProperty(): void
+    {
         $idProperty = new Property('id', 1234);
         $stringProperty = new Property('someProperty', 'someValue');
         $relation = new Relation(
@@ -162,7 +170,8 @@ class RelationTest extends TestCase {
         $relation->getProperty('thisPropertyDoesNotExist');
     }
 
-    public function testGetIdentifier(){
+    public function testGetIdentifier(): void
+    {
         $relationWithoutIdentifier = new Relation(
             new RelationLabel('RELATION_LABEL'),
             new NodeLabel('ParentNode'),
@@ -189,7 +198,8 @@ class RelationTest extends TestCase {
         $this->assertSame(1234, $relationWithIdentifier->getIdentifier()->getValue());
     }
 
-    public function testStringable(){
+    public function testStringable(): void
+    {
         $relation = new Relation(
             new RelationLabel('RELATION_LABEL'),
             new NodeLabel('ParentNode'),

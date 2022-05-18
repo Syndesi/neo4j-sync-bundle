@@ -10,17 +10,20 @@ use Syndesi\Neo4jSyncBundle\ValueObject\RelationLabel;
 
 class NodeLabelTest extends TestCase {
 
-    public function testValidRelationLabel(){
+    public function testValidRelationLabel(): void
+    {
         $property = new RelationLabel('SOME_NAME');
         $this->assertSame('SOME_NAME', $property->getLabel());
     }
 
-    public function testInvalidRelationLabel(){
+    public function testInvalidRelationLabel(): void
+    {
         $this->expectException(UnsupportedRelationLabelException::class);
         new RelationLabel('someName');
     }
 
-    public function testStringable(){
+    public function testStringable(): void
+    {
         $property = new RelationLabel('SOME_NAME');
         $this->assertSame('SOME_NAME', (string) $property);
     }

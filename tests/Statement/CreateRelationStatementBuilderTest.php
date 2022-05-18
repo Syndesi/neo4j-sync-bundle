@@ -13,7 +13,8 @@ use Syndesi\Neo4jSyncBundle\ValueObject\RelationLabel;
 
 class CreateRelationStatementBuilderTest extends TestCase {
 
-    public function testBuild(){
+    public function testBuild(): void
+    {
         $relation = new Relation(
             new RelationLabel('DEMO_RELATION'),
             new NodeLabel('ParentNode'),

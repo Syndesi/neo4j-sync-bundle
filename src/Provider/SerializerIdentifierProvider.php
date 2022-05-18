@@ -20,6 +20,10 @@ class SerializerIdentifierProvider implements IdentifierProviderInterface
 {
     private Neo4jSerializer $serializer;
 
+    /**
+     * @param Property $identifier
+     * @param array<array-key, mixed> $context
+     */
     public function __construct(
         private readonly Property $identifier,
         private array $context = [
