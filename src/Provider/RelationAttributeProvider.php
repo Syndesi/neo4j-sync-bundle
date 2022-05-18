@@ -13,6 +13,7 @@ class RelationAttributeProvider implements RelationAttributeProviderInterface
 {
     /**
      * @param class-string|object $entityOrClassName
+     *
      * @throws ReflectionException
      */
     public function getRelationAttribute(string|object $entityOrClassName): ?RelationAttributeInterface

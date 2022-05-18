@@ -21,7 +21,7 @@ class SerializerIdentifierProvider implements IdentifierProviderInterface
     private Neo4jSerializer $serializer;
 
     /**
-     * @param Property $identifier
+     * @param Property                $identifier
      * @param array<array-key, mixed> $context
      */
     public function __construct(
