@@ -1,6 +1,6 @@
 # Home
 
-![image](/assets/Header.png)
+![Overview; Doctrine is synchronized in real time to Neo4j.](/assets/Header.png)
 
 This bundle provides real time synchronization capabilities between
 [Doctrine's EntityManager](https://www.doctrine-project.org/) and a [Neo4j database](https://neo4j.com/) in
@@ -8,7 +8,8 @@ This bundle provides real time synchronization capabilities between
 
 ## Data model
 
-![](/assets/Synchronization_Types.png)
+![Three synchronization types: Independent nodes, independent nodes with dependent relations and independent
+relations.](/assets/Synchronization_Types.png)
 
 ### Independent Nodes
 
@@ -35,7 +36,8 @@ defined.
 
 ## How this bundle works
 
-![](/assets/Flowchart_Doctrine_Events.png)
+![Flowchart about how Doctrine lifecycle events are used to create Neo4j statements in real
+time](/assets/Flowchart_Doctrine_Events.png)
 
 This bundle works by subscribing to Doctrines `PostPersist`, `PostUpdate` and `PreRemove`
 [lifecycle events](https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/events.html) and

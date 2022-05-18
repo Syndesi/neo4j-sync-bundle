@@ -6,7 +6,7 @@ All commands use the default Neo4j client and its default driver.
 
 Command for purging/deleting the Neo4j database. Indices are not affected.
 
-### Example
+**Example**:
 
 ```bash
 php bin/console neo4j-sync:db:purge
@@ -28,7 +28,7 @@ To purge indices please run command "neo4j-sync:index:purge"
 
 Command for synchronizing the Neo4j database.
 
-### Example
+**Example**:
 
 ```bash
 php bin/console neo4j-sync:db:sync --memory=512
@@ -69,7 +69,7 @@ Synchronized Syndesi\Neo4jSyncBundle\Provider\DatabaseSyncRelationProvider with 
 
 Command for listing all indices, both defined and indices defined in the Neo4j database.
 
-### Example
+**Example**:
 
 ```bash
 php bin/console neo4j-sync:index:list
@@ -89,7 +89,7 @@ php bin/console neo4j-sync:index:list
 
 Command for purging/deleting all indices.
 
-### Example
+**Example**:
 
 ```bash
 php bin/console neo4j-sync:index:purge
@@ -108,7 +108,7 @@ Purging all indices...
 
 Command for synchronizing all indices.
 
-### Example
+**Example**:
 
 ```bash
 php bin/console neo4j-sync:index:sync
