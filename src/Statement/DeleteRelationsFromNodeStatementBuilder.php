@@ -26,7 +26,7 @@ class DeleteRelationsFromNodeStatementBuilder implements NodeStatementBuilderInt
             sprintf(
                 "MATCH\n".
                 "  (child:%s {%s: $%s})\n".
-                "  -[relation]->\n".
+                "  -[relation {_managedBy: \$_managedBy}]->\n".
                 "  (parent)\n".
                 "DELETE relation",
                 (string) $node->getLabel(),
@@ -35,6 +35,7 @@ class DeleteRelationsFromNodeStatementBuilder implements NodeStatementBuilderInt
             ),
             [
                 $node->getIdentifier()->getName() => $node->getIdentifier()->getValue(),
+                '_managedBy' => (string) $node->getLabel(),
             ]
         )];
     }

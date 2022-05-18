@@ -53,7 +53,15 @@ class Node implements NodeAttributeInterface
 
         $relations = [];
         foreach ($this->relations as $relation) {
-            $relations[] = $relation->getRelation($entity, $nodeWithoutRelations);
+            $relationVo = $relation->getRelation($entity, $nodeWithoutRelations);
+            try {
+                if ($relationVo->getProperty('_managedBy') !== (string) $nodeWithoutRelations->getLabel()) {
+                    throw new MissingPropertyException('');
+                }
+            } catch (MissingPropertyException) {
+                throw new MissingPropertyException(sprintf("Relation of type %s does not contain required property with the name '_managedBy' and the node's label as the value.", get_class($relation)));
+            }
+            $relations[] = $relationVo;
         }
 
         return new \Syndesi\Neo4jSyncBundle\ValueObject\Node(

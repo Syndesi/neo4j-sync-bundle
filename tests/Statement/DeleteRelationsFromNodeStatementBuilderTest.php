@@ -31,14 +31,15 @@ class DeleteRelationsFromNodeStatementBuilderTest extends TestCase {
         $this->assertSame(
             "MATCH\n".
             "  (child:DemoNode {id: \$id})\n".
-            "  -[relation]->\n".
+            "  -[relation {_managedBy: \$_managedBy}]->\n".
             "  (parent)\n".
             "DELETE relation",
             $statement->getText()
         );
         $this->assertSame(
             [
-                'id' => 1234
+                'id' => 1234,
+                '_managedBy' => 'DemoNode'
             ],
             $statement->getParameters()
         );
