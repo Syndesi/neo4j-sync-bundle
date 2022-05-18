@@ -1,3 +1,2 @@
 - [Documentation](/)
-- [Github Repo](https://github.com/Syndesi/neo4j-sync-bundle)
-- [Laudi's Neo4j Client](https://github.com/neo4j-php/neo4j-php-client)
+- [Repo](https://github.com/Syndesi/neo4j-sync-bundle)
