@@ -32,7 +32,7 @@ class IndexPurgeCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addOption(
@@ -67,9 +67,6 @@ class IndexPurgeCommand extends Command
         $io->writeln("Purging all indices...");
         $indices = $this->client->runStatement(GetIndicesStatementBuilder::build()[0]);
         foreach ($indices as $index) {
-            /**
-             * @var $index CypherMap
-             */
             $indexVo = new Index(
                 new IndexName($index->get('name')), // only name is used here, fill rest so that validator does not get triggered
                 new NodeLabel('NotExistingNode'),

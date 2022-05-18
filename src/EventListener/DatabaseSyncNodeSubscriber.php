@@ -28,9 +28,10 @@ class DatabaseSyncNodeSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onDatabaseSync(DatabaseSyncEvent $databaseSyncEvent)
+    public function onDatabaseSync(DatabaseSyncEvent $databaseSyncEvent): void
     {
         foreach ($this->em->getMetadataFactory()->getAllMetadata() as $metadata) {
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
             if ($metadata instanceof ClassMetadata) {
                 $className = $metadata->getReflectionClass()->getName();
                 $nodeAttribute = (new NodeAttributeProvider())->getNodeAttribute($className);

@@ -36,7 +36,7 @@ class DoctrinePostUpdateRelationSubscriber implements EventSubscriber
      * @throws MissingPropertyException
      * @throws UnsupportedPropertyNameException
      */
-    public function postUpdate(LifecycleEventArgs $args)
+    public function postUpdate(LifecycleEventArgs $args): void
     {
         if ($this->disableSubscriber) {
             return;

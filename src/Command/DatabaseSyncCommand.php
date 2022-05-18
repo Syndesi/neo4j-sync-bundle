@@ -30,7 +30,10 @@ class DatabaseSyncCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    /**
+     * @psalm-suppress PossiblyNullArgument
+     */
+    protected function configure(): void
     {
         $this
             ->addOption(
@@ -62,6 +65,9 @@ class DatabaseSyncCommand extends Command
         ;
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -76,10 +82,9 @@ class DatabaseSyncCommand extends Command
                 $io->writeln(sprintf("Memory set to %d MB", $memoryLimitInMegaBytes));
             }
         }
-        if (!$this->eventDispatcher) {
-            $io->error('No event dispatcher found');
-
-            return Command::FAILURE;
+        $syncType = $input->getOption('sync-type');
+        if (!$syncType) {
+            throw new InvalidArgumentException('sync-type can not be null');
         }
         $syncType = CreateType::from(strtoupper($input->getOption('sync-type')));
 

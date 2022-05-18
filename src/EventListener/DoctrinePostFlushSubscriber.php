@@ -23,7 +23,7 @@ class DoctrinePostFlushSubscriber implements EventSubscriber
         ];
     }
 
-    public function postFlush()
+    public function postFlush(): void
     {
         if ($this->disableSubscriber) {
             return;

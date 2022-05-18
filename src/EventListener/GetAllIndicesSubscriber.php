@@ -24,9 +24,10 @@ class GetAllIndicesSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onGetAllIndices(GetAllIndicesEvent $getAllIndicesEvent)
+    public function onGetAllIndices(GetAllIndicesEvent $getAllIndicesEvent): void
     {
         foreach ($this->em->getMetadataFactory()->getAllMetadata() as $metadata) {
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
             if ($metadata instanceof ClassMetadata) {
                 $className = $metadata->getReflectionClass()->getName();
                 $provider = new IndexAttributeProvider();

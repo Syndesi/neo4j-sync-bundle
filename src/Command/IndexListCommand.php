@@ -35,29 +35,21 @@ class IndexListCommand extends Command
         parent::__construct();
     }
 
+    /**
+     * @throws Neo4jSyncException
+     * @throws UnsupportedRelationLabelException
+     * @throws UnsupportedNodeLabelException
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
-        if (!$this->eventDispatcher) {
-            $io->error('No event dispatcher found');
-
-            return Command::FAILURE;
-        }
-
         $existingIndices = $this->getNeo4jIndices();
 
         $event = new GetAllIndicesEvent();
-        /**
-         * @var $getAllIndicesEvent GetAllIndicesEvent
-         */
         $getAllIndicesEvent = $this->eventDispatcher->dispatch($event, $event::NAME);
         $definedIndices = $getAllIndicesEvent->getIndices();
 
         $rowElements = [];
         foreach ($definedIndices as $index) {
-            /*
-             * @var $index Index
-             */
             $rowElements[(string) $index->getName()] = [
                 'index' => $index,
                 'defined' => true,
@@ -66,15 +58,12 @@ class IndexListCommand extends Command
             ];
         }
         foreach ($existingIndices as $index) {
-            /**
-             * @var $index Index
-             */
             if (array_key_exists((string) $index->getName(), $rowElements)) {
                 if ($index->isEqualTo($rowElements[(string) $index->getName()]['index'])) {
                     $rowElements[(string) $index->getName()]['exists'] = true;
                 } else {
                     $rowElements[(string) $index->getName()]['conflict'] = true;
-                    $rowElements[sprintf("%s (database)", $index->getName())] = [
+                    $rowElements[sprintf("%s (database)", (string) $index->getName())] = [
                         'index' => $index,
                         'defined' => false,
                         'exists' => true,
@@ -82,7 +71,7 @@ class IndexListCommand extends Command
                     ];
                 }
             } else {
-                $rowElements[sprintf("%s (database)", $index->getName())] = [
+                $rowElements[sprintf("%s (database)", (string) $index->getName())] = [
                     'index' => $index,
                     'defined' => false,
                     'exists' => true,
@@ -93,10 +82,7 @@ class IndexListCommand extends Command
 
         $rows = [];
         ksort($rowElements);
-        foreach ($rowElements as $name => $rowElement) {
-            /**
-             * @var $index Index
-             */
+        foreach ($rowElements as $rowElement) {
             $index = $rowElement['index'];
             $propertiesString = [];
             foreach ($index->getProperties() as $property) {
@@ -107,7 +93,7 @@ class IndexListCommand extends Command
                 (string) $index->getName(),
                 sprintf(
                     "%s (%s)",
-                    $index->getLabel(),
+                    (string) $index->getLabel(),
                     $index->getLabel() instanceof NodeLabel ? 'Node' : 'Relation'
                 ),
                 $index->getType()->value,
@@ -139,9 +125,6 @@ class IndexListCommand extends Command
         $res = $this->client->runStatement(GetIndicesStatementBuilder::build()[0]);
         $indices = [];
         foreach ($res as $element) {
-            /**
-             * @var $element CypherMap
-             */
             $label = null;
             if ('NODE' == $element->get('entityType')) {
                 $label = new NodeLabel($element->get('labelsOrTypes')[0]);

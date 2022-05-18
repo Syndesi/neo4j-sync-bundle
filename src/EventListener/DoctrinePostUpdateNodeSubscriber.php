@@ -34,7 +34,7 @@ class DoctrinePostUpdateNodeSubscriber implements EventSubscriber
     /**
      * @throws ReflectionException
      */
-    public function postUpdate(LifecycleEventArgs $args)
+    public function postUpdate(LifecycleEventArgs $args): void
     {
         if ($this->disableSubscriber) {
             return;

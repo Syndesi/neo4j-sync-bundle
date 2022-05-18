@@ -34,7 +34,7 @@ class DoctrinePostPersistRelationSubscriber implements EventSubscriber
     /**
      * @throws Exception
      */
-    public function postPersist(LifecycleEventArgs $args)
+    public function postPersist(LifecycleEventArgs $args): void
     {
         if ($this->disableSubscriber) {
             return;

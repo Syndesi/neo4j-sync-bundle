@@ -38,7 +38,7 @@ class DoctrinePreRemoveNodeSubscriber implements EventSubscriber
      * @throws MissingPropertyException
      * @throws DuplicatePropertiesException
      */
-    public function preRemove(LifecycleEventArgs $args)
+    public function preRemove(LifecycleEventArgs $args): void
     {
         if ($this->disableSubscriber) {
             return;

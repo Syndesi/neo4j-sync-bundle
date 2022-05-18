@@ -17,9 +17,9 @@ use Syndesi\Neo4jSyncBundle\Service\Neo4jClientFactory;
 class SyndesiNeo4jSyncExtension extends Extension
 {
     /**
-     * @throws
+     * @throws InvalidConfigurationException
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $this->parseConfig($configs, $container);
 
@@ -35,6 +35,9 @@ class SyndesiNeo4jSyncExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yaml');
         $configuration = $this->getConfiguration($configs, $container);
+        if (!$configuration) {
+            throw new InvalidConfigurationException('Parsing of configuration failed');
+        }
 
         return $this->processConfiguration($configuration, $configs);
     }
@@ -42,7 +45,7 @@ class SyndesiNeo4jSyncExtension extends Extension
     /**
      * @throws InvalidConfigurationException
      */
-    private function createClientServices(array $config, ContainerBuilder $container)
+    private function createClientServices(array $config, ContainerBuilder $container): void
     {
         // create client services
         foreach ($config['clients'] as $name => $clientConfig) {
@@ -70,7 +73,7 @@ class SyndesiNeo4jSyncExtension extends Extension
         $container->setDefinition('neo4j_sync.neo4j_client', $defaultClient);
     }
 
-    private function handleDisableDoctrineListeners(ContainerBuilder $container, bool $disableDoctrineListeners = false)
+    private function handleDisableDoctrineListeners(ContainerBuilder $container, bool $disableDoctrineListeners = false): void
     {
         $listeners = [
             'neo4j_sync.event_listener.doctrine_post_flush_subscriber',

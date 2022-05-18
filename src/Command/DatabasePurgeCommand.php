@@ -26,7 +26,7 @@ class DatabasePurgeCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addOption(
@@ -79,6 +79,9 @@ class DatabasePurgeCommand extends Command
                 $this->timeStringFromTimeDelta((new DateTime())->getTimestamp() - $start->getTimestamp())
             )
         );
+        /**
+         * @psalm-suppress PossiblyNullArgument
+         */
         $io->writeln(sprintf("To purge indices please run command \"%s\"", IndexPurgeCommand::getDefaultName()));
 
         return Command::SUCCESS;

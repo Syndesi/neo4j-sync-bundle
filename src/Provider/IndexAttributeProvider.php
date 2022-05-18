@@ -23,7 +23,7 @@ class IndexAttributeProvider implements IndexAttributeProviderInterface
             $className = get_class($entityOrClassName);
         }
         $attributes = [];
-        /* @psalm-suppress ArgumentTypeCoercion */
+        /** @psalm-suppress ArgumentTypeCoercion */
         foreach ((new ReflectionClass($className))->getAttributes() as $attribute) {
             $attributeInstance = $attribute->newInstance();
             if ($attributeInstance instanceof IndexAttributeInterface) {

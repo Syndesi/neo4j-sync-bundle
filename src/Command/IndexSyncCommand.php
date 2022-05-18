@@ -28,7 +28,7 @@ class IndexSyncCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addOption(
@@ -43,11 +43,6 @@ class IndexSyncCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        if (!$this->eventDispatcher) {
-            $io->error('No event dispatcher found');
-
-            return Command::FAILURE;
-        }
 
         $event = new GetAllIndicesEvent();
         /**
@@ -68,7 +63,7 @@ class IndexSyncCommand extends Command
                 (string) $index->getName(),
                 sprintf(
                     "%s (%s)",
-                    $index->getLabel(),
+                    (string) $index->getLabel(),
                     $index->getLabel() instanceof NodeLabel ? 'Node' : 'Relation'
                 ),
                 $index->getType()->value,

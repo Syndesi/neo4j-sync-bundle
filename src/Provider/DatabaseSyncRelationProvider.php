@@ -17,6 +17,9 @@ class DatabaseSyncRelationProvider implements PaginatedStatementProviderInterfac
     private int $page = 0;
     private int $size;
 
+    /**
+     * @param class-string $className
+     */
     public function __construct(
         private string $className,
         private EntityManagerInterface $em,
@@ -51,6 +54,7 @@ class DatabaseSyncRelationProvider implements PaginatedStatementProviderInterfac
      */
     public function current(): array
     {
+        /** @var class-string $this->className */
         $elements = $this->em->getRepository($this->className)
             ->createQueryBuilder('n')
             ->setFirstResult($this->page * self::PAGE_SIZE)
