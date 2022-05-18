@@ -43,6 +43,7 @@ class IndexListCommand extends Command
         $existingIndices = $this->getNeo4jIndices();
 
         $event = new GetAllIndicesEvent();
+        /** @var GetAllIndicesEvent $getAllIndicesEvent */
         $getAllIndicesEvent = $this->eventDispatcher->dispatch($event, $event::NAME);
         $definedIndices = $getAllIndicesEvent->getIndices();
 
