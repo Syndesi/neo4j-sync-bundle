@@ -51,11 +51,13 @@
         "boesing/psalm-plugin-stringf": "^1.1",
         "phpstan/phpstan": "^1.6",
         "symfony/dotenv": "^6.0",
-        "phpunit/php-code-coverage": "^9.2"
+        "phpunit/php-code-coverage": "^9.2",
+        "infection/infection": "^0.26.10"
     },
     "scripts": {
         "test": "php ./vendor/phpunit/phpunit/phpunit",
         "test:coverage": "export XDEBUG_MODE=coverage && php ./vendor/phpunit/phpunit/phpunit --coverage-html ./tmp",
+        "test:mutant": "export XDEBUG_MODE=coverage && php vendor/infection/infection/bin/infection --threads=4",
         "cs:list": "php vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --dry-run ./src",
         "cs:fix": "php vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix ./src --allow-risky=yes",
         "psalm": "php vendor/bin/psalm",

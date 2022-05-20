@@ -1,5 +1,6 @@
 /var/
 /vendor/
+infection.html
 .phpunit.result.cache
 /phpunit.xml
 /.php-cs-fixer.php
