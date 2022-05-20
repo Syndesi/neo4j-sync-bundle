@@ -10,8 +10,8 @@ use Syndesi\Neo4jSyncBundle\ValueObject\Node;
 use Syndesi\Neo4jSyncBundle\ValueObject\NodeLabel;
 use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 
-class DeleteRelationsFromNodeStatementBuilderTest extends TestCase {
-
+class DeleteRelationsFromNodeStatementBuilderTest extends TestCase
+{
     public function testBuild(): void
     {
         $node = new Node(
@@ -19,7 +19,7 @@ class DeleteRelationsFromNodeStatementBuilderTest extends TestCase {
             [
                 new Property('id', 1234),
                 new Property('string', 'Hello World'),
-                new Property('float', 1.23)
+                new Property('float', 1.23),
             ],
             new Property('id')
         );
@@ -40,10 +40,9 @@ class DeleteRelationsFromNodeStatementBuilderTest extends TestCase {
         $this->assertSame(
             [
                 'id' => 1234,
-                '_managedBy' => 'DemoNode'
+                '_managedBy' => 'DemoNode',
             ],
             $statement->getParameters()
         );
     }
-
 }

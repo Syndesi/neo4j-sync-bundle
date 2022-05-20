@@ -10,15 +10,14 @@ use Syndesi\Neo4jSyncBundle\Exception\DuplicatePropertiesException;
 use Syndesi\Neo4jSyncBundle\Exception\InvalidArgumentException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingIdPropertyException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyException;
-use Syndesi\Neo4jSyncBundle\Exception\UnsupportedRelationLabelException;
 use Syndesi\Neo4jSyncBundle\ValueObject\Node;
 use Syndesi\Neo4jSyncBundle\ValueObject\NodeLabel;
 use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 use Syndesi\Neo4jSyncBundle\ValueObject\Relation;
 use Syndesi\Neo4jSyncBundle\ValueObject\RelationLabel;
 
-class NodeTest extends TestCase {
-
+class NodeTest extends TestCase
+{
     public function testValidNode(): void
     {
         $nodeLabel = new NodeLabel('NodeLabel');
@@ -34,7 +33,7 @@ class NodeTest extends TestCase {
                 new Property('id', 'someValue'),
                 $nodeLabel,
                 new Property('id', 1234)
-            )
+            ),
         ];
         $node = new Node($nodeLabel, $properties, $identifier, $relations);
 
@@ -51,7 +50,7 @@ class NodeTest extends TestCase {
         new Node(
             new NodeLabel('NodeLabel'),
             [
-                new DateTime()
+                new DateTime(),
             ],
             new Property('id')
         );
@@ -65,7 +64,7 @@ class NodeTest extends TestCase {
             [
                 new Property('id', 1234),
                 new Property('someProperty', 'someValue'),
-                new Property('someProperty', 'otherValue')
+                new Property('someProperty', 'otherValue'),
             ],
             new Property('id')
         );
@@ -77,7 +76,7 @@ class NodeTest extends TestCase {
         new Node(
             new NodeLabel('NodeLabel'),
             [
-                new Property('someProperty', 'someValue')
+                new Property('someProperty', 'someValue'),
             ],
             new Property('id')
         );
@@ -89,14 +88,14 @@ class NodeTest extends TestCase {
             new NodeLabel('NodeLabel'),
             [
                 new Property('id', 1234),
-                new Property('someProperty', 'someValue')
+                new Property('someProperty', 'someValue'),
             ],
             new Property('id')
         );
         $this->assertSame(
             [
                 'id' => 1234,
-                'someProperty' => 'someValue'
+                'someProperty' => 'someValue',
             ],
             $node->getPropertiesAsAssociativeArray()
         );
@@ -110,7 +109,7 @@ class NodeTest extends TestCase {
             new NodeLabel('NodeLabel'),
             [
                 $idProperty,
-                $stringProperty
+                $stringProperty,
             ],
             new Property('id')
         );
@@ -128,7 +127,7 @@ class NodeTest extends TestCase {
         $nodeLabel = new NodeLabel('NodeLabel');
         $properties = [
             new Property('id', 1234),
-            new Property('someProperty', 'someValue')
+            new Property('someProperty', 'someValue'),
         ];
         $identifier = new Property('id');
         $anonymousRelation = new Relation(
@@ -145,7 +144,7 @@ class NodeTest extends TestCase {
             $nodeLabel,
             new Property('id', 1234),
             [
-                new Property('relationId', 1234)
+                new Property('relationId', 1234),
             ],
             new Property('relationId')
         );
@@ -169,11 +168,10 @@ class NodeTest extends TestCase {
             new NodeLabel('NodeLabel'),
             [
                 new Property('id', 1234),
-                new Property('someProperty', 'someValue')
+                new Property('someProperty', 'someValue'),
             ],
             new Property('id')
         );
         $this->assertSame('NodeLabel {id: 1234, someProperty: someValue}', (string) $node);
     }
-
 }

@@ -11,8 +11,8 @@ use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 use Syndesi\Neo4jSyncBundle\ValueObject\Relation;
 use Syndesi\Neo4jSyncBundle\ValueObject\RelationLabel;
 
-class CreateRelationStatementBuilderTest extends TestCase {
-
+class CreateRelationStatementBuilderTest extends TestCase
+{
     public function testBuild(): void
     {
         $relation = new Relation(
@@ -23,7 +23,7 @@ class CreateRelationStatementBuilderTest extends TestCase {
             new Property('childNodeId', 4321),
             [
                 new Property('relationId', 123),
-                new Property('someKey', 'some value')
+                new Property('someKey', 'some value'),
             ],
             new Property('relationId')
         );
@@ -46,10 +46,9 @@ class CreateRelationStatementBuilderTest extends TestCase {
                 'relationId' => 123,
                 'someKey' => 'some value',
                 '_parentId' => 1234,
-                '_childId' => 4321
+                '_childId' => 4321,
             ],
             $statement->getParameters()
         );
     }
-
 }

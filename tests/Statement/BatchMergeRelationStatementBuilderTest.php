@@ -8,14 +8,13 @@ use PHPUnit\Framework\TestCase;
 use Syndesi\Neo4jSyncBundle\Enum\CreateType;
 use Syndesi\Neo4jSyncBundle\Exception\InvalidArgumentException;
 use Syndesi\Neo4jSyncBundle\Statement\BatchMergeRelationStatementBuilder;
-use Syndesi\Neo4jSyncBundle\ValueObject\Node;
 use Syndesi\Neo4jSyncBundle\ValueObject\NodeLabel;
 use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 use Syndesi\Neo4jSyncBundle\ValueObject\Relation;
 use Syndesi\Neo4jSyncBundle\ValueObject\RelationLabel;
 
-class BatchMergeRelationStatementBuilderTest extends TestCase {
-
+class BatchMergeRelationStatementBuilderTest extends TestCase
+{
     public function testEmptyBuild(): void
     {
         $statements = BatchMergeRelationStatementBuilder::build([]);
@@ -29,7 +28,7 @@ class BatchMergeRelationStatementBuilderTest extends TestCase {
         $this->expectExceptionMessage('All relations need to be of type relation.');
 
         BatchMergeRelationStatementBuilder::build([
-            (object)[]
+            (object) [],
         ]);
     }
 
@@ -68,13 +67,12 @@ class BatchMergeRelationStatementBuilderTest extends TestCase {
                 new Property('parentId', 1234),
                 new NodeLabel('ChildLabel'),
                 new Property('childId', 4321)
-            )
+            ),
         ]);
     }
 
     public function testBuildWithSingleRelationMerge(): void
     {
-
         $statements = BatchMergeRelationStatementBuilder::build([
             new Relation(
                 new RelationLabel('SOME_LABEL'),
@@ -84,7 +82,7 @@ class BatchMergeRelationStatementBuilderTest extends TestCase {
                 new Property('childId', 4321),
                 [
                     new Property('id', 123),
-                    new Property('someKey', 'someValue')
+                    new Property('someKey', 'someValue'),
                 ],
                 new Property('id')
             ),
@@ -111,10 +109,10 @@ class BatchMergeRelationStatementBuilderTest extends TestCase {
                         'childId' => 4321,
                         'parentId' => 1234,
                         'properties' => [
-                            'someKey' => 'someValue'
-                        ]
-                    ]
-                ]
+                            'someKey' => 'someValue',
+                        ],
+                    ],
+                ],
             ],
             $statement->getParameters()
         );
@@ -122,7 +120,6 @@ class BatchMergeRelationStatementBuilderTest extends TestCase {
 
     public function testBuildWithSingleRelationCreate(): void
     {
-
         $statements = BatchMergeRelationStatementBuilder::build([
             new Relation(
                 new RelationLabel('SOME_LABEL'),
@@ -132,7 +129,7 @@ class BatchMergeRelationStatementBuilderTest extends TestCase {
                 new Property('childId', 4321),
                 [
                     new Property('id', 123),
-                    new Property('someKey', 'someValue')
+                    new Property('someKey', 'someValue'),
                 ],
                 new Property('id')
             ),
@@ -159,10 +156,10 @@ class BatchMergeRelationStatementBuilderTest extends TestCase {
                         'childId' => 4321,
                         'parentId' => 1234,
                         'properties' => [
-                            'someKey' => 'someValue'
-                        ]
-                    ]
-                ]
+                            'someKey' => 'someValue',
+                        ],
+                    ],
+                ],
             ],
             $statement->getParameters()
         );
@@ -170,7 +167,6 @@ class BatchMergeRelationStatementBuilderTest extends TestCase {
 
     public function testBuildWithMultipleRelations(): void
     {
-
         $statements = BatchMergeRelationStatementBuilder::build([
             new Relation(
                 new RelationLabel('SOME_LABEL'),
@@ -180,7 +176,7 @@ class BatchMergeRelationStatementBuilderTest extends TestCase {
                 new Property('childId', 4321),
                 [
                     new Property('id', 123),
-                    new Property('someKey', 'someValue')
+                    new Property('someKey', 'someValue'),
                 ],
                 new Property('id')
             ),
@@ -192,7 +188,7 @@ class BatchMergeRelationStatementBuilderTest extends TestCase {
                 new Property('childId', 5321),
                 [
                     new Property('id', 124),
-                    new Property('someKey', 'someValue')
+                    new Property('someKey', 'someValue'),
                 ],
                 new Property('id')
             ),
@@ -203,7 +199,7 @@ class BatchMergeRelationStatementBuilderTest extends TestCase {
                 new NodeLabel('ChildLabel'),
                 new Property('childId', 6321),
                 [
-                    new Property('id', 125)
+                    new Property('id', 125),
                 ],
                 new Property('id')
             ),
@@ -230,27 +226,26 @@ class BatchMergeRelationStatementBuilderTest extends TestCase {
                         'childId' => 4321,
                         'parentId' => 1234,
                         'properties' => [
-                            'someKey' => 'someValue'
-                        ]
+                            'someKey' => 'someValue',
+                        ],
                     ],
                     [
                         'id' => 124,
                         'childId' => 5321,
                         'parentId' => 1235,
                         'properties' => [
-                            'someKey' => 'someValue'
-                        ]
+                            'someKey' => 'someValue',
+                        ],
                     ],
                     [
                         'id' => 125,
                         'childId' => 6321,
                         'parentId' => 1236,
-                        'properties' => []
+                        'properties' => [],
                     ],
-                ]
+                ],
             ],
             $statement->getParameters()
         );
     }
-
 }

@@ -12,13 +12,12 @@ use Syndesi\Neo4jSyncBundle\Exception\MissingIdPropertyException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyValueException;
 use Syndesi\Neo4jSyncBundle\ValueObject\NodeLabel;
+use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 use Syndesi\Neo4jSyncBundle\ValueObject\Relation;
 use Syndesi\Neo4jSyncBundle\ValueObject\RelationLabel;
-use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 
-class RelationTest extends TestCase {
-
-
+class RelationTest extends TestCase
+{
     public function testValidRelation(): void
     {
         $relationLabel = new RelationLabel('RELATION_LABEL');
@@ -86,7 +85,7 @@ class RelationTest extends TestCase {
             new NodeLabel('ChildNode'),
             new Property('id', 4321),
             [
-                new DateTime()
+                new DateTime(),
             ]
         );
     }
@@ -102,7 +101,7 @@ class RelationTest extends TestCase {
             new Property('id', 4321),
             [
                 new Property('someProperty', 'someValue'),
-                new Property('someProperty', 'otherValue')
+                new Property('someProperty', 'otherValue'),
             ]
         );
     }
@@ -117,7 +116,7 @@ class RelationTest extends TestCase {
             new NodeLabel('ChildNode'),
             new Property('id', 4321),
             [
-                new Property('someProperty', 'someValue')
+                new Property('someProperty', 'someValue'),
             ],
             new Property('id')
         );
@@ -139,7 +138,7 @@ class RelationTest extends TestCase {
         $this->assertSame(
             [
                 'someProperty' => 'someValue',
-                'otherProperty' => 'otherValue'
+                'otherProperty' => 'otherValue',
             ],
             $relation->getPropertiesAsAssociativeArray()
         );
@@ -157,7 +156,7 @@ class RelationTest extends TestCase {
             new Property('id', 4321),
             [
                 $idProperty,
-                $stringProperty
+                $stringProperty,
             ],
             identifier: new Property('id')
         );
@@ -214,5 +213,4 @@ class RelationTest extends TestCase {
         );
         $this->assertSame('(:ChildNode {id: 1234})-[:RELATION_LABEL {id: 1234, someProperty: someValue}]->(:ParentNode {id: 4321})', (string) $relation);
     }
-
 }

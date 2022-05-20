@@ -12,6 +12,9 @@ use Syndesi\Neo4jSyncBundle\ValueObject\NodeLabel;
 
 class CreateNodeIndexStatementBuilder implements IndexStatementBuilderInterface
 {
+    /**
+     * @throws InvalidArgumentException
+     */
     public static function build(Index $index): array
     {
         if (!($index->getLabel() instanceof NodeLabel)) {

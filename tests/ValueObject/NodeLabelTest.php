@@ -8,8 +8,8 @@ use PHPUnit\Framework\TestCase;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedRelationLabelException;
 use Syndesi\Neo4jSyncBundle\ValueObject\RelationLabel;
 
-class NodeLabelTest extends TestCase {
-
+class NodeLabelTest extends TestCase
+{
     public function testValidRelationLabel(): void
     {
         $property = new RelationLabel('SOME_NAME');
@@ -27,5 +27,4 @@ class NodeLabelTest extends TestCase {
         $property = new RelationLabel('SOME_NAME');
         $this->assertSame('SOME_NAME', (string) $property);
     }
-
 }

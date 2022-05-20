@@ -7,14 +7,13 @@ namespace Syndesi\Neo4jSyncBundle\Tests\Statement;
 use PHPUnit\Framework\TestCase;
 use Syndesi\Neo4jSyncBundle\Exception\InvalidArgumentException;
 use Syndesi\Neo4jSyncBundle\Statement\BatchCreateRelationStatementBuilder;
-use Syndesi\Neo4jSyncBundle\ValueObject\Node;
 use Syndesi\Neo4jSyncBundle\ValueObject\NodeLabel;
 use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 use Syndesi\Neo4jSyncBundle\ValueObject\Relation;
 use Syndesi\Neo4jSyncBundle\ValueObject\RelationLabel;
 
-class BatchCreateRelationStatementBuilderTest extends TestCase {
-
+class BatchCreateRelationStatementBuilderTest extends TestCase
+{
     public function testEmptyBuild(): void
     {
         $statements = BatchCreateRelationStatementBuilder::build([]);
@@ -28,7 +27,7 @@ class BatchCreateRelationStatementBuilderTest extends TestCase {
         $this->expectExceptionMessage('All relations need to be of type relation.');
 
         BatchCreateRelationStatementBuilder::build([
-            (object)[]
+            (object) [],
         ]);
     }
 
@@ -57,7 +56,6 @@ class BatchCreateRelationStatementBuilderTest extends TestCase {
 
     public function testBuildWithSingleRelation(): void
     {
-
         $statements = BatchCreateRelationStatementBuilder::build([
             new Relation(
                 new RelationLabel('SOME_LABEL'),
@@ -88,10 +86,10 @@ class BatchCreateRelationStatementBuilderTest extends TestCase {
                         'childId' => 4321,
                         'parentId' => 1234,
                         'properties' => [
-                            '_' => null
-                        ]
-                    ]
-                ]
+                            '_' => null,
+                        ],
+                    ],
+                ],
             ],
             $statement->getParameters()
         );
@@ -99,7 +97,6 @@ class BatchCreateRelationStatementBuilderTest extends TestCase {
 
     public function testBuildWithMultipleRelations(): void
     {
-
         $statements = BatchCreateRelationStatementBuilder::build([
             new Relation(
                 new RelationLabel('SOME_LABEL'),
@@ -116,7 +113,7 @@ class BatchCreateRelationStatementBuilderTest extends TestCase {
                 new Property('childId', 5321),
                 [
                     new Property('id', 123),
-                    new Property('someData', 'Hello world! :D')
+                    new Property('someData', 'Hello world! :D'),
                 ],
                 new Property('id')
             ),
@@ -142,8 +139,8 @@ class BatchCreateRelationStatementBuilderTest extends TestCase {
                         'childId' => 4321,
                         'parentId' => 1234,
                         'properties' => [
-                            '_' => null
-                        ]
+                            '_' => null,
+                        ],
                     ],
                     [
                         'childId' => 5321,
@@ -151,13 +148,12 @@ class BatchCreateRelationStatementBuilderTest extends TestCase {
                         'properties' => [
                             '_' => null,
                             'id' => 123,
-                            'someData' => 'Hello world! :D'
-                        ]
-                    ]
-                ]
+                            'someData' => 'Hello world! :D',
+                        ],
+                    ],
+                ],
             ],
             $statement->getParameters()
         );
     }
-
 }

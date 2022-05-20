@@ -10,8 +10,8 @@ use Syndesi\Neo4jSyncBundle\ValueObject\Node;
 use Syndesi\Neo4jSyncBundle\ValueObject\NodeLabel;
 use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 
-class MergeNodeStatementBuilderTest extends TestCase {
-
+class MergeNodeStatementBuilderTest extends TestCase
+{
     public function testBuild(): void
     {
         $node = new Node(
@@ -19,7 +19,7 @@ class MergeNodeStatementBuilderTest extends TestCase {
             [
                 new Property('id', 1234),
                 new Property('string', 'Hello World'),
-                new Property('float', 1.23)
+                new Property('float', 1.23),
             ],
             new Property('id')
         );
@@ -45,10 +45,9 @@ class MergeNodeStatementBuilderTest extends TestCase {
             [
                 'id' => 1234,
                 'string' => 'Hello World',
-                'float' => 1.23
+                'float' => 1.23,
             ],
             $statement->getParameters()
         );
     }
-
 }

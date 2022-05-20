@@ -8,8 +8,8 @@ use PHPUnit\Framework\TestCase;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
 use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 
-class PropertyTest extends TestCase {
-
+class PropertyTest extends TestCase
+{
     public function testValidProperty(): void
     {
         $property = new Property('someName', 'someValue');
@@ -28,5 +28,4 @@ class PropertyTest extends TestCase {
         $property = new Property('someName', 'someValue');
         $this->assertSame('someName: someValue', (string) $property);
     }
-
 }
