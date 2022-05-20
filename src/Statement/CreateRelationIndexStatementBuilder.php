@@ -10,6 +10,7 @@ use Syndesi\Neo4jSyncBundle\Exception\InvalidArgumentException;
 use Syndesi\Neo4jSyncBundle\ValueObject\Index;
 use Syndesi\Neo4jSyncBundle\ValueObject\RelationLabel;
 
+// todo find use or remove class
 class CreateRelationIndexStatementBuilder implements IndexStatementBuilderInterface
 {
     public static function build(Index $index): array

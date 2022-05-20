@@ -10,6 +10,7 @@ use Syndesi\Neo4jSyncBundle\Enum\CreateType;
 use Syndesi\Neo4jSyncBundle\Exception\InvalidArgumentException;
 use Syndesi\Neo4jSyncBundle\Exception\MissingPropertyException;
 use Syndesi\Neo4jSyncBundle\Exception\UnsupportedPropertyNameException;
+use Syndesi\Neo4jSyncBundle\ValueObject\Property;
 use Syndesi\Neo4jSyncBundle\ValueObject\Relation;
 
 class BatchMergeRelationStatementBuilder implements BatchRelationStatementBuilderInterface
@@ -58,10 +59,10 @@ class BatchMergeRelationStatementBuilder implements BatchRelationStatementBuilde
             ];
         }
 
+        /**
+         * @var Property
+         */
         $identifier = $relations[0]->getIdentifier();
-        if (!$identifier) {
-            throw new InvalidArgumentException("All relations need to contain an identifier.");
-        }
 
         return [new Statement(
             sprintf(

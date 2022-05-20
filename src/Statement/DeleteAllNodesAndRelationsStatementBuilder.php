@@ -7,6 +7,7 @@ namespace Syndesi\Neo4jSyncBundle\Statement;
 use Laudis\Neo4j\Databags\Statement;
 use Syndesi\Neo4jSyncBundle\Contract\StatementBuilderInterface;
 
+// todo find use or delete class
 class DeleteAllNodesAndRelationsStatementBuilder implements StatementBuilderInterface
 {
     /**
