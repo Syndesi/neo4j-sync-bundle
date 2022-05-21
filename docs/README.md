@@ -2,6 +2,9 @@
 
 ![Overview; Doctrine is synchronized in real time to Neo4j.](/assets/Header.png)
 
+[![Unit Tests](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-unit-test.yml/badge.svg)](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-unit-test.yml)
+[![codecov](https://codecov.io/gh/Syndesi/neo4j-sync-bundle/branch/refactor/graph/badge.svg?token=O6PDLWHO6J)](https://codecov.io/gh/Syndesi/neo4j-sync-bundle)
+
 This bundle provides real time synchronization capabilities between
 [Doctrine's EntityManager](https://www.doctrine-project.org/) and a [Neo4j database](https://neo4j.com/) in
 [Symfony](https://symfony.com/) applications.
