@@ -32,13 +32,13 @@ jobs:
                   php_version: '8.1'
                   php_extensions: xdebug
                   bootstrap: vendor/autoload.php
-                  args: --coverage-clover /coverage.xml
+                  args: --coverage-clover coverage.xml
             - uses: codecov/codecov-action@v2
               with:
-                  files: /coverage.xml
+                  files: coverage.xml
                   fail_ci_if_error: false
                   verbose: true
             - uses: actions/upload-artifact@v2
               with:
                   name: coverage.xml
-                  path: /coverage.xml
+                  path: coverage.xml
