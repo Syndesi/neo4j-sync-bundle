@@ -1,17 +1,19 @@
 
-name: Unit Tests
+name: Unit Tests Coverage Report
 
 on: [push, fork, pull_request]
 
 jobs:
-    tests:
+    coverage:
         runs-on: ubuntu-latest
-        name: "Running Unit tests for PHP ${{ matrix.php-version }}"
+        name: "Generate unit test coverage report for PHP ${{ matrix.php-version }}"
         strategy:
             fail-fast: false
             matrix:
                 php-version: ['8.1']
-        
+        env:
+            XDEBUG_MODE: coverage
+            
         steps:
             - uses: actions/checkout@v2
             - name: Cache Composer dependencies
@@ -25,9 +27,15 @@ jobs:
                   php_version: ${{ matrix.php-version }}
                   php_extensions: xdebug
                   version: 2
-            - uses: php-actions/phpunit@v3
+            - uses: php-actions/phpunit@v9
               with:
                   configuration: phpunit.xml.dist
                   php_version: ${{ matrix.php-version }}
                   php_extensions: xdebug
                   bootstrap: vendor/autoload.php
+                  args: --coverage-clover ./coverage.xml
+            - uses: codecov/codecov-action@v2
+              with:
+                  files: ./coverage.xml
+                  fail_ci_if_error: true
+                  verbose: true
