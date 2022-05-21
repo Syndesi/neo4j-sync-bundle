@@ -1,5 +1,6 @@
 /var/
 /vendor/
+coverage.xml
 infection.html
 .phpunit.result.cache
 /phpunit.xml

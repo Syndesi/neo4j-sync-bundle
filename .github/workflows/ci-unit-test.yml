@@ -19,16 +19,11 @@ jobs:
               with:
                   path: /tmp/composer-cache
                   key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
-            - uses: php-actions/composer@v6
+            - uses: shivammathur/setup-php@v2
               with:
-                  progress: yes
-                  php_version: ${{ matrix.php-version }}
-                  php_extensions: xdebug
-                  version: 2
-            - uses: php-actions/phpunit@v3
-              with:
-                  version: 9
-                  configuration: phpunit.xml.dist
-                  php_version: ${{ matrix.php-version }}
-                  php_extensions: xdebug
-                  bootstrap: vendor/autoload.php
+                  php-version: '8.1'
+                  tools: composer:v2
+            - run: composer install
+              shell: bash
+            - run: composer test
+              shell: bash

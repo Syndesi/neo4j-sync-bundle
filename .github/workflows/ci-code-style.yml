@@ -17,13 +17,11 @@ jobs:
               with:
                   path: /tmp/composer-cache
                   key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
-            - uses: php-actions/composer@v6
-              with:
-                  progress: yes
-                  php_version: '8.1'
-                  version: 2
             - uses: shivammathur/setup-php@v2
               with:
                   php-version: '8.1'
-            - run: php vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --allow-risky=yes --dry-run ./src
+                  tools: composer:v2
+            - run: composer install --dev
+              shell: bash
+            - run: composer cs:lint
               shell: bash
