@@ -11,5 +11,6 @@ jobs:
             fail-fast: false
             
         steps:
+            - run: docker pull cytopia/yamllint
             - run: docker run --rm -t -v $(pwd):/data cytopia/yamllint .
               shell: bash
