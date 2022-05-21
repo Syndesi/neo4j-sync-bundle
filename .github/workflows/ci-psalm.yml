@@ -21,6 +21,7 @@ jobs:
               with:
                   php-version: '8.1'
                   tools: composer:v2
+            - run: pwd
             - run: composer install
               shell: bash
             - run: composer psalm
