@@ -1,5 +1,5 @@
 
-name: Unit Tests Coverage Report
+name: Code Style
 
 on: [push, fork, pull_request]
 
