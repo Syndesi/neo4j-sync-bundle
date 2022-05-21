@@ -1,6 +1,9 @@
 ![Overview; Doctrine is synchronized in real time to Neo4j.](./docs/assets/Header.png)
 
 [![Unit Tests](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-unit-test.yml/badge.svg)](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-unit-test.yml)
+[![Mutant Test](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-mutant-test.yml/badge.svg)](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-mutant-test.yml)
+[![PHPStan](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-phpstan.yml/badge.svg)](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-phpstan.yml)
+[![Psalm](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-psalm.yml/badge.svg)](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-psalm.yml)
 [![Code Style](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-code-style.yml/badge.svg)](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-code-style.yml)
 [![codecov](https://codecov.io/gh/Syndesi/neo4j-sync-bundle/branch/refactor/graph/badge.svg?token=O6PDLWHO6J)](https://codecov.io/gh/Syndesi/neo4j-sync-bundle)
 
