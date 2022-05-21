@@ -23,5 +23,5 @@ jobs:
                   tools: composer:v2
             - run: composer install --dev
               shell: bash
-            - run: composer cs:lint
+            - run: composer cs:list
               shell: bash
