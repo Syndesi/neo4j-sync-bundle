@@ -1,0 +1,26 @@
+
+name: Unit Tests Coverage Report
+
+on: [push, fork, pull_request]
+
+jobs:
+    coverage:
+        runs-on: ubuntu-latest
+        name: "Check code style"
+        strategy:
+            fail-fast: false
+            
+        steps:
+            - uses: actions/checkout@v2
+            - name: Cache Composer dependencies
+              uses: actions/cache@v2
+              with:
+                  path: /tmp/composer-cache
+                  key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+            - uses: php-actions/composer@v6
+              with:
+                  progress: yes
+                  php_version: '8.1'
+                  version: 2
+            - run: bash php vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --allow-risky=yes --dry-run ./src
+              shell: bash
