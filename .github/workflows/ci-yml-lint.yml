@@ -9,7 +9,7 @@ jobs:
         container:
             image: cytopia/yamllint
             volumes:
-                - $(pwd):/data
+                - /home/runner/work/neo4j-sync-bundle/neo4j-sync-bundle:/data
         name: "YML lint"
         strategy:
             fail-fast: false
