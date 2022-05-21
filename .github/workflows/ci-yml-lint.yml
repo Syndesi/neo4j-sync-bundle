@@ -10,6 +10,8 @@ jobs:
         name: "YML lint"
         strategy:
             fail-fast: false
+        volumes:
+            - $(pwd):/data
             
         steps:
             - run: yamllint -f colored .
