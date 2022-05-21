@@ -9,8 +9,6 @@ jobs:
         name: "Generate unit test coverage report for PHP ${{ matrix.php-version }}"
         strategy:
             fail-fast: false
-            matrix:
-                php-version: ['8.1']
         env:
             XDEBUG_MODE: coverage
             
@@ -24,21 +22,21 @@ jobs:
             - uses: php-actions/composer@v6
               with:
                   progress: yes
-                  php_version: ${{ matrix.php-version }}
+                  php_version: '8.1'
                   php_extensions: xdebug
                   version: 2
             - uses: php-actions/phpunit@v3
               with:
                   version: 9
                   configuration: phpunit.xml.dist
-                  php_version: ${{ matrix.php-version }}
+                  php_version: '8.1'
                   php_extensions: xdebug
                   bootstrap: vendor/autoload.php
                   args: --coverage-clover /coverage.xml
             - uses: codecov/codecov-action@v2
               with:
                   files: /coverage.xml
-                  fail_ci_if_error: true
+                  fail_ci_if_error: false
                   verbose: true
             - uses: actions/upload-artifact@v2
               with:
