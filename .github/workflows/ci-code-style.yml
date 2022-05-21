@@ -4,7 +4,7 @@ name: Unit Tests Coverage Report
 on: [push, fork, pull_request]
 
 jobs:
-    coverage:
+    code-style:
         runs-on: ubuntu-latest
         name: "Check code style"
         strategy:
