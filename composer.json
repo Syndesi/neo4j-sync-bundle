@@ -64,6 +64,8 @@
         "cs:fix": "php vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --allow-risky=yes",
         "psalm": "php vendor/bin/psalm --show-info=true --no-cache",
         "psalm:fix": "php vendor/bin/psalm --alter --issues=MissingReturnType,InvalidReturnType,InvalidNullableReturnType,MismatchingDocblockParamType",
-        "phpstan": "vendor/bin/phpstan"
+        "phpstan": "vendor/bin/phpstan",
+        "yml:lint": "docker run --rm -it -v $(pwd):/data cytopia/yamllint .",
+        "markdown:lint": "docker run --rm -v $(pwd):/work tmknom/markdownlint '**/*.md' --ignore vendor"
     }
 }
