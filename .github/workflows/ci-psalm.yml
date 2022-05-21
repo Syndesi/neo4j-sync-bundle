@@ -1,17 +1,15 @@
 
-name: Unit Test Coverage Report
+name: Psalm
 
 on: [push, fork, pull_request]
 
 jobs:
-    coverage:
+    tests:
         runs-on: ubuntu-latest
-        name: "Generate unit test coverage report for PHP ${{ matrix.php-version }}"
+        name: "Check Psalm"
         strategy:
             fail-fast: false
-        env:
-            XDEBUG_MODE: coverage
-            
+        
         steps:
             - uses: actions/checkout@v2
             - name: Cache Composer dependencies
@@ -22,18 +20,8 @@ jobs:
             - uses: shivammathur/setup-php@v2
               with:
                   php-version: '8.1'
-                  extensions: xdebug
                   tools: composer:v2
             - run: composer install
               shell: bash
-            - run: composer test:coverage:xml
+            - run: composer psalm
               shell: bash
-            - uses: codecov/codecov-action@v2
-              with:
-                  files: coverage.xml
-                  fail_ci_if_error: true
-                  verbose: true
-            - uses: actions/upload-artifact@v2
-              with:
-                  name: coverage.xml
-                  path: coverage.xml
