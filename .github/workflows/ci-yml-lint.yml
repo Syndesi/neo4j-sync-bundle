@@ -11,10 +11,5 @@ jobs:
             fail-fast: false
             
         steps:
-            - uses: actions/checkout@v2
-            - uses: addnab/docker-run-action@v3
-              with:
-                  image: cytopia/yamllint
-                  options: -v $(pwd):/data
-                  shell: bash
-                  run: .
+            - run: docker run --rm -t -v $(pwd):/data cytopia/yamllint .
+              shell: bash
