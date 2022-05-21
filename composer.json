@@ -1,14 +1,21 @@
 {
     "name": "syndesi/neo4j-sync-bundle",
-    "description": "Syncs Doctrine entities to a Neo4j database",
+    "description": "Provides real time synchronization capabilities between Doctrine's EntityManager and a Neo4j database.",
     "type": "symfony-bundle",
+    "homepage": "https://syndesi.github.io/neo4j-sync-bundle/",
     "license": "MIT",
     "authors": [
         {
-            "name": "Sören Klein",
+            "name": "Syndesi (Sören Klein)",
             "email": "soerenklein98@gmail.com",
             "homepage": "https://syndesi.dev",
             "role": "Developer"
+        },
+        {
+            "name": "Syndesi (Sören Klein)",
+            "email": "soerenklein98@gmail.com",
+            "homepage": "https://syndesi.dev",
+            "role": ""
         }
     ],
     "keywords": [
