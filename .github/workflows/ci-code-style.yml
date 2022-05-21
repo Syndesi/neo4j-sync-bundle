@@ -1,7 +1,9 @@
-
 name: Code Style
 
-on: [push, fork, pull_request]
+on:
+    - push
+    - fork
+    - pull_request
 
 jobs:
     code-style:
@@ -9,7 +11,6 @@ jobs:
         name: "Check code style"
         strategy:
             fail-fast: false
-            
         steps:
             - uses: actions/checkout@v2
             - name: Cache Composer dependencies

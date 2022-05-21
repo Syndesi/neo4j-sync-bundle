@@ -1,7 +1,9 @@
-
 name: Unit Test Coverage Report
 
-on: [push, fork, pull_request]
+on:
+    - push
+    - fork
+    - pull_request
 
 jobs:
     coverage:
@@ -11,7 +13,6 @@ jobs:
             fail-fast: false
         env:
             XDEBUG_MODE: coverage
-            
         steps:
             - uses: actions/checkout@v2
             - name: Cache Composer dependencies
