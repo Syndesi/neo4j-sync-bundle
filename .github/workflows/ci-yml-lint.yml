@@ -6,16 +6,10 @@ on: [push, fork, pull_request]
 jobs:
     yml-lint:
         runs-on: ubuntu-latest
-        container:
-            image: cytopia/yamllint
-            volumes:
-                - /home/runner/work/neo4j-sync-bundle/neo4j-sync-bundle:/data
         name: "YML lint"
         strategy:
             fail-fast: false
             
         steps:
-            - run: pwd
-            - run: ls -la
-            - run: yamllint -f colored .
-              shell: sh
+            - run: docker run --rm -it -v $(pwd):/data cytopia/yamllint .
+              shell: bash
