@@ -12,5 +12,8 @@ jobs:
             
         steps:
             - run: docker pull cytopia/yamllint
+            - run: pwd
+            - run: ls -la
+            - run: ls -la /
             - run: docker run --rm -t -v $(pwd):/data cytopia/yamllint .
               shell: bash
