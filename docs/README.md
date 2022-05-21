@@ -12,6 +12,8 @@
 [![PHPStan](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-phpstan.yml/badge.svg)](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-phpstan.yml)
 [![Psalm](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-psalm.yml/badge.svg)](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-psalm.yml)
 [![Code Style](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-code-style.yml/badge.svg)](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-code-style.yml)
+[![YML lint](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-yml-lint.yml/badge.svg)](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-yml-lint.yml)
+[![Markdown lint](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-markdown-lint.yml/badge.svg)](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-markdown-lint.yml)
 [![codecov](https://codecov.io/gh/Syndesi/neo4j-sync-bundle/branch/refactor/graph/badge.svg?token=O6PDLWHO6J)](https://codecov.io/gh/Syndesi/neo4j-sync-bundle)
 [![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/Syndesi/neo4j-sync-bundle)](https://codeclimate.com/github/Syndesi/neo4j-sync-bundle/maintainability)
 
