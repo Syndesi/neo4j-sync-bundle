@@ -1,3 +1,2 @@
-- [Documentation](/)
-- [Repo](https://github.com/Syndesi/neo4j-sync-bundle)
+- [GitHub](https://github.com/Syndesi/neo4j-sync-bundle)
 - [Packagist](https://packagist.org/packages/syndesi/neo4j-sync-bundle)
