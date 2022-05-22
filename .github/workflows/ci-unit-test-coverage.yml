@@ -34,7 +34,7 @@ jobs:
                   files: coverage.xml
                   fail_ci_if_error: true
                   verbose: true
-            - uses: paambaati/codeclimate-action@v2.2.4
+            - uses: paambaati/codeclimate-action@v3.0.0
               env:
                   CC_TEST_REPORTER_ID: ab092d57ca7008e76d43eba8da754a32aefc9b0bc2c427740c2e49f006ad0e7e
               with:
