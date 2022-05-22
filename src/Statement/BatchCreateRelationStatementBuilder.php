@@ -31,18 +31,17 @@ class BatchCreateRelationStatementBuilder implements BatchRelationStatementBuild
                 throw new InvalidArgumentException('All relations need to be for the same relation label');
             }
         }
-        $batch = [];
-        foreach ($relations as $relation) {
-            $batch[] = [
-                'childId' => $relation->getRelatesFromIdentifier()->getValue(),
-                'parentId' => $relation->getRelatesToIdentifier()->getValue(),
-                'properties' => [
-                    '_' => null,
-                    ...$relation->getPropertiesAsAssociativeArray(),
-                ],
-            ];
-        }
 
+        return self::createReturnStatements($relations);
+    }
+
+    /**
+     * @param Relation[] $relations
+     *
+     * @return Statement[]
+     */
+    private static function createReturnStatements(array $relations): array
+    {
         return [new Statement(
             sprintf(
                 "UNWIND \$batch as row\n".
@@ -58,8 +57,30 @@ class BatchCreateRelationStatementBuilder implements BatchRelationStatementBuild
                 (string) $relations[0]->getLabel()
             ),
             [
-                'batch' => $batch,
+                'batch' => self::createBatchArray($relations),
             ]
         )];
+    }
+
+    /**
+     * @param Relation[] $relations
+     *
+     * @return array<array<string, mixed>>
+     */
+    private static function createBatchArray(array $relations): array
+    {
+        $batch = [];
+        foreach ($relations as $relation) {
+            $batch[] = [
+                'childId' => $relation->getRelatesFromIdentifier()->getValue(),
+                'parentId' => $relation->getRelatesToIdentifier()->getValue(),
+                'properties' => [
+                    '_' => null,
+                    ...$relation->getPropertiesAsAssociativeArray(),
+                ],
+            ];
+        }
+
+        return $batch;
     }
 }
