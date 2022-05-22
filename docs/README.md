@@ -15,7 +15,7 @@
 [![YML lint](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-yml-lint.yml/badge.svg)](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-yml-lint.yml)
 [![Markdown lint](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-markdown-lint.yml/badge.svg)](https://github.com/Syndesi/neo4j-sync-bundle/actions/workflows/ci-markdown-lint.yml)
 [![codecov](https://codecov.io/gh/Syndesi/neo4j-sync-bundle/branch/refactor/graph/badge.svg?token=O6PDLWHO6J)](https://codecov.io/gh/Syndesi/neo4j-sync-bundle)
-[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/Syndesi/neo4j-sync-bundle)](https://codeclimate.com/github/Syndesi/neo4j-sync-bundle/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/725f510cd334e327ec96/maintainability)](https://codeclimate.com/github/Syndesi/neo4j-sync-bundle/maintainability)
 
 This bundle provides real time synchronization capabilities between
 [Doctrine's EntityManager](https://www.doctrine-project.org/) and a [Neo4j database](https://neo4j.com/) in
