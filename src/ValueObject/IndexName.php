@@ -12,6 +12,9 @@ class IndexName implements Stringable, IsEqualToInterface
 {
     public const INDEX_REGEX = '/^[a-z][a-z\d_]*$/';
 
+    /**
+     * @throws UnsupportedIndexNameException
+     */
     public function __construct(
         private readonly string $name
     ) {

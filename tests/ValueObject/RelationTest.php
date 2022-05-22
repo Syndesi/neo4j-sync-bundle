@@ -213,4 +213,59 @@ class RelationTest extends TestCase
         );
         $this->assertSame('(:ChildNode {id: 1234})-[:RELATION_LABEL {id: 1234, someProperty: someValue}]->(:ParentNode {id: 4321})', (string) $relation);
     }
+
+    public function testEqual(): void
+    {
+        $relation1 = new Relation(
+            new RelationLabel('RELATION_LABEL'),
+            new NodeLabel('ParentNode'),
+            new Property('id', 4321),
+            new NodeLabel('ChildNode'),
+            new Property('id', 1234),
+            [
+                new Property('id', 1234),
+                new Property('someProperty', 'someValue'),
+            ],
+            new Property('id')
+        );
+        $relation2 = new Relation(
+            new RelationLabel('RELATION_LABEL'),
+            new NodeLabel('ParentNode'),
+            new Property('id', 4321),
+            new NodeLabel('ChildNode'),
+            new Property('id', 1234),
+            [
+                new Property('id', 1234),
+                new Property('someProperty', 'someValue'),
+            ],
+            new Property('id')
+        );
+        $relation3 = new Relation(
+            new RelationLabel('RELATION_LABEL'),
+            new NodeLabel('ParentNode'),
+            new Property('id', 4321),
+            new NodeLabel('ChildNode'),
+            new Property('id', 1234),
+            [
+                new Property('changedId', 1234),
+                new Property('someProperty', 'someValue'),
+            ],
+            new Property('changedId')
+        );
+        $relation4 = new Relation(
+            new RelationLabel('RELATION_LABEL'),
+            new NodeLabel('ParentNode'),
+            new Property('id', 4321),
+            new NodeLabel('ChildNode'),
+            new Property('id', 1234),
+            [
+                new Property('id', 1234),
+            ],
+            new Property('id')
+        );
+        $this->assertTrue($relation1->isEqualTo($relation2));
+        $this->assertFalse($relation1->isEqualTo($relation3));
+        $this->assertFalse($relation1->isEqualTo($relation4));
+        $this->assertFalse($relation1->isEqualTo((object) []));
+    }
 }

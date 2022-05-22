@@ -27,4 +27,12 @@ class RelationLabelTest extends TestCase
         $property = new RelationLabel('SOME_NAME');
         $this->assertSame('SOME_NAME', (string) $property);
     }
+
+    public function testEqual(): void
+    {
+        $property = new RelationLabel('SOME_NAME');
+        $this->assertTrue($property->isEqualTo(new RelationLabel('SOME_NAME')));
+        $this->assertFalse($property->isEqualTo(new RelationLabel('CHANGED_NAME')));
+        $this->assertFalse($property->isEqualTo((object) []));
+    }
 }

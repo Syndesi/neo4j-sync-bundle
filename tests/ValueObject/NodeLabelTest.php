@@ -5,26 +5,34 @@ declare(strict_types=1);
 namespace Syndesi\Neo4jSyncBundle\Tests\ValueObject;
 
 use PHPUnit\Framework\TestCase;
-use Syndesi\Neo4jSyncBundle\Exception\UnsupportedRelationLabelException;
-use Syndesi\Neo4jSyncBundle\ValueObject\RelationLabel;
+use Syndesi\Neo4jSyncBundle\Exception\UnsupportedNodeLabelException;
+use Syndesi\Neo4jSyncBundle\ValueObject\NodeLabel;
 
 class NodeLabelTest extends TestCase
 {
-    public function testValidRelationLabel(): void
+    public function testValidNodeLabel(): void
     {
-        $property = new RelationLabel('SOME_NAME');
-        $this->assertSame('SOME_NAME', $property->getLabel());
+        $property = new NodeLabel('SomeNode');
+        $this->assertSame('SomeNode', $property->getLabel());
     }
 
-    public function testInvalidRelationLabel(): void
+    public function testInvalidNodeLabel(): void
     {
-        $this->expectException(UnsupportedRelationLabelException::class);
-        new RelationLabel('someName');
+        $this->expectException(UnsupportedNodeLabelException::class);
+        new NodeLabel('SOME_NODE');
     }
 
     public function testStringable(): void
     {
-        $property = new RelationLabel('SOME_NAME');
-        $this->assertSame('SOME_NAME', (string) $property);
+        $property = new NodeLabel('SomeNode');
+        $this->assertSame('SomeNode', (string) $property);
+    }
+
+    public function testEqual(): void
+    {
+        $property = new NodeLabel('SomeNode');
+        $this->assertTrue($property->isEqualTo(new NodeLabel('SomeNode')));
+        $this->assertFalse($property->isEqualTo(new NodeLabel('ChangedNode')));
+        $this->assertFalse($property->isEqualTo((object) []));
     }
 }

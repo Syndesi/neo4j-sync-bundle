@@ -28,4 +28,13 @@ class PropertyTest extends TestCase
         $property = new Property('someName', 'someValue');
         $this->assertSame('someName: someValue', (string) $property);
     }
+
+    public function testEqual(): void
+    {
+        $property = new Property('someName', 'someValue');
+        $this->assertTrue($property->isEqualTo(new Property('someName', 'someValue')));
+        $this->assertFalse($property->isEqualTo(new Property('someName', 'changedValue')));
+        $this->assertFalse($property->isEqualTo(new Property('changedName', 'someValue')));
+        $this->assertFalse($property->isEqualTo((object) []));
+    }
 }
