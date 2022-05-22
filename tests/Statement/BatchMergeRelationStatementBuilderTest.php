@@ -43,14 +43,22 @@ class BatchMergeRelationStatementBuilderTest extends TestCase
                 new NodeLabel('ParentLabel'),
                 new Property('parentId', 1234),
                 new NodeLabel('ChildLabel'),
-                new Property('childId', 4321)
+                new Property('childId', 4321),
+                [
+                    new Property('id', 1234),
+                ],
+                new Property('id')
             ),
             new Relation(
                 new RelationLabel('OTHER_LABEL'),
                 new NodeLabel('ParentLabel'),
                 new Property('parentId', 1234),
                 new NodeLabel('ChildLabel'),
-                new Property('childId', 4321)
+                new Property('childId', 4321),
+                [
+                    new Property('id', 1234),
+                ],
+                new Property('id')
             ),
         ]);
     }
@@ -58,7 +66,7 @@ class BatchMergeRelationStatementBuilderTest extends TestCase
     public function testInvalidArgumentIdentifierBuild(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('All relations need to contain an identifier.');
+        $this->expectExceptionMessage('All relations require an identifier.');
 
         BatchMergeRelationStatementBuilder::build([
             new Relation(

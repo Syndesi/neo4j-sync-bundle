@@ -36,29 +36,10 @@ class BatchMergeRelationStatementBuilder implements BatchRelationStatementBuilde
             if (!$relation->getLabel()->isEqualTo($relations[0]->getLabel())) {
                 throw new InvalidArgumentException('All relations need to be for the same relation label.');
             }
-        }
-        $batch = [];
-        foreach ($relations as $relation) {
-            $identifier = $relation->getIdentifier();
-            if (!$identifier) {
-                throw new InvalidArgumentException("All relations need to contain an identifier.");
+            if (!$relation->getIdentifier()) {
+                throw new InvalidArgumentException('All relations require an identifier.');
             }
-            $properties = [];
-            foreach ($relation->getProperties() as $property) {
-                if ($property->getName() === $identifier->getName()) {
-                    // id is not a property, it cannot be changed once set
-                    continue;
-                }
-                $properties[$property->getName()] = $property->getValue();
-            }
-            $batch[] = [
-                'id' => $identifier->getValue(),
-                'childId' => $relation->getRelatesFromIdentifier()->getValue(),
-                'parentId' => $relation->getRelatesToIdentifier()->getValue(),
-                'properties' => $properties,
-            ];
         }
-
         /**
          * @var Property
          */
@@ -81,8 +62,45 @@ class BatchMergeRelationStatementBuilder implements BatchRelationStatementBuilde
                 $identifier->getName()
             ),
             [
-                'batch' => $batch,
+                'batch' => self::createBatchArray($relations),
             ]
         )];
+    }
+
+    /**
+     * @param Relation[] $relations
+     *
+     * @return array<array<string, mixed>>
+     *
+     * @throws InvalidArgumentException
+     */
+    private static function createBatchArray(array $relations): array
+    {
+        $batch = [];
+        foreach ($relations as $relation) {
+            $identifier = $relation->getIdentifier();
+            $properties = [];
+            foreach ($relation->getProperties() as $property) {
+                /**
+                 * @phpstan-ignore-next-line
+                 * @psalm-suppress PossiblyNullReference
+                 */
+                if ($property->getName() === $identifier->getName()) {
+                    // id is not a property, it cannot be changed once set
+                    continue;
+                }
+                $properties[$property->getName()] = $property->getValue();
+            }
+            /** @psalm-suppress PossiblyNullReference */
+            $batch[] = [
+                /** @phpstan-ignore-next-line */
+                'id' => $identifier->getValue(),
+                'childId' => $relation->getRelatesFromIdentifier()->getValue(),
+                'parentId' => $relation->getRelatesToIdentifier()->getValue(),
+                'properties' => $properties,
+            ];
+        }
+
+        return $batch;
     }
 }
