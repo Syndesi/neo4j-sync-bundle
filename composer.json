@@ -26,9 +26,9 @@
         "doctrine/doctrine-bundle": "^2.1",
         "doctrine/orm": "^2.7",
         "laudis/neo4j-php-client": "^2.5",
-        "symfony/yaml": "6.0.*",
-        "symfony/serializer": "6.0.*",
-        "symfony/console": "6.0.*",
+        "symfony/yaml": "^6.0",
+        "symfony/serializer": "^6.0",
+        "symfony/console": "^6.0",
         "symfony/monolog-bundle": "^3.7",
         "symfony/event-dispatcher": "^6.0"
     },
