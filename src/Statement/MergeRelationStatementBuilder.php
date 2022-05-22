@@ -24,20 +24,21 @@ class MergeRelationStatementBuilder implements RelationStatementBuilderInterface
      */
     public static function build(Relation $relation): array
     {
-        $identifier = $relation->getIdentifier();
-        if (!$identifier) {
+        if (!$relation->getIdentifier()) {
             throw new InvalidArgumentException("Relation must contain identifier.");
         }
-        $propertiesString = [];
-        foreach ($relation->getProperties() as $property) {
-            if ($property->getName() === $identifier->getName()) {
-                // id is not a property, it cannot be changed once set
-                continue;
-            }
-            $propertiesString[] = sprintf('    relation.%s = $%s', $property->getName(), $property->getName());
-        }
-        $propertiesString = implode(",\n", $propertiesString);
 
+        return self::createReturnStatement($relation);
+    }
+
+    /**
+     * @return Statement[]
+     */
+    private static function createReturnStatement(Relation $relation): array
+    {
+        $propertyString = self::createPropertyString($relation);
+
+        /** @psalm-suppress PossiblyNullReference */
         return [new Statement(
             sprintf(
                 "MATCH\n".
@@ -55,10 +56,12 @@ class MergeRelationStatementBuilder implements RelationStatementBuilderInterface
                 (string) $relation->getRelatesToLabel(),
                 $relation->getRelatesToIdentifier()->getName(),
                 (string) $relation->getLabel(),
-                $identifier->getName(),
-                $identifier->getName(),
-                $propertiesString,
-                $propertiesString,
+                /** @phpstan-ignore-next-line */
+                $relation->getIdentifier()->getName(),
+                /** @phpstan-ignore-next-line */
+                $relation->getIdentifier()->getName(),
+                $propertyString,
+                $propertyString,
             ),
             [
                 ...$relation->getPropertiesAsAssociativeArray(),
@@ -66,5 +69,23 @@ class MergeRelationStatementBuilder implements RelationStatementBuilderInterface
                 '_parentId' => $relation->getRelatesToIdentifier()->getValue(),
             ]
         )];
+    }
+
+    private static function createPropertyString(Relation $relation): string
+    {
+        $propertiesString = [];
+        foreach ($relation->getProperties() as $property) {
+            /**
+             * @psalm-suppress PossiblyNullReference
+             * @phpstan-ignore-next-line
+             */
+            if ($property->getName() === $relation->getIdentifier()->getName()) {
+                // id is not a property, it cannot be changed once set
+                continue;
+            }
+            $propertiesString[] = sprintf('    relation.%s = $%s', $property->getName(), $property->getName());
+        }
+
+        return implode(",\n", $propertiesString);
     }
 }
