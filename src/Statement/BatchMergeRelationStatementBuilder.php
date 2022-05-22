@@ -40,11 +40,20 @@ class BatchMergeRelationStatementBuilder implements BatchRelationStatementBuilde
                 throw new InvalidArgumentException('All relations require an identifier.');
             }
         }
+        return self::createReturnStatements($relations, $createType);
+    }
+
+    /**
+     * @param Relation[] $relations
+     * @return Statement[]
+     * @throws InvalidArgumentException
+     */
+    private static function createReturnStatements(array $relations, CreateType $createType): array
+    {
         /**
          * @var Property
          */
         $identifier = $relations[0]->getIdentifier();
-
         return [new Statement(
             sprintf(
                 "UNWIND \$batch as row\n".
