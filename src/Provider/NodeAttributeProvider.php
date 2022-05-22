@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Syndesi\Neo4jSyncBundle\Provider;
 
 use ReflectionClass;
+use ReflectionException;
 use Syndesi\Neo4jSyncBundle\Contract\NodeAttributeInterface;
 use Syndesi\Neo4jSyncBundle\Contract\NodeAttributeProviderInterface;
 
@@ -13,7 +14,7 @@ class NodeAttributeProvider implements NodeAttributeProviderInterface
     /**
      * @param class-string|object $entityOrClassName
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getNodeAttribute(string|object $entityOrClassName): ?NodeAttributeInterface
     {
