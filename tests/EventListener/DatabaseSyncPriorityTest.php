@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Syndesi\Neo4jSyncBundle\Tests\ValueObject;
+namespace Syndesi\Neo4jSyncBundle\Tests\EventListener;
 
 use PHPUnit\Framework\TestCase;
 use Syndesi\Neo4jSyncBundle\Event\DatabaseSyncEvent;
