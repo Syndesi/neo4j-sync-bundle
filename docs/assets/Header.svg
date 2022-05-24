@@ -23,7 +23,7 @@
           <path d="M104.913,49.5l.01-.011,59.246,56.526-.011,0a66.859,66.859,0,0,1,19.251,37.259l.85,10.648A67.128,67.128,0,1,1,99.411,89.165L82.285,73.016,82.306,73A16.3,16.3,0,0,1,104.913,49.5Z" fill="#fc6a31"/>
           <path d="M116.511,111.03l34.82,35.009a9.714,9.714,0,0,1,3.2,5.788l.124,1.545a9.73,9.73,0,0,1-3.312,7.321l-35.052,35.37a10.916,10.916,0,1,1-15.437-15.436l0,0,17.763-17.762H81.741v-.014a9.748,9.748,0,0,1-1.27-19.426,10.207,10.207,0,0,1,1.056-.069h.123c12.16.042,24.32.018,36.479.018l-16.724-16.723a10.874,10.874,0,1,1,15.106-15.617Z" fill="#fff"/>
         </g>
-        <text transform="translate(73.35 248.051)" font-size="20" font-family="QanelasSoft-Regular, Qanelas Soft">(<tspan x="5.32" y="0" letter-spacing="0.005em">D</tspan><tspan x="20.219" y="0" letter-spacing="0em">octrine)</tspan></text>
+        <text transform="translate(78.67 248.051)" font-size="20" font-family="QanelasSoft-Regular, Qanelas Soft" letter-spacing="0.005em">D<tspan x="14.899" y="0" letter-spacing="0em">octrine</tspan></text>
       </g>
     </g>
   </g>
